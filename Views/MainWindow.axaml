@@ -1,0 +1,65 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RFD.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="using:RFD.Controls"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RFD.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="RFD Информация о бурении">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+	<Window.Background>
+		<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+			<GradientStop Color="#858a86" Offset="0" />
+			<GradientStop Color="#a6aab9" Offset="1" />
+			<GradientStop Color="#ededed" Offset="2" />
+		</LinearGradientBrush>
+	</Window.Background>
+
+	<Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, *">
+
+		<!--Блок меню для подключения-->
+		<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
+			<Menu DockPanel.Dock="Left">
+				<MenuItem Header="Подключение">
+					<MenuItem FontSize="14" Header="Автоматическое подключение"/>
+					<MenuItem FontSize="14" Header="Ручное подключение"/>
+					<MenuItem FontSize="14" Header="Отключиться"/>
+				</MenuItem>
+				
+				<MenuItem Header="Настройки"/>
+			</Menu>
+
+			<!--Статус подключения и ip адрес-->
+			<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+				<Label Content="IP (Адрес): 26.239.5.198" FontSize="14" VerticalAlignment="Center"/>
+				<Ellipse Fill="#00b300" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+			</StackPanel>
+		</DockPanel>
+		<Border Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+
+		<WrapPanel Grid.Row="1"  Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
+			<Ellipse Fill="Green"/>
+		</WrapPanel>
+		
+		<!--Блок с информационными блоками-->
+		<ItemsControl ItemsSource="{Binding InfoBlockList}" Grid.Row="1" Grid.Column="1">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Grid>
+</Window>
