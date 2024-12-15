@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="using:RFD.Controls"
-		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -42,24 +42,54 @@
 				<Ellipse Fill="#00b300" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
 			</StackPanel>
 		</DockPanel>
-		<Border Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+		<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
 
-		<WrapPanel Grid.Row="1"  Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
+		
+		<WrapPanel Grid.Column="0" Grid.Row="1"  Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
 			<Ellipse Fill="Green"/>
 		</WrapPanel>
 		
 		<!--Блок с информационными блоками-->
-		<ItemsControl ItemsSource="{Binding InfoBlockList}" Grid.Row="1" Grid.Column="1">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<WrapPanel Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
+		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="0 10 0 0">
+			<Label Content="Информация о бурении:" FontSize="14" FontWeight="Bold"/>
+			<ItemsControl ItemsSource="{Binding InfoBlockList}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+
+
+		<!--Блок со статусами элементов буровой-->
+		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" Margin="0 10 0 0">
+			<Label Content="Статусы буровой установки:" FontSize="14" FontWeight="Bold"/>
+			<ItemsControl ItemsSource="{Binding InfoStatusList}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<controls:InfoStatusBox Header="{Binding Header}" Margin="1"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+
+		<!--Магнитное склонение-->
+		<!--Смещение поверхности инструмента-->
+		<StackPanel Grid.Row="2" Grid.Column="0" Margin="10 10 0 0">
+			<Label Content="Параметры бурения:" FontSize="14" FontWeight="Bold"/>
+			<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
+			<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
+		</StackPanel>
 	</Grid>
 </Window>

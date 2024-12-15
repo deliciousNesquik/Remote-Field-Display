@@ -13,5 +13,6 @@
         <FluentTheme/>
 		
 		<StyleInclude Source="avares://RFD/Controls/InfoLabelBox.axaml"/>
+		<StyleInclude Source="avares://RFD/Controls/InfoStatusBox.axaml"/>
     </Application.Styles>
 </Application>
