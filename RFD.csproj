@@ -26,4 +26,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Практика\NPFGEO.LWD.Net\NPFGEO.LWD.Net.csproj" />
+  </ItemGroup>
 </Project>
