@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RFD.ViewModels"
+             xmlns:li="using:LoadingIndicators.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="250"
+             x:Class="RFD.UserControls.AutomaticConnectingDialog"
+             x:DataType="vm:AutomaticConnectionDialogViewModel">
+    
+    <Design.DataContext>
+        <vm:AutomaticConnectionDialogViewModel/>
+    </Design.DataContext>
+    
+    <Border Background="White" Padding="15" Width="350" Height="250">
+        <Grid>
+            <TextBlock Text="Автоматическое подключение" VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Left" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,10"/>
+            
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="Подключение..." FontSize="14" VerticalAlignment="Center"/>
+                    <li:LoadingIndicator IsActive="True" Mode="Arc" Foreground="Black" SpeedRatio="2" Width="45" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Margin="0 10 0 0" TextWrapping="Wrap" FontSize="12" TextAlignment="Center">
+                    Автоматическое подключение позволяет системе самостоятельно обнаружить доступный сервер в локальной сети. 
+                    Этот процесс может занять некоторое время, в зависимости от состояния вашей сети и доступности сервера.
+                </TextBlock>
+            </StackPanel>
+            
+            
+            
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+                <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
+                    <Label Content="Отменить подключение"/>
+                </Button>
+            </StackPanel>
+            
+            
+        </Grid>
+    </Border>
+    
+</UserControl>

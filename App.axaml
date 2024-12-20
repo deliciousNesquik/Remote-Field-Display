@@ -3,7 +3,6 @@
              x:Class="RFD.App"
              xmlns:local="using:RFD"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
@@ -11,8 +10,25 @@
   
     <Application.Styles>
         <FluentTheme/>
-		
-		<StyleInclude Source="avares://RFD/Controls/InfoLabelBox.axaml"/>
-		<StyleInclude Source="avares://RFD/Controls/InfoStatusBox.axaml"/>
+        <StyleInclude Source="avares://RFD/Controls/InfoLabelBox.axaml"/>
+        <StyleInclude Source="avares://RFD/Controls/InfoStatusBox.axaml"/>
     </Application.Styles>
+             
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://RFD/UserControls/LoadingIndicators.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
+        <Color x:Key="BackgroundColor01">#858a86</Color>
+        <Color x:Key="BackgroundColor02">#a6aab9</Color>
+        <Color x:Key="BackgroundColor03">#ededed</Color>
+        
+        <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{StaticResource BackgroundColor01}" Offset="0" />
+            <GradientStop Color="{StaticResource BackgroundColor02}" Offset="1" />
+            <GradientStop Color="{StaticResource BackgroundColor03}" Offset="2" />
+        </LinearGradientBrush>
+    </Application.Resources>
 </Application>

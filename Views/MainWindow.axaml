@@ -1,84 +1,80 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:RFD.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="using:RFD.Controls"
+        xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="RFD Информация о бурении">
-
-    <Design.DataContext>
+        Title="RFD Информация о бурении"
+        Background="{DynamicResource GradientBackground}">
+    
+	<!--Указывавется для designer binding-->
+	<Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-
-	<Window.Background>
+	
+	<!-- Определение LinearGradientBrush -->
+	<!--<Window.Background>
 		<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-			<GradientStop Color="#858a86" Offset="0" />
-			<GradientStop Color="#a6aab9" Offset="1" />
-			<GradientStop Color="#ededed" Offset="2" />
+			<GradientStop Color="{DynamicResource BackgroundColor01}" Offset="0" />
+			<GradientStop Color="{DynamicResource BackgroundColor02}" Offset="1" />
+			<GradientStop Color="{DynamicResource BackgroundColor03}" Offset="2" />
 		</LinearGradientBrush>
-	</Window.Background>
-
+	</Window.Background>-->
+	
 	<Grid RowDefinitions="*" ColumnDefinitions="*">
-		<!-- Модальное окно -->
-		<!--<Border Name="ModalDialog"
+		
+		<!--Затенение экрана при открытии различных модальных окон поверх главного-->
+		<Border Name="BlackoutWindow"
+		        IsVisible="{Binding IsModalWindowOpen}"
 		        Background="#80000000"
+		        ZIndex="1000"
 		        HorizontalAlignment="Stretch"
 		        VerticalAlignment="Stretch">
-			<Border HorizontalAlignment="Center"
-			        VerticalAlignment="Center"
-			        Background="White"
-			        Padding="20"
-			        Width="400"
-			        Height="200">
-				<Grid>
-					<TextBlock Text="Ручное подключение" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
-					<TextBox Name="IpTextBox" VerticalAlignment="Center"/>
-					<TextBlock Text="Для ручного подключения к серверу необходимо написать ip адрес формата 192.168.1.1" FontWeight="600" TextWrapping="Wrap" VerticalAlignment="Bottom" TextAlignment="Center"/>
-				</Grid>
-			</Border>
-		</Border>-->
-		<!-- Модальное окно -->
-		<Border Name="ModalDialog"
-		        IsVisible="{Binding IsManualConnectingOpen}"
-		        Background="#80000000"
-		        HorizontalAlignment="Stretch"
-		        VerticalAlignment="Stretch">
-			<usercontrols:ManualConnectionDialog DataContext="{Binding ManualConnectionDialogViewModel}"
-			                                     HorizontalAlignment="Center"
-			                                     VerticalAlignment="Center" />
+			
+			<!--DataTemplate для всех модальных окон-->
+			<ContentControl Content="{Binding CurrentUserControl}">
+				<ContentControl.DataTemplates>
+					<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
+						<usercontrols:AutomaticConnectingDialog DataContext="AutomaticConnectingDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</DataTemplate>
+					<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
+						<usercontrols:ManualConnectionDialog DataContext="ManualConnectionDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					</DataTemplate>
+				</ContentControl.DataTemplates>
+			</ContentControl>
 		</Border>
 		
+		<!--Основное содержимое главного окна-->
 		<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
+			
+			<!--Блюр экрана при открытии различных модальных окон поверх главного-->
 			<Grid.Effect>
 				<BlurEffect Radius="{Binding BlurRadius}"/>
 			</Grid.Effect>
 			
-			
-			<!--Блок меню для подключения-->
+			<!--Блок меню-->
 			<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
 				<Menu DockPanel.Dock="Left">
 					<MenuItem Header="Подключение">
-						<MenuItem FontSize="14" Header="Автоматическое подключение" Command="{Binding OpenAutomaticlyConnectingCommand}"/>
-						<MenuItem FontSize="14" Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
-						<MenuItem FontSize="14" Header="Отключиться" Command="{Binding DisconnectCommand}"/>
+						<MenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}"/>
+						<MenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
+						<MenuItem Header="Отключиться" Command="{Binding DisconnectCommand}"/>
 					</MenuItem>
-					
-					<MenuItem Header="Настройки"/>
+					<MenuItem Header="Настройки" Command="{Binding SettingsCommand}"/>
 				</Menu>
-
+				
 				<!--Статус подключения и ip адрес-->
 				<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-					<Label Content="IP (Адрес): 26.239.5.198" FontSize="14" VerticalAlignment="Center"/>
-					<Ellipse Fill="#00b300" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+					<Label Content="{Binding IpAddress, StringFormat={}IP (Адрес): {0}}" VerticalAlignment="Center"/>
+					<Ellipse Fill="{Binding ConnectionStatus}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
 				</StackPanel>
+				
 			</DockPanel>
 			<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
-			
 			<!--Левая панель с графиком и парметрами бурения-->
 			<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
 				<!--График бурения-->
@@ -92,14 +88,10 @@
 					<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
 				</StackPanel>
 			</Grid>
-			
-			
-			
 			<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
 				<!--Блок с информационными блоками-->
 				<StackPanel Grid.Row="0" Margin="0 20 0 0">
 					<Label Content="Информация о бурении:" FontWeight="Bold" FontSize="14"/>
-					
 					<ItemsControl ItemsSource="{Binding InfoBlockList}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -113,10 +105,8 @@
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</StackPanel>
-				
 				<StackPanel Grid.Row="1">
 					<Label Content="Статусы бурения:" FontWeight="Bold" FontSize="14"/>
-					
 					<!--Блок со статусами элементов буровой-->
 					<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
 						<ItemsControl.ItemsPanel>
@@ -134,6 +124,4 @@
 			</Grid>
 		</Grid>
 	</Grid>
-	
-	
 </Window>

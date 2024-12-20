@@ -7,6 +7,8 @@
         <entry key="Controls/InfoLabelBox.axaml" value="RFD.csproj" />
         <entry key="Controls/InfoStatusBox.axaml" value="RFD.csproj" />
         <entry key="Controls/PolarChart.axaml" value="RFD.csproj" />
+        <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />
+        <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />
         <entry key="UserControls/ManualConnectionDialog.axaml" value="RFD.csproj" />
         <entry key="Views/MainWindow.axaml" value="RFD.csproj" />
       </map>

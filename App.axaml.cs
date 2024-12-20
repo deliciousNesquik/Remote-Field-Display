@@ -17,10 +17,19 @@ namespace RFD
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
+                MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+                MainWindow mainWindow = new MainWindow()
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = mainWindowViewModel,
                 };
+                
+                
+                //TODO
+                //Сделать полное подключение к серверу
+
+
+
+                desktop.MainWindow = mainWindow;
             }
 
             base.OnFrameworkInitializationCompleted();

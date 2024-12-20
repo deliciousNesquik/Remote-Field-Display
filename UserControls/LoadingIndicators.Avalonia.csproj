@@ -1,0 +1,69 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>true</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>LoadingIndicators.Avalonia</Title>
+        <Version>11.0.11.1</Version>
+        <Authors>moviegear</Authors>
+        <Description>LoadingIndicators.Avalonia is an adaptation for Avalonia of the LoadingIndicators.WPF collection of 9 animated loading indicators.</Description>
+        <Copyright>moviegear © $([System.DateTime]::Now.Year)</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <PackageProjectUrl>https://github.com/moviegear/LoadingIndicators.Avalonia/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/moviegear/LoadingIndicators.Avalonia.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageTags>Avalonia, loading, progress, activity</PackageTags>
+        <PackageId>LoadingIndicators.Avalonia</PackageId>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DebugType>none</DebugType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="**\*.xaml.cs">
+            <DependentUpon>%(Filename)</DependentUpon>
+        </Compile>
+        <AvaloniaResource Include="**\*.xaml">
+            <SubType>Designer</SubType>
+        </AvaloniaResource>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\.github\icon.png">
+          <Pack>True</Pack>
+          <PackagePath>\</PackagePath>
+          <Link>icon.png</Link>
+        </None>
+        <None Include="..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\LICENSE.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+        <ReadLinesFromFile File="../RELEASE-NOTES.txt">
+            <Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
+        </ReadLinesFromFile>
+        <PropertyGroup>
+            <PackageReleaseNotes>$([System.IO.File]::ReadAllText("../RELEASE-NOTES.txt"))</PackageReleaseNotes>
+        </PropertyGroup>
+    </Target>
+</Project>

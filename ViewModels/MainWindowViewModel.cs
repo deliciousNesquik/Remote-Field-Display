@@ -1,27 +1,48 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Avalonia.Controls;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
+using RFD.UserControls;
+using ReactiveUI;
 
 namespace RFD.ViewModels
 {
     public partial class MainWindowViewModel : INotifyPropertyChanged
     {
+
+        #region Геофизические параметры
+
         public ObservableCollection<InfoBlock> InfoBlockList { get; private set; }
         public ObservableCollection<InfoStatus> InfoStatusList { get; private set; }
         public double MagneticDeclination { get; private set; } 
         public double ToolfaceOffset { get; private set; } 
+
+        #endregion
+
+        #region Параметры отвечающие за работу модальных окон поверх главного окна
+
+        private UserControl _currentUserControl;
+        public UserControl CurrentUserControl
+        {
+            get => _currentUserControl;
+            set
+            {
+                _currentUserControl = value;
+                OnPropertyChanged();
+            }
+        }
         
-        
-        //Свойство которое изменяется с true на false в зависимости от открытия или закрытия окна
         private bool _isModalWindowOpen = false;
         public bool IsModalWindowOpen
         {
-            get => _isManualConnectingOpen;
+            get => _isModalWindowOpen;
             set {
                 _isModalWindowOpen = value;
                 if (value)
@@ -48,13 +69,13 @@ namespace RFD.ViewModels
             }
         }
 
-        private bool _isAutomaticlyConnectingOpen = false;
-        public bool IsAutomaticlyConnectingOpen
+        private bool _isAutomaticConnectingOpen = false;
+        public bool IsAutomaticConnectingOpen
         {
-            get => _isAutomaticlyConnectingOpen;
+            get => _isAutomaticConnectingOpen;
             set
             {
-                _isAutomaticlyConnectingOpen = value;
+                _isAutomaticConnectingOpen = value;
                 IsModalWindowOpen = value;
                 OnPropertyChanged();
             }
@@ -70,14 +91,45 @@ namespace RFD.ViewModels
                 OnPropertyChanged();
             }
         }
-        
-        public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; }
+
+        #endregion
+
+        #region View Models модальных окон
+
+        public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
+        public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
+
+        #endregion
+
+        #region Команды основного меню
+
+        public ICommand OpenAutomaticConnectingCommand { get; }
         public ICommand OpenManualConnectingCommand { get; }
         public ICommand DisconnectCommand { get; }
-        public ICommand OpenAutomaticlyConnectingCommand { get; }
+        public ICommand SettingsCommand { get; }
+
+        #endregion
+
+        #region Парметры соединения с сервером
+
+        private string _ipAddress;
+
+        public String IpAddress
+        {
+            get => _ipAddress;
+            set
+            {
+                _ipAddress = value;
+                OnPropertyChanged();
+            }
+        }
+        public SolidColorBrush ConnectionStatus { get; set; }
+
+        #endregion
 
         public MainWindowViewModel() 
         {
+            //Геофизические параметры заполнены для примера
             InfoBlockList = [
                 new ("Высота блока", "-", "м"),
                 new ("Глубина долота", "-", "м"),
@@ -95,17 +147,52 @@ namespace RFD.ViewModels
             ];
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
-
-            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
-            ManualConnectionDialogViewModel.IsOpenAction += OpenCloseManualConnecting;
             
-            OpenAutomaticlyConnectingCommand = new RelayCommand(() => IsAutomaticlyConnectingOpen = true,
-                () => !IsModalWindowOpen);
-            OpenManualConnectingCommand = new RelayCommand(() => IsManualConnectingOpen = true,
-                () => !IsModalWindowOpen);
+            ConnectionStatus = SolidColorBrush.Parse("#00b300");
+            
+            //Команды основного меню
+            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
+            OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
         }
 
-        public void OpenCloseManualConnecting(bool value)
+        /*Метод для открытия ручного окна соединения*/
+        public void OpenManualConnecting()
+        {
+            //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
+            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
+            //Добавляем триггер который проверяет что происходит во время ручного подключения
+            ManualConnectionDialogViewModel.IsOpenAction += TriggerCloseManualConnecting;
+            
+            //В DataTemplate передаем модальное окно для его отображения
+            CurrentUserControl = new ManualConnectionDialog();
+            
+            //Указываем что параметр открото ли окно ручного соединения равно правде
+            IsManualConnectingOpen = true;
+        }
+        
+        /*Метод для открытия автоматического окна соединения*/
+        public void OpenAutomaticConnecting()
+        {
+            //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
+            AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel();
+            //Добавляем триггер который проверяет что происходит во время ручного подключения
+            AutomaticConnectionDialogViewModel.IsOpenAction += TriggerCloseAutomaticConnecting;
+            
+            //В DataTemplate передаем модальное окно для его отображения
+            CurrentUserControl = new AutomaticConnectingDialog();
+            
+            //Указываем что параметр открото ли окно ручного соединения равно правде
+            IsAutomaticConnectingOpen = true;
+        }
+
+        /*Тригер для отслеживания статуса закрытия ручного окна соединения*/
+        public void TriggerCloseManualConnecting(bool value)
+        {
+            IsManualConnectingOpen = value;
+        }
+        
+        /*Тригер для отслеживания статуса закрытия автоматического окна соединения*/
+        public void TriggerCloseAutomaticConnecting(bool value)
         {
             IsManualConnectingOpen = value;
         }

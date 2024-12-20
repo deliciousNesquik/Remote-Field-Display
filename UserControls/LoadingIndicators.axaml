@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="Themes/Arc.axaml" />
+        <ResourceInclude Source="Themes/Arcs.axaml" />
+        <ResourceInclude Source="Themes/ArcsRing.axaml" />
+        <ResourceInclude Source="Themes/DoubleBounce.axaml" />
+        <ResourceInclude Source="Themes/FlipPlane.axaml" />
+        <ResourceInclude Source="Themes/Pulse.axaml" />
+        <ResourceInclude Source="Themes/Ring.axaml" />
+        <ResourceInclude Source="Themes/ThreeDots.axaml" />
+        <ResourceInclude Source="Themes/Wave.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
