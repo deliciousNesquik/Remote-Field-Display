@@ -6,6 +6,7 @@
         xmlns:controls="using:RFD.Controls"
         xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
+        xmlns:converters="using:RFD.Converters"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -16,15 +17,9 @@
 	<Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
-	
-	<!-- Определение LinearGradientBrush -->
-	<!--<Window.Background>
-		<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-			<GradientStop Color="{DynamicResource BackgroundColor01}" Offset="0" />
-			<GradientStop Color="{DynamicResource BackgroundColor02}" Offset="1" />
-			<GradientStop Color="{DynamicResource BackgroundColor03}" Offset="2" />
-		</LinearGradientBrush>
-	</Window.Background>-->
+	<Window.Resources>
+		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
+	</Window.Resources>
 	
 	<Grid RowDefinitions="*" ColumnDefinitions="*">
 		
@@ -38,8 +33,6 @@
 			
 			<!--DataTemplate для всех модальных окон-->
 			<ContentControl Content="{Binding CurrentUserControl}">
-				
-				
 				<ContentControl.DataTemplates>
 					<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
 						<usercontrols:AutomaticConnectingDialog DataContext="AutomaticConnectingDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -70,12 +63,10 @@
 					<MenuItem Header="Настройки" Command="{Binding SettingsCommand}"/>
 				</Menu>
 				
-				<usercontrols:ConnectionControl DataContext="{Binding ConnectionControlViewModel}"></usercontrols:ConnectionControl>
-				<!--Статус подключения и ip адрес-->
-				<!--<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-					<Label Content="{Binding IpAddress, StringFormat={}IP (Адрес): {0}}" VerticalAlignment="Center"/>
-					<Ellipse Fill="{Binding ConnectionStatus}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
-				</StackPanel>-->
+				<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+					<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" VerticalAlignment="Center"/>
+					<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+				</StackPanel>
 				
 			</DockPanel>
 			<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>

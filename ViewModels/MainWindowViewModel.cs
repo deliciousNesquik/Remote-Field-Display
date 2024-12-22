@@ -98,7 +98,6 @@ namespace RFD.ViewModels
 
         public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
         public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
-        
         public ConnectionControlViewModel ConnectionControlViewModel { get; set; }
 
         #endregion
@@ -115,7 +114,6 @@ namespace RFD.ViewModels
         #region Переменные: Параметры соединения с сервером
 
         private string _ipAddress;
-
         public String IpAddress
         {
             get => _ipAddress;
@@ -125,10 +123,27 @@ namespace RFD.ViewModels
                 OnPropertyChanged();
             }
         }
-        public SolidColorBrush ConnectionStatus { get; set; }
+
+        private bool _connectionStatus;
+        public bool ConnectionStatus
+        {
+            get => _connectionStatus;
+            set
+            {
+                _connectionStatus = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
+        #region Переменные: Для связи между App.xaml.cs и текущим файлом
+
+        private RFD.App Model => App.Current as RFD.App;
+        //public bool IsConnected => Model.Connected;
+        //public string CurrentIpAddress => Model.CurrentIpAddress;
+        #endregion
+        
         public MainWindowViewModel() 
         {
             //Геофизические параметры заполнены для примера
@@ -149,9 +164,8 @@ namespace RFD.ViewModels
             ];
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
-            
-            //ConnectionStatus = SolidColorBrush.Parse("#00b300");
-            ConnectionControlViewModel = ConnectionControlViewModel.Current;
+
+            App.ConnectionUpdated += Update;
             
             //Команды основного меню
             OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
@@ -189,7 +203,6 @@ namespace RFD.ViewModels
             //Указываем что параметр открото ли окно ручного соединения равно правде
             IsAutomaticConnectingOpen = true;
         }
-
         #endregion
 
         #region Методы: Триггеры на закрытие окон соединения с сервером
@@ -204,6 +217,28 @@ namespace RFD.ViewModels
         public void TriggerCloseAutomaticConnecting(bool value)
         {
             IsManualConnectingOpen = value;
+        }
+
+        #endregion
+
+        #region Методы: Методы для соединения с сервером
+        public void ManualConnect()
+        {
+            //    Model.Connect(ManualConnectAddress);
+            //    Update();
+        }
+        public void AutoConnect()
+        {
+            if (Model != null) Model.AutoConnect();
+        }
+        public void Disconnect()
+        {
+            if (Model != null) Model.Disconnect();
+        }
+        public void Update(bool status)
+        {
+            IpAddress = Model.CurrentIpAddress;
+            ConnectionStatus = Model.Connected;
         }
 
         #endregion

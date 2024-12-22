@@ -31,15 +31,11 @@ namespace RFD.ViewModels
             var pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
             if (Regex.IsMatch(IpAddress, pattern))
             {
-                //TODO
-                //Подключение к серверу
-                
                 IsOpenAction?.Invoke(false);
             }
         }
         private void Cancel()
         {
-            Console.WriteLine("Cancel = " + false);
             IsOpenAction?.Invoke(false);
         }
         

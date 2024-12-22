@@ -6,10 +6,12 @@ using RFD.Views;
 using Net;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -19,6 +21,8 @@ namespace RFD
 {
     public partial class App : Application
     {
+        public static event Action<bool> ConnectionUpdated;
+        
         private Client _client;
         private ServerListener _listener;
         private bool _needAutoReconnect = true;
@@ -76,7 +80,8 @@ namespace RFD
 
             _client.Address = e.Server.Address;
             _client.Connect();
-            ConnectionControlViewModel.Current.Update();
+            //ConnectionControlViewModel.Current.Update();
+            ConnectionUpdated?.Invoke(true);
             Console.WriteLine("Connected to " + _client.Address.ToString());
         }
 
@@ -100,7 +105,8 @@ namespace RFD
         private void Client_Disconnected(object sender, EventArgs e)
         {
             Console.WriteLine("Disconnected");
-            ConnectionControlViewModel.Current.Update();
+            ConnectionUpdated?.Invoke(true);
+            //ConnectionControlViewModel.Current.Update();
             if (_needAutoReconnect)
             {
                 _cancelTokenSource = new CancellationTokenSource();
@@ -111,7 +117,8 @@ namespace RFD
                     while (!_token.IsCancellationRequested && !_client.Connected)
                     {
                         Reconnect(address);
-                        ConnectionControlViewModel.Current.Update();
+                        ConnectionUpdated?.Invoke(true);
+                        //ConnectionControlViewModel.Current.Update();
                     }
                 });
                 Task.Factory.StartNew(action, _token);
@@ -120,7 +127,8 @@ namespace RFD
 
         private void _client_ConnectedStatusChanged(object sender, EventArgs e)
         {
-            ConnectionControlViewModel.Current.Update();
+            ConnectionUpdated?.Invoke(true);
+            //ConnectionControlViewModel.Current.Update();
         }
 
         private Task AutoConnectAsync()
@@ -202,6 +210,13 @@ namespace RFD
 
             if (_client != null && _client.Connected)
                 _client.Disconnect();
+        }
+        
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
