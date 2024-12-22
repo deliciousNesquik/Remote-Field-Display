@@ -28,6 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Практика\NPFGEO.LWD.Net\NPFGEO.LWD.Net.csproj" />
+    <ProjectReference Include="..\Net\Net.csproj" />
   </ItemGroup>
 </Project>

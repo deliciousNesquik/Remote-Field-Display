@@ -11,7 +11,7 @@
         <vm:ManualConnectionDialogViewModel/>
     </Design.DataContext>
     
-    <Border Background="White" Padding="15" Width="350" Height="250">
+    <Border BorderBrush="Gray" BorderThickness="1" Background="White" Padding="15" Width="350" Height="250">
         <Grid>
             <TextBlock Text="Ручное подключение" VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Left" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,10"/>
             

@@ -17,7 +17,7 @@ namespace RFD.ViewModels
     public partial class MainWindowViewModel : INotifyPropertyChanged
     {
 
-        #region Геофизические параметры
+        #region Переменные: Геофизические параметры
 
         public ObservableCollection<InfoBlock> InfoBlockList { get; private set; }
         public ObservableCollection<InfoStatus> InfoStatusList { get; private set; }
@@ -26,7 +26,7 @@ namespace RFD.ViewModels
 
         #endregion
 
-        #region Параметры отвечающие за работу модальных окон поверх главного окна
+        #region Переменные: Параметры отвечающие за работу модальных окон поверх главного окна
 
         private UserControl _currentUserControl;
         public UserControl CurrentUserControl
@@ -94,14 +94,16 @@ namespace RFD.ViewModels
 
         #endregion
 
-        #region View Models модальных окон
+        #region Переменные: View Models модальных окон
 
         public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
         public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
+        
+        public ConnectionControlViewModel ConnectionControlViewModel { get; set; }
 
         #endregion
 
-        #region Команды основного меню
+        #region Переменные: Команды основного меню
 
         public ICommand OpenAutomaticConnectingCommand { get; }
         public ICommand OpenManualConnectingCommand { get; }
@@ -110,7 +112,7 @@ namespace RFD.ViewModels
 
         #endregion
 
-        #region Парметры соединения с сервером
+        #region Переменные: Параметры соединения с сервером
 
         private string _ipAddress;
 
@@ -148,12 +150,15 @@ namespace RFD.ViewModels
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
             
-            ConnectionStatus = SolidColorBrush.Parse("#00b300");
+            //ConnectionStatus = SolidColorBrush.Parse("#00b300");
+            ConnectionControlViewModel = ConnectionControlViewModel.Current;
             
             //Команды основного меню
             OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
             OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
         }
+
+        #region Методы: Методы для открытия окон соединения с сервером
 
         /*Метод для открытия ручного окна соединения*/
         public void OpenManualConnecting()
@@ -185,6 +190,10 @@ namespace RFD.ViewModels
             IsAutomaticConnectingOpen = true;
         }
 
+        #endregion
+
+        #region Методы: Триггеры на закрытие окон соединения с сервером
+
         /*Тригер для отслеживания статуса закрытия ручного окна соединения*/
         public void TriggerCloseManualConnecting(bool value)
         {
@@ -196,11 +205,17 @@ namespace RFD.ViewModels
         {
             IsManualConnectingOpen = value;
         }
-        
+
+        #endregion
+
+        #region Доп. методы
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
     }
 }
