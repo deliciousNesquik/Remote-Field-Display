@@ -12,6 +12,9 @@ namespace RFD.ViewModels
     {
         public static event Action<bool> IsOpenAction;
         
+        #region Переменные: Для связи между App.xaml.cs и текущим файлом
+        private RFD.App Model => App.Current as RFD.App;
+        #endregion
         public string IpAddress { get; set; }
 
         public ICommand ConfirmCommand { get; }
@@ -31,7 +34,10 @@ namespace RFD.ViewModels
             var pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
             if (Regex.IsMatch(IpAddress, pattern))
             {
-                IsOpenAction?.Invoke(false);
+                if (ManualConnect())
+                {
+                    IsOpenAction?.Invoke(false);
+                }
             }
         }
         private void Cancel()
@@ -39,6 +45,17 @@ namespace RFD.ViewModels
             IsOpenAction?.Invoke(false);
         }
         
+        public bool ManualConnect()
+        {
+            if (Model.Connect(IpAddress))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

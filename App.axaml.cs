@@ -22,6 +22,7 @@ namespace RFD
     public partial class App : Application
     {
         public static event Action<bool> ConnectionUpdated;
+        public static event Action<bool> AutomaticConnect;
         
         private Client _client;
         private ServerListener _listener;
@@ -156,7 +157,7 @@ namespace RFD
             _needAutoReconnect = true;
         }
 
-        public void Connect(string address)
+        public bool Connect(string address)
         {
             _needAutoReconnect = false;
             try
@@ -172,11 +173,13 @@ namespace RFD
                 _client.Address = System.Net.IPAddress.Parse(address);
                 _client.Connect();
                 Console.WriteLine("Connected to " + _client.Address.ToString());
+                return true;
             }
             catch (Exception exc)
             {
                 Console.WriteLine(exc);
                 Console.WriteLine("Подключение не удалось");
+                return false;
             }
             _needAutoReconnect = true;
         }

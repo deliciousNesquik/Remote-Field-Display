@@ -98,7 +98,6 @@ namespace RFD.ViewModels
 
         public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
         public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
-        public ConnectionControlViewModel ConnectionControlViewModel { get; set; }
 
         #endregion
 
@@ -138,10 +137,7 @@ namespace RFD.ViewModels
         #endregion
 
         #region Переменные: Для связи между App.xaml.cs и текущим файлом
-
         private RFD.App Model => App.Current as RFD.App;
-        //public bool IsConnected => Model.Connected;
-        //public string CurrentIpAddress => Model.CurrentIpAddress;
         #endregion
         
         public MainWindowViewModel() 
@@ -170,6 +166,7 @@ namespace RFD.ViewModels
             //Команды основного меню
             OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
             OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
+            DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
         }
 
         #region Методы: Методы для открытия окон соединения с сервером
@@ -211,26 +208,19 @@ namespace RFD.ViewModels
         public void TriggerCloseManualConnecting(bool value)
         {
             IsManualConnectingOpen = value;
+            Update(true);
         }
         
         /*Тригер для отслеживания статуса закрытия автоматического окна соединения*/
         public void TriggerCloseAutomaticConnecting(bool value)
         {
-            IsManualConnectingOpen = value;
+            IsAutomaticConnectingOpen = value;
+            Update(true);
         }
 
         #endregion
 
         #region Методы: Методы для соединения с сервером
-        public void ManualConnect()
-        {
-            //    Model.Connect(ManualConnectAddress);
-            //    Update();
-        }
-        public void AutoConnect()
-        {
-            if (Model != null) Model.AutoConnect();
-        }
         public void Disconnect()
         {
             if (Model != null) Model.Disconnect();
@@ -244,7 +234,6 @@ namespace RFD.ViewModels
         #endregion
 
         #region Доп. методы
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
