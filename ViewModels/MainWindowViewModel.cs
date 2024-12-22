@@ -161,7 +161,7 @@ namespace RFD.ViewModels
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
 
-            App.ConnectionUpdated += Update;
+            App.ConnectionUpdated += UpdateConnecting;
             
             //Команды основного меню
             OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
@@ -208,14 +208,14 @@ namespace RFD.ViewModels
         public void TriggerCloseManualConnecting(bool value)
         {
             IsManualConnectingOpen = value;
-            Update(true);
+            UpdateConnecting(true);
         }
         
         /*Тригер для отслеживания статуса закрытия автоматического окна соединения*/
         public void TriggerCloseAutomaticConnecting(bool value)
         {
             IsAutomaticConnectingOpen = value;
-            Update(true);
+            UpdateConnecting(true);
         }
 
         #endregion
@@ -225,12 +225,11 @@ namespace RFD.ViewModels
         {
             if (Model != null) Model.Disconnect();
         }
-        public void Update(bool status)
+        public void UpdateConnecting(bool status)
         {
             IpAddress = Model.CurrentIpAddress;
             ConnectionStatus = Model.Connected;
         }
-
         #endregion
 
         #region Доп. методы
