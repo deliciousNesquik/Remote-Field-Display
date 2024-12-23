@@ -207,12 +207,19 @@ namespace RFD
 
         public void Disconnect()
         {
-            //Logger.Info("Disconnected");
+            //TODO
+            //Реализовать нормальное отключение пользователя от ip-адреса
+            //чтобы при повторном подключении не вылетала ошибка что порт уже занят
+            
             _needAutoReconnect = false;
             _listener.Stop();
 
             if (_client != null && _client.Connected)
+            {
+                Console.WriteLine("Application disconnect to server " + "{_client.Connected: " + _client.Connected + "}");
                 _client.Disconnect();
+            }
+                
         }
         
         

@@ -142,30 +142,16 @@ namespace RFD.ViewModels
         
         public MainWindowViewModel() 
         {
-            //Геофизические параметры заполнены для примера
-            InfoBlockList = [
-                new ("Высота блока", "-", "м"),
-                new ("Глубина долота", "-", "м"),
-                new ("Текущий забой", "-", "м"),
-                new ("TVD", "-", "м"),
-                new ("Расстояние до забоя", "-", "м"),
-                new ("Rop средний", "-", "м/ч"),
-                new ("Зенит", "-", "°"),
-                new ("Азимут", "-", "°"),
-            ];
-            InfoStatusList = [
-                new ("Клинья", ""),
-                new ("Насос", ""),
-                new ("Забой", ""),
-            ];
+            Console.WriteLine("MainWindow constructor initialiset | component called: " + this);
+            
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
 
             App.ConnectionUpdated += UpdateConnecting;
             
             //Команды основного меню
-            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
-            OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
+            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
+            OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
             DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
         }
 
@@ -174,6 +160,8 @@ namespace RFD.ViewModels
         /*Метод для открытия ручного окна соединения*/
         public void OpenManualConnecting()
         {
+            Console.WriteLine("User open manual connecting");
+            
             //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
             ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
             //Добавляем триггер который проверяет что происходит во время ручного подключения
@@ -189,6 +177,8 @@ namespace RFD.ViewModels
         /*Метод для открытия автоматического окна соединения*/
         public void OpenAutomaticConnecting()
         {
+            Console.WriteLine("User open automatic connecting");
+            
             //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
             AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel();
             //Добавляем триггер который проверяет что происходит во время ручного подключения
@@ -207,6 +197,7 @@ namespace RFD.ViewModels
         /*Тригер для отслеживания статуса закрытия ручного окна соединения*/
         public void TriggerCloseManualConnecting(bool value)
         {
+            Console.WriteLine("User close manual connecting");
             IsManualConnectingOpen = value;
             UpdateConnecting(true);
         }
@@ -214,6 +205,7 @@ namespace RFD.ViewModels
         /*Тригер для отслеживания статуса закрытия автоматического окна соединения*/
         public void TriggerCloseAutomaticConnecting(bool value)
         {
+            Console.WriteLine("User close automatic connecting");
             IsAutomaticConnectingOpen = value;
             UpdateConnecting(true);
         }
@@ -223,12 +215,44 @@ namespace RFD.ViewModels
         #region Методы: Методы для соединения с сервером
         public void Disconnect()
         {
-            if (Model != null) Model.Disconnect();
+            Console.WriteLine("User disconnect from server");
+            Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
+            Console.WriteLine("Info block list count items: " + InfoBlockList.Count);
+            InfoStatusList.Clear();
+            InfoBlockList.Clear();
+            
+            Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
+            Console.WriteLine("Info block list count items: " + InfoBlockList.Count);
+            if (Model != null)
+            {
+                Model.Disconnect();
+            }
         }
         public void UpdateConnecting(bool status)
         {
+            Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + Model.Connected + "}");
             IpAddress = Model.CurrentIpAddress;
             ConnectionStatus = Model.Connected;
+
+            if (Model.Connected)
+            {
+                //Геофизические параметры заполнены для примера
+                InfoBlockList = [
+                    new ("Высота блока", "-", "м"),
+                    new ("Глубина долота", "-", "м"),
+                    new ("Текущий забой", "-", "м"),
+                    new ("TVD", "-", "м"),
+                    new ("Расстояние до забоя", "-", "м"),
+                    new ("Rop средний", "-", "м/ч"),
+                    new ("Зенит", "-", "°"),
+                    new ("Азимут", "-", "°"),
+                ];
+                InfoStatusList = [
+                    new ("Клинья", ""),
+                    new ("Насос", ""),
+                    new ("Забой", ""),
+                ];
+            }
         }
         #endregion
 
