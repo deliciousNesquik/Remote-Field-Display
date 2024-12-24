@@ -3,12 +3,12 @@
     public class InfoStatus
     {
         public string Header { get; set; }
-        public string Status { get; set; }
+        public bool Status { get; set; }
 
-        public InfoStatus(string _Header, string _Status)
+        public InfoStatus(string header, bool status)
         {
-            Header = _Header;
-            Status = _Status;
+            Header = header;
+            Status = status;
         }
     }
 }

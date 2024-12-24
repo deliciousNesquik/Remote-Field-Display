@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NPFGEO.LWD.Net;
 using RFD.Models;
 using RFD.UserControls;
 using ReactiveUI;
@@ -16,7 +17,6 @@ namespace RFD.ViewModels
 {
     public partial class MainWindowViewModel : INotifyPropertyChanged
     {
-
         #region Переменные: Геофизические параметры
 
         public ObservableCollection<InfoBlock> InfoBlockList { get; private set; }
@@ -144,10 +144,28 @@ namespace RFD.ViewModels
         {
             Console.WriteLine("MainWindow constructor initialiset | component called: " + this);
             
+            //Геофизические параметры заполнены для примера
+            InfoBlockList = [
+                new ("Высота блока", "-", "м"),
+                new ("Глубина долота", "-", "м"),
+                new ("Текущий забой", "-", "м"),
+                new ("TVD", "-", "м"),
+                new ("Расстояние до забоя", "-", "м"),
+                new ("Rop средний", "-", "м/ч"),
+                new ("Зенит", "-", "°"),
+                new ("Азимут", "-", "°"),
+            ];
+            InfoStatusList = [
+                new ("Клинья", false),
+                new ("Насос", false),
+                new ("Забой", false),
+            ];
+            
             MagneticDeclination = 0.00;
             ToolfaceOffset = 0.00;
 
             App.ConnectionUpdated += UpdateConnecting;
+            App.SettingsUpdated += SetSettings;
             
             //Команды основного меню
             OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
@@ -234,26 +252,66 @@ namespace RFD.ViewModels
             IpAddress = Model.CurrentIpAddress;
             ConnectionStatus = Model.Connected;
 
-            if (Model.Connected)
+            /*if (Model.Connected)
             {
-                //Геофизические параметры заполнены для примера
-                InfoBlockList = [
-                    new ("Высота блока", "-", "м"),
-                    new ("Глубина долота", "-", "м"),
-                    new ("Текущий забой", "-", "м"),
-                    new ("TVD", "-", "м"),
-                    new ("Расстояние до забоя", "-", "м"),
-                    new ("Rop средний", "-", "м/ч"),
-                    new ("Зенит", "-", "°"),
-                    new ("Азимут", "-", "°"),
-                ];
-                InfoStatusList = [
-                    new ("Клинья", ""),
-                    new ("Насос", ""),
-                    new ("Забой", ""),
-                ];
-            }
+                
+            }*/
         }
+        #endregion
+        
+        #region Методы для получения данных из Genesis LWD
+
+        public void SetSettings(ReceiveSettingsEventArgs e)
+        {
+
+            Console.WriteLine("SetSettings ZOV");
+            InfoBlockList.Clear();
+            InfoStatusList.Clear();
+            MagneticDeclination = 0.0;
+            ToolfaceOffset = 0.0;
+            
+            MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
+            ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
+            //add 
+            //booIndicators - красные индикаторы
+            
+            foreach (var flag in e.Settings.Statuses)
+            {
+                Console.WriteLine(flag.ToString());
+                InfoStatusList.Add(Convert(flag));
+
+            }
+
+            foreach (var flag in e.Settings.Parameters)
+            {
+                Console.WriteLine("parameter " + flag.ToString());
+                InfoBlockList.Add(Convert(flag));
+            }
+            /*foreach (var param in e.Settings.Parameters)
+                Parameters.Add(Convert(param));*/
+
+        }
+        
+        
+        
+        static InfoStatus Convert(StatusInfo info)
+        {
+            return new InfoStatus(info.Name.ToString(), false);
+        }
+
+        /*static Field Convert(FlagInfo info)
+        {
+            Parameter<bool> flag = new Parameter<bool>();
+            flag.Caption = info.Name;
+            flag.Value = false;
+            return flag;
+        }*/
+
+        static InfoBlock Convert(ParameterInfo info)
+        {
+            return new InfoBlock(info.Name.ToString(), "-999", info.Units.ToString());
+        }
+
         #endregion
 
         #region Доп. методы

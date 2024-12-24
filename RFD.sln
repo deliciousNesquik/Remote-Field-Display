@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFD", "RFD.csproj", "{4CCAC41B-B3DE-4340-A47C-94476FE1C4ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net", "..\Net\Net.csproj", "{31003D62-6F80-4610-BD04-114805B2F985}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPFGEO.LWD.Net", "..\NPFGEO.LWD.Net\NPFGEO.LWD.Net.csproj", "{31003D62-6F80-4610-BD04-114805B2F985}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

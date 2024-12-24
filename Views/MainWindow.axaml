@@ -10,8 +10,11 @@
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="RFD Информация о бурении"
-        Background="{DynamicResource GradientBackground}">
+        Background="{DynamicResource GradientBackground}"
+        
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
 	
 	<!--Указывавется для designer binding-->
 	<Design.DataContext>
@@ -21,102 +24,133 @@
 		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
 	</Window.Resources>
 	
-	<Grid RowDefinitions="*" ColumnDefinitions="*">
-		
-		<!--Затенение экрана при открытии различных модальных окон поверх главного-->
-		<Border Name="BlackoutWindow"
-		        IsVisible="{Binding IsModalWindowOpen}"
-		        Background="#80000000"
-		        ZIndex="1000"
-		        HorizontalAlignment="Stretch"
-		        VerticalAlignment="Stretch">
+	
+	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="0">
+		<Grid RowDefinitions="Auto, *">
 			
-			<!--DataTemplate для всех модальных окон-->
-			<ContentControl Content="{Binding CurrentUserControl}">
-				<ContentControl.DataTemplates>
-					<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
-						<usercontrols:AutomaticConnectingDialog DataContext="AutomaticConnectingDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</DataTemplate>
-					<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
-						<usercontrols:ManualConnectionDialog DataContext="ManualConnectionDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</DataTemplate>
-				</ContentControl.DataTemplates>
-			</ContentControl>
-		</Border>
-		
-		<!--Основное содержимое главного окна-->
-		<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
-			
-			<!--Блюр экрана при открытии различных модальных окон поверх главного-->
-			<Grid.Effect>
-				<BlurEffect Radius="{Binding BlurRadius}"/>
-			</Grid.Effect>
-			
-			<!--Блок меню-->
-			<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
-				<Menu DockPanel.Dock="Left">
-					<MenuItem Header="Подключение">
-						<MenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}"/>
-						<MenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
-						<MenuItem Header="Отключиться" Command="{Binding DisconnectCommand}"/>
-					</MenuItem>
-					<MenuItem Header="Настройки" Command="{Binding SettingsCommand}"/>
-				</Menu>
+			<!--Кастомная верхняя панель-->
+			<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}">
+				<!--Заголовок приложения-->
+				<Label Grid.Column="0" VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="10 0 0 0">RFD "Пульт бурильщика"</Label>
 				
-				<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-					<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" VerticalAlignment="Center"/>
-					<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
-				</StackPanel>
-				
-			</DockPanel>
-			<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
-			<!--Левая панель с графиком и парметрами бурения-->
-			<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
-				<!--График бурения-->
-				<Label Grid.Row="0" Content="Бурение:" FontWeight="Bold" FontSize="14"/>
-				<Label Grid.Row="0" Content="Нет данных" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-				<!--Магнитное склонение-->
-				<!--Смещение поверхности инструмента-->
-				<StackPanel Grid.Row="1">
-					<Label Content="Параметры бурения:" FontSize="14" FontWeight="Bold"/>
-					<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
-					<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
+				<!--Кнопки для управления приложением-->
+				<StackPanel Grid.Column="1" Orientation="Horizontal">
+					<Button Name="WindowMinimizeButton" Width="40" Height="30" Background="Transparent" Click="WindowMinimizeButton_OnClick">
+						<Svg Path="../Assets/window-minimize.svg"/>
+					</Button>
+
+					<!-- Разворачивание -->
+					<Button Name="WindowMaximizeButton" Width="40" Height="30" Background="Transparent" Click="WindowMaximizeButton_OnClick">
+						<Svg Path="../Assets/window-maximize.svg"/>
+					</Button>
+
+					<!-- Закрытие -->
+					<Button Name="WindowCloseButton" Classes="close" Width="40" Height="30" Background="Transparent" Click="WindowCloseButton_OnClick">
+						<Svg Path="../Assets/window-close.svg"/>
+					</Button>
 				</StackPanel>
 			</Grid>
-			<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
-				<!--Блок с информационными блоками-->
-				<StackPanel Grid.Row="0" Margin="0 20 0 0">
-					<Label Content="Информация о бурении:" FontWeight="Bold" FontSize="14"/>
-					<ItemsControl ItemsSource="{Binding InfoBlockList}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel Orientation="Horizontal"/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+			
+			<Grid Grid.Row="1" RowDefinitions="*" ColumnDefinitions="*">
+				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
+				<Border Name="BlackoutWindow"
+				        IsVisible="{Binding IsModalWindowOpen}"
+				        Background="#80000000"
+				        ZIndex="1000"
+				        HorizontalAlignment="Stretch"
+				        VerticalAlignment="Stretch">
+					
+					<!--DataTemplate для всех модальных окон-->
+					<ContentControl Content="{Binding CurrentUserControl}">
+						<ContentControl.DataTemplates>
+							<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
+								<usercontrols:AutomaticConnectingDialog DataContext="AutomaticConnectingDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</StackPanel>
-				<StackPanel Grid.Row="1">
-					<Label Content="Статусы бурения:" FontWeight="Bold" FontSize="14"/>
-					<!--Блок со статусами элементов буровой-->
-					<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel Orientation="Horizontal"/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<controls:InfoStatusBox Header="{Binding Header}" Margin="1"/>
+							<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
+								<usercontrols:ManualConnectionDialog DataContext="ManualConnectionDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</StackPanel>
+						</ContentControl.DataTemplates>
+					</ContentControl>
+				</Border>
+				
+				<!--Основное содержимое главного окна-->
+				<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
+					
+					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
+					<Grid.Effect>
+						<BlurEffect Radius="{Binding BlurRadius}"/>
+					</Grid.Effect>
+					
+					<!--Блок меню-->
+					<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
+						<Menu DockPanel.Dock="Left">
+							<MenuItem Header="Подключение">
+								<MenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}"/>
+								<MenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
+								<MenuItem Header="Отключиться" Command="{Binding DisconnectCommand}"/>
+							</MenuItem>
+							<MenuItem Header="Настройки" Command="{Binding SettingsCommand}"/>
+						</Menu>
+						
+						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" VerticalAlignment="Center"/>
+							<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+						</StackPanel>
+						
+					</DockPanel>
+					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+					<!--Левая панель с графиком и парметрами бурения-->
+					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
+						<!--График бурения-->
+						<Label Grid.Row="0" Content="Бурение:" FontWeight="Bold" FontSize="14"/>
+						<Label Grid.Row="0" Content="Нет данных" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+						<!--Магнитное склонение-->
+						<!--Смещение поверхности инструмента-->
+						<StackPanel Grid.Row="1">
+							<Label Content="Параметры бурения:" FontSize="14" FontWeight="Bold"/>
+							<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
+							<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
+						</StackPanel>
+					</Grid>
+					<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
+						<!--Блок с информационными блоками-->
+						<StackPanel Grid.Row="0" Margin="0 20 0 0">
+							<Label Content="Информация о бурении:" FontWeight="Bold" FontSize="14"/>
+							<ItemsControl ItemsSource="{Binding InfoBlockList}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Horizontal"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+						<StackPanel Grid.Row="1">
+							<Label Content="Статусы бурения:" FontWeight="Bold" FontSize="14"/>
+							<!--Блок со статусами элементов буровой-->
+							<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel Orientation="Horizontal"/>
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<controls:InfoStatusBox Header="{Binding Header}" Margin="1"/>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+						</StackPanel>
+					</Grid>
+				</Grid>
 			</Grid>
 		</Grid>
-	</Grid>
+	</Border>
+	
+	
+	
 </Window>

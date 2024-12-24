@@ -9,9 +9,17 @@
     </Application.DataTemplates>
   
     <Application.Styles>
+        <Style Selector="Button.close /template/ContentPresenter">
+            <Style Selector="^:pointerover">
+                <Setter Property="Background" Value="{DynamicResource WarningColor}"></Setter>
+            </Style>
+        </Style>
+        
         <FluentTheme/>
         <StyleInclude Source="avares://RFD/Controls/InfoLabelBox.axaml"/>
         <StyleInclude Source="avares://RFD/Controls/InfoStatusBox.axaml"/>
+        
+        
     </Application.Styles>
              
     <Application.Resources>
@@ -24,6 +32,11 @@
         <Color x:Key="BackgroundColor01">#858a86</Color>
         <Color x:Key="BackgroundColor02">#a6aab9</Color>
         <Color x:Key="BackgroundColor03">#ededed</Color>
+        <Color x:Key="FocusingColor">#3e66ad</Color>
+        <Color x:Key="CoverFocusingColor">#2d4a7d</Color>
+        <Color x:Key="WarningColor">#ff3333</Color>
+        <Color x:Key="SuccsessColor">#ff3333</Color>
+        
         
         <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="{StaticResource BackgroundColor01}" Offset="0" />

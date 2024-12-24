@@ -3,7 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using RFD.ViewModels;
 using RFD.Views;
-using Net;
+using NPFGEO.LWD.Net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +23,7 @@ namespace RFD
     {
         public static event Action<bool> ConnectionUpdated;
         public static event Action<bool> AutomaticConnect;
+        public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
         
         private Client _client;
         private ServerListener _listener;
@@ -88,11 +89,15 @@ namespace RFD
 
         private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
         {
+            Console.WriteLine("SettingsUpdated");
             Action action = () =>
             {
-                //NavigationPanelVM.Current.SetSettings(e.Settings);
+                Console.WriteLine("SettingsUpdatedAction");
+                SettingsUpdated?.Invoke(e);
             };
+            action();
             //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, action);
+            //Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
         }
 
         private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
