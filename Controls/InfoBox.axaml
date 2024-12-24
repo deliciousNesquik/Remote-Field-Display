@@ -2,23 +2,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:controls="using:RFD.Controls">
 
+	<!--Блок для отображения шаблона в дизайнере-->
 	<Design.PreviewWith>
-		<controls:InfoLabelBox/>
+		<controls:InfoBox/>
 	</Design.PreviewWith>
 
-	<Style Selector="controls|InfoLabelBox">
+	<!--Самостоятельный элемент для отображения информации-->
+	<Style Selector="controls|InfoBox">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Background="Transparent" BorderBrush="#778899" BorderThickness="1" Width="160" Height="115" CornerRadius="5">
+				<Border Background="Transparent" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Width="160" Height="115" CornerRadius="5">
 					<Grid>
 						<TextBlock Text="{TemplateBinding Title}" Padding="0 5 0 0" FontWeight="Medium" FontSize="18" TextWrapping="Wrap" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 						<Label Content="{TemplateBinding Content}" Padding="0 0 0 15" FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-						
 						<Label Content="{TemplateBinding Inscription}" Padding="0 0 5 5" FontSize="14" FontWeight="Medium" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 					</Grid>
 				</Border>
 			</ControlTemplate>
 		</Setter>
 	</Style>
-
 </Styles>

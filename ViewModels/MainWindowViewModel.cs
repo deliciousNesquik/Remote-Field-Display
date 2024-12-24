@@ -19,8 +19,8 @@ namespace RFD.ViewModels
     {
         #region Переменные: Геофизические параметры
 
-        public ObservableCollection<InfoBlock> InfoBlockList { get; private set; }
-        public ObservableCollection<InfoStatus> InfoStatusList { get; private set; }
+        public ObservableCollection<InfoBox> InfoBlockList { get; private set; }
+        public ObservableCollection<StatusBox> InfoStatusList { get; private set; }
         public double MagneticDeclination { get; private set; } 
         public double ToolfaceOffset { get; private set; } 
 
@@ -294,9 +294,9 @@ namespace RFD.ViewModels
         
         
         
-        static InfoStatus Convert(StatusInfo info)
+        static StatusBox Convert(StatusInfo info)
         {
-            return new InfoStatus(info.Name.ToString(), false);
+            return new StatusBox(info.Name.ToString(), false);
         }
 
         /*static Field Convert(FlagInfo info)
@@ -307,9 +307,9 @@ namespace RFD.ViewModels
             return flag;
         }*/
 
-        static InfoBlock Convert(ParameterInfo info)
+        static InfoBox Convert(ParameterInfo info)
         {
-            return new InfoBlock(info.Name.ToString(), "-999", info.Units.ToString());
+            return new InfoBox(info.Name.ToString(), "-999", info.Units.ToString());
         }
 
         #endregion

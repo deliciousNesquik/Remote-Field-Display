@@ -4,9 +4,13 @@
     <option name="projectPerEditor">
       <map>
         <entry key="App.axaml" value="RFD.csproj" />
+        <entry key="Assets/window-minimize.xaml" value="RFD.csproj" />
+        <entry key="Controls/ConditionBox.axaml" value="RFD.csproj" />
+        <entry key="Controls/InfoBox.axaml" value="RFD.csproj" />
         <entry key="Controls/InfoLabelBox.axaml" value="RFD.csproj" />
         <entry key="Controls/InfoStatusBox.axaml" value="RFD.csproj" />
         <entry key="Controls/PolarChart.axaml" value="RFD.csproj" />
+        <entry key="Controls/StatusBox.axaml" value="RFD.csproj" />
         <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ConnectionControl.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />

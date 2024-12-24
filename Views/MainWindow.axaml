@@ -35,21 +35,23 @@
 				
 				<!--Кнопки для управления приложением-->
 				<StackPanel Grid.Column="1" Orientation="Horizontal">
-					<Button Name="WindowMinimizeButton" Width="40" Height="30" Background="Transparent" Click="WindowMinimizeButton_OnClick">
+					<Button Name="WindowMinimizeButton" CornerRadius="0" Width="45" Height="30" Background="Transparent" Click="WindowMinimizeButton_OnClick">
 						<Svg Path="../Assets/window-minimize.svg"/>
 					</Button>
 
 					<!-- Разворачивание -->
-					<Button Name="WindowMaximizeButton" Width="40" Height="30" Background="Transparent" Click="WindowMaximizeButton_OnClick">
+					<Button Name="WindowMaximizeButton" CornerRadius="0" Width="45" Height="30" Background="Transparent" Click="WindowMaximizeButton_OnClick">
 						<Svg Path="../Assets/window-maximize.svg"/>
 					</Button>
 
 					<!-- Закрытие -->
-					<Button Name="WindowCloseButton" Classes="close" Width="40" Height="30" Background="Transparent" Click="WindowCloseButton_OnClick">
+					<Button Name="WindowCloseButton" CornerRadius="0" Classes="close" Width="45" Height="30" Background="Transparent" Click="WindowCloseButton_OnClick">
 						<Svg Path="../Assets/window-close.svg"/>
 					</Button>
 				</StackPanel>
 			</Grid>
+			
+			
 			
 			<Grid Grid.Row="1" RowDefinitions="*" ColumnDefinitions="*">
 				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
@@ -124,7 +126,7 @@
 								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<controls:InfoLabelBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+										<controls:InfoBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -140,7 +142,7 @@
 								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
 									<DataTemplate>
-										<controls:InfoStatusBox Header="{Binding Header}" Margin="1"/>
+										<controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" Margin="1"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
