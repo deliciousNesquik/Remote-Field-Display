@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 
@@ -11,9 +12,22 @@ namespace RFD.Converters
         {
             if (value is bool isConnected)
             {
-                return isConnected ? Brushes.Green : Brushes.Red;
+                // Определяем ключи для ресурсов
+                var resourceKey = isConnected ? "GreenColor" : "RedColor";
+
+                // Получаем текущие ресурсы приложения
+                if (Application.Current?.Resources.TryGetValue(resourceKey, out var resource) == true)
+                {
+                    if (resource is Color color)
+                    {
+                        return new SolidColorBrush(color);
+                    }
+                    return resource; // Если ресурс уже является кистью
+                }
             }
-            return Brushes.Gray; // Цвет по умолчанию
+
+            // Цвет по умолчанию, если ресурс не найден
+            return Brushes.Gray;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

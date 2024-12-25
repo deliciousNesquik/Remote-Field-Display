@@ -4,11 +4,11 @@ using RFD.Controls;
 
 namespace RFD.Controls;
 
-public class InfoLabelBox : TemplatedControl
+public class InfoBox : TemplatedControl
 {
-    public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<InfoLabelBox, string>(nameof(Title), "Текст");
-    public static readonly StyledProperty<string> ContentProperty = AvaloniaProperty.Register<InfoLabelBox, string>(nameof(Content), "—");
-    public static readonly StyledProperty<string> InscriptionProperty = AvaloniaProperty.Register<InfoLabelBox, string>(nameof(Inscription), "м");
+    public static readonly StyledProperty<string> TitleProperty = AvaloniaProperty.Register<InfoBox, string>(nameof(Title), "");
+    public static readonly StyledProperty<string> ContentProperty = AvaloniaProperty.Register<InfoBox, string>(nameof(Content), "");
+    public static readonly StyledProperty<string> InscriptionProperty = AvaloniaProperty.Register<InfoBox, string>(nameof(Inscription), "");
 
     public string Title
     {

@@ -1,4 +1,4 @@
-using System.Windows.Input;
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -10,15 +10,21 @@ namespace RFD.Views
 {
     public partial class MainWindow : Window
     {
+        private const int DragRegionHeight = 30; // Высота области для перетаскивания
+
         public MainWindow()
         {
             InitializeComponent();
             MainBorder.PointerPressed += MainBorder_PointerPressed;
-            
+
             DataContext = new MainWindowViewModel();
         }
 
-        private void WindowMinimizeButton_OnClick(object? sender, RoutedEventArgs e) { this.WindowState = WindowState.Minimized; }
+        private void WindowMinimizeButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
         private void WindowMaximizeButton_OnClick(object? sender, RoutedEventArgs e)
         {
             if (this.WindowState == WindowState.Maximized)
@@ -32,14 +38,26 @@ namespace RFD.Views
                 MainBorder.Margin = new Thickness(0, 5, 0, 0);
             }
         }
-        private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e) { this.Close(); }
+
+        private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         private void MainBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
             // Проверяем, что событие вызвано левой кнопкой мыши
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
-                // Инициируем перетаскивание окна
-                BeginMoveDrag(e);
+                // Получаем координаты точки нажатия относительно окна
+                var position = e.GetPosition(MainBorder);
+
+                // Проверяем, что точка находится в верхней части области MainBorder
+                if (position.Y <= DragRegionHeight)
+                {
+                    // Инициируем перетаскивание окна
+                    BeginMoveDrag(e);
+                }
             }
         }
     }

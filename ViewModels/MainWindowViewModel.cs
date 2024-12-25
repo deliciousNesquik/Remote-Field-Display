@@ -19,8 +19,8 @@ namespace RFD.ViewModels
     {
         #region Переменные: Геофизические параметры
 
-        public ObservableCollection<InfoBlock> InfoBlockList { get; private set; }
-        public ObservableCollection<InfoStatus> InfoStatusList { get; private set; }
+        public ObservableCollection<InfoBox> InfoBlockList { get; private set; }
+        public ObservableCollection<StatusBox> InfoStatusList { get; private set; }
         public double MagneticDeclination { get; private set; } 
         public double ToolfaceOffset { get; private set; } 
 
@@ -95,10 +95,14 @@ namespace RFD.ViewModels
         #endregion
 
         #region Переменные: View Models модальных окон
-
         public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
+        private Action<string> _tryConnect;
+        
+        private Action? _closeDialog;
+        private Action<bool> _statusConnect;
+        
         public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
-
+        private Action? _userCloseDialog;
         #endregion
 
         #region Переменные: Команды основного меню
@@ -113,7 +117,7 @@ namespace RFD.ViewModels
         #region Переменные: Параметры соединения с сервером
 
         private string _ipAddress;
-        public String IpAddress
+        public string IpAddress
         {
             get => _ipAddress;
             set
@@ -168,9 +172,9 @@ namespace RFD.ViewModels
             App.SettingsUpdated += SetSettings;
             
             //Команды основного меню
-            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
+            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(null, null), () => !IsModalWindowOpen && !ConnectionStatus);
             OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
-            DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
+            DisconnectCommand = new RelayCommand(() => Disconnect(), () => true);
         }
 
         #region Методы: Методы для открытия окон соединения с сервером
@@ -178,57 +182,73 @@ namespace RFD.ViewModels
         /*Метод для открытия ручного окна соединения*/
         public void OpenManualConnecting()
         {
-            Console.WriteLine("User open manual connecting");
+            /*Окно ручного подключения не имеет логики проверки, оно имеет только проверку на ввод данных и лишь просто вызывает триггеры для того чтобы
+             в основной логике приложения вызывались методы и выполнялось подключение
+             
+             App?.Current.ManualConnection(string IpAdress) возвращает bool значение которое огласит какой статус подключения*/
             
-            //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
-            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
-            //Добавляем триггер который проверяет что происходит во время ручного подключения
-            ManualConnectionDialogViewModel.IsOpenAction += TriggerCloseManualConnecting;
-            
-            //В DataTemplate передаем модальное окно для его отображения
-            CurrentUserControl = new ManualConnectionDialog();
-            
-            //Указываем что параметр открото ли окно ручного соединения равно правде
+            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel( this._tryConnect, this._statusConnect, this._closeDialog);
+            CurrentUserControl = new ManualConnectionDialog(ManualConnectionDialogViewModel);
             IsManualConnectingOpen = true;
+            this._tryConnect += ipadress =>
+            {
+                //TODO
+                /*Добавить проверки ручного подключения к серверу*/
+                this._statusConnect?.Invoke(true);
+            };
+            this._closeDialog += () =>
+            {
+                Console.WriteLine("MainWindow Close Dialog");
+                IsManualConnectingOpen = false;
+                UpdateConnecting();
+                CurrentUserControl = null;
+
+                this._tryConnect = null;
+                this._statusConnect = null;
+                this._closeDialog = null;
+
+            };
         }
         
         /*Метод для открытия автоматического окна соединения*/
-        public void OpenAutomaticConnecting()
+        public void OpenAutomaticConnecting(Action? userCloseDialog = null, Action<bool> connectionStatus = null)
         {
-            Console.WriteLine("User open automatic connecting");
-            
-            //Получаем view model ручного окна подключения для того чтобы отслеживать статус подключения
-            AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel();
-            //Добавляем триггер который проверяет что происходит во время ручного подключения
-            AutomaticConnectionDialogViewModel.IsOpenAction += TriggerCloseAutomaticConnecting;
-            
-            //В DataTemplate передаем модальное окно для его отображения
-            CurrentUserControl = new AutomaticConnectingDialog();
-            
-            //Указываем что параметр открото ли окно ручного соединения равно правде
-            IsAutomaticConnectingOpen = true;
+            if (connectionStatus == null && userCloseDialog == null)
+            {
+                //TODO
+                /*Создать в App.xaml.cs метод для автоматического соединения
+                  В аргументах должно принимать триггер на успешное или нет подключение
+                
+                  App?.Current.AutomaticConnection();
+                  AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel(userCloseDialog, connectionStatus, closeDialog);
+                 
+                  closeDialog += () => {
+                     IsAutomaticConnectingOpen = value;
+                     UpdateConnecting(true);
+                  }
+                 */
+            }
+            else if (connectionStatus != null)
+            {
+                AutomaticConnectionDialogViewModel =
+                    new AutomaticConnectionDialogViewModel(userCloseDialog, connectionStatus, this._closeDialog);
+                CurrentUserControl = new AutomaticConnectingDialog();
+                IsAutomaticConnectingOpen = true;
+
+                this._closeDialog += () =>
+                {
+                    IsAutomaticConnectingOpen = false;
+                    UpdateConnecting();
+                    CurrentUserControl = null;
+
+                    _userCloseDialog = null;
+                    _statusConnect = null;
+                    _closeDialog = null;
+                };
+            }
         }
         #endregion
-
-        #region Методы: Триггеры на закрытие окон соединения с сервером
-
-        /*Тригер для отслеживания статуса закрытия ручного окна соединения*/
-        public void TriggerCloseManualConnecting(bool value)
-        {
-            Console.WriteLine("User close manual connecting");
-            IsManualConnectingOpen = value;
-            UpdateConnecting(true);
-        }
         
-        /*Тригер для отслеживания статуса закрытия автоматического окна соединения*/
-        public void TriggerCloseAutomaticConnecting(bool value)
-        {
-            Console.WriteLine("User close automatic connecting");
-            IsAutomaticConnectingOpen = value;
-            UpdateConnecting(true);
-        }
-
-        #endregion
 
         #region Методы: Методы для соединения с сервером
         public void Disconnect()
@@ -246,7 +266,7 @@ namespace RFD.ViewModels
                 Model.Disconnect();
             }
         }
-        public void UpdateConnecting(bool status)
+        public void UpdateConnecting()
         {
             Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + Model.Connected + "}");
             IpAddress = Model.CurrentIpAddress;
@@ -294,9 +314,9 @@ namespace RFD.ViewModels
         
         
         
-        static InfoStatus Convert(StatusInfo info)
+        static StatusBox Convert(StatusInfo info)
         {
-            return new InfoStatus(info.Name.ToString(), false);
+            return new StatusBox(info.Name.ToString(), false);
         }
 
         /*static Field Convert(FlagInfo info)
@@ -307,9 +327,9 @@ namespace RFD.ViewModels
             return flag;
         }*/
 
-        static InfoBlock Convert(ParameterInfo info)
+        static InfoBox Convert(ParameterInfo info)
         {
-            return new InfoBlock(info.Name.ToString(), "-999", info.Units.ToString());
+            return new InfoBox(info.Name.ToString(), "-999", info.Units.ToString());
         }
 
         #endregion

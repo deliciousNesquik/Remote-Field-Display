@@ -1,0 +1,26 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:RFD.Controls"
+        xmlns:converters="using:RFD.Converters">
+    
+    <Design.PreviewWith>
+        <controls:ConditionBox Header="Axial.Asix" Condition="True"/>
+    </Design.PreviewWith>
+	
+    <Styles.Resources>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
+    </Styles.Resources>
+
+    <Style Selector="controls|ConditionBox">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Width="160" Height="50" CornerRadius="5">
+                    <Grid>
+                        <Label Content="{TemplateBinding Header}" FontWeight="Medium" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
