@@ -27,7 +27,6 @@
 	
 	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="0">
 		<Grid RowDefinitions="Auto, *">
-			
 			<!--Кастомная верхняя панель-->
 			<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}">
 				<!--Заголовок приложения-->
@@ -66,10 +65,10 @@
 					<ContentControl Content="{Binding CurrentUserControl}">
 						<ContentControl.DataTemplates>
 							<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
-								<usercontrols:AutomaticConnectingDialog DataContext="AutomaticConnectingDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								<usercontrols:AutomaticConnectingDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
 							<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
-								<usercontrols:ManualConnectionDialog DataContext="ManualConnectionDialogViewModel" Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								<usercontrols:ManualConnectionDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
 						</ContentControl.DataTemplates>
 					</ContentControl>

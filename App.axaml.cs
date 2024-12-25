@@ -21,7 +21,7 @@ namespace RFD
 {
     public partial class App : Application
     {
-        public static event Action<bool> ConnectionUpdated;
+        public static event Action? ConnectionUpdated;
         public static event Action<bool> AutomaticConnect;
         public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
         
@@ -45,6 +45,25 @@ namespace RFD
         }
         public override void Initialize()
         {
+            //TODO
+            //Сделать обработку тут
+            
+            /*
+             
+            Unhandled exception. System.Net.Sockets.SocketException (10048): ������ ����������� ������ ���� ������������� ������ ������ (��������/������� �����/����).
+            at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
+            at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
+            at System.Net.Sockets.Socket.Bind(EndPoint localEP)
+            at NPFGEO.LWD.Net.ServerListener.InitializeUdpClient() in D:\Programming\Study\��������� ������\NPFGEO\LWD\NPFGEO.LWD.Net\ServerListener.cs:line 78
+            at NPFGEO.LWD.Net.ServerListener.Start() in D:\Programming\Study\��������� ������\NPFGEO\LWD\NPFGEO.LWD.Net\ServerListener.cs:line 71
+            at RFD.App.Initialize() in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\App.axaml.cs:line 56
+            at Avalonia.AppBuilder.SetupUnsafe()
+            at Avalonia.AppBuilder.Setup()
+            at Avalonia.AppBuilder.SetupWithLifetime(IApplicationLifetime lifetime)
+            at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+            at RFD.Program.Main(String[] args) in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\Program.cs:line 13
+             */
+            
             _client = new Client();
             _client.ReceiveData += Client_ReceiveData;
             _client.ReceiveSettings += Client_ReceiveSettings;
@@ -83,7 +102,7 @@ namespace RFD
             _client.Address = e.Server.Address;
             _client.Connect();
             //ConnectionControlViewModel.Current.Update();
-            ConnectionUpdated?.Invoke(true);
+            ConnectionUpdated?.Invoke();
             Console.WriteLine("Connected to " + _client.Address.ToString());
         }
 
@@ -111,7 +130,7 @@ namespace RFD
         private void Client_Disconnected(object sender, EventArgs e)
         {
             Console.WriteLine("Disconnected");
-            ConnectionUpdated?.Invoke(true);
+            ConnectionUpdated?.Invoke();
             //ConnectionControlViewModel.Current.Update();
             if (_needAutoReconnect)
             {
@@ -123,7 +142,7 @@ namespace RFD
                     while (!_token.IsCancellationRequested && !_client.Connected)
                     {
                         Reconnect(address);
-                        ConnectionUpdated?.Invoke(true);
+                        ConnectionUpdated?.Invoke();
                         //ConnectionControlViewModel.Current.Update();
                     }
                 });
@@ -133,7 +152,7 @@ namespace RFD
 
         private void _client_ConnectedStatusChanged(object sender, EventArgs e)
         {
-            ConnectionUpdated?.Invoke(true);
+            ConnectionUpdated?.Invoke();
             //ConnectionControlViewModel.Current.Update();
         }
 

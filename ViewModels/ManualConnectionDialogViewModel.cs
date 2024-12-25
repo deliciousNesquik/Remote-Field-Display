@@ -10,51 +10,55 @@ namespace RFD.ViewModels
 {
     public class ManualConnectionDialogViewModel
     {
-        public static event Action<bool> IsOpenAction;
+        private Action? _closeDialog;
+        private Action<string> _tryConnect;
+        private Action<bool> _statusConnect;
         
-        #region Переменные: Для связи между App.xaml.cs и текущим файлом
-        private RFD.App Model => App.Current as RFD.App;
-        #endregion
         public string IpAddress { get; set; }
-
+        public bool IsConnected { get; set; }
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public ManualConnectionDialogViewModel()
+        public ManualConnectionDialogViewModel(Action<string> tryConnect, Action<bool> statusConnect, Action? closeDialog)
         {
-            ConfirmCommand = new RelayCommand(() => Confirm(), 
-                () => true);
+            this._tryConnect += ipadress =>
+            {
+                tryConnect?.Invoke(ipadress);
+            };
+            this._closeDialog += () =>
+            {
+                closeDialog?.Invoke();
+            };
+                
+            statusConnect += status =>
+            {
+                if (status)
+                {
+                    this.IsConnected = false;
+                    this.CloseDialog();
+                }
+            };
+
+            this.IsConnected = false;    
             
-            CancelCommand = new RelayCommand(() => Cancel(),
-                () => true);
+            ConfirmCommand = new RelayCommand(() => this.Confirm(), () => true);
+            CancelCommand = new RelayCommand(() => this.CloseDialog(), () => true);
         }
 
         private void Confirm()
         {
             var pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
-            if (Regex.IsMatch(IpAddress, pattern))
+            if (Regex.IsMatch(this.IpAddress, pattern))
             {
-                if (ManualConnect())
-                {
-                    IsOpenAction?.Invoke(false);
-                }
+                this._tryConnect.Invoke(this.IpAddress);
+                this.IsConnected = true;
             }
         }
-        private void Cancel()
+
+        private void CloseDialog()
         {
-            IsOpenAction?.Invoke(false);
-        }
-        
-        public bool ManualConnect()
-        {
-            if (Model.Connect(IpAddress))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            Console.WriteLine("CloseDialog");
+            _closeDialog?.Invoke();
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

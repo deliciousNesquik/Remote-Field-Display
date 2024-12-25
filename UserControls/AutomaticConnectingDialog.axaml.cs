@@ -10,6 +10,5 @@ public partial class AutomaticConnectingDialog : UserControl
     public AutomaticConnectingDialog()
     {
         InitializeComponent();
-        DataContext = new AutomaticConnectionDialogViewModel();
     }
 }
