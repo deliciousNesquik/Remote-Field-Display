@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using Avalonia.Threading;
 
 namespace RFD
 {
@@ -106,7 +107,7 @@ namespace RFD
             Console.WriteLine("Connected to " + _client.Address.ToString());
         }
 
-        private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+        /*private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
         {
             Console.WriteLine("SettingsUpdated");
             Action action = () =>
@@ -116,7 +117,24 @@ namespace RFD
             };
             action();
             //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, action);
-            //Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
+        }*/
+        
+        private readonly object _settingsLock = new object();
+
+        private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+        {
+            Console.WriteLine("SettingsUpdated");
+            Action action = () =>
+            {
+                Console.WriteLine("SettingsUpdatedAction");
+                lock (_settingsLock)
+                {
+                    SettingsUpdated?.Invoke(e);
+                }
+            };
+            action();
+            Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
         }
 
         private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)

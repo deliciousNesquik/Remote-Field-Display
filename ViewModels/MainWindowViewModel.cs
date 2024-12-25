@@ -297,19 +297,23 @@ namespace RFD.ViewModels
             
             foreach (var flag in e.Settings.Statuses)
             {
-                Console.WriteLine(flag.ToString());
+                Console.WriteLine("statuses name" + flag.Name.ToString());
                 InfoStatusList.Add(Convert(flag));
-
             }
 
-            foreach (var flag in e.Settings.Parameters)
+            /*foreach (var flag in e.Settings.ParameterInfo)
             {
-                Console.WriteLine("parameter " + flag.ToString());
+                Console.WriteLine("parameterInfo name " + flag.Name.ToString());
+                Console.WriteLine("parameterInfo float " + flag.Float.ToString());
+                Console.WriteLine("parameterInfo units " + flag.Units.ToString());
                 InfoBlockList.Add(Convert(flag));
-            }
-            /*foreach (var param in e.Settings.Parameters)
-                Parameters.Add(Convert(param));*/
+            }*/
 
+            /*foreach (var param in e.Settings.Params)
+            {
+                Console.WriteLine("parameter Name " + param.Name.ToString());
+                Console.WriteLine("parameter Value " + param.Value.ToString());
+            }*/
         }
         
         
