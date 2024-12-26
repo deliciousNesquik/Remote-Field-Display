@@ -18,6 +18,19 @@ namespace RFD.Views
             MainBorder.PointerPressed += MainBorder_PointerPressed;
 
             DataContext = new MainWindowViewModel();
+            
+            // Подписываемся на событие изменения состояния окна
+            this.GetObservable(WindowStateProperty).Subscribe(state =>
+            {
+                if (state == WindowState.Maximized)
+                {
+                    MainBorder.Margin = new Thickness(5, 5, 5, 5); // Добавляем отступы
+                }
+                else
+                {
+                    MainBorder.Margin = new Thickness(0, 0, 0, 0); // Убираем отступы
+                }
+            });
         }
 
         private void WindowMinimizeButton_OnClick(object? sender, RoutedEventArgs e)
@@ -35,13 +48,13 @@ namespace RFD.Views
             else
             {
                 this.WindowState = WindowState.Maximized;
-                MainBorder.Margin = new Thickness(0, 5, 0, 0);
+                MainBorder.Margin = new Thickness(5, 5, 5, 5);
             }
         }
 
         private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e)
         {
-            this.Close();
+            Environment.Exit(0);
         }
 
         private void MainBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -55,6 +68,22 @@ namespace RFD.Views
                 // Проверяем, что точка находится в верхней части области MainBorder
                 if (position.Y <= DragRegionHeight)
                 {
+                    // Если окно в полноэкранном режиме, возвращаем его в нормальный режим перед началом перетаскивания
+                    if (this.WindowState == WindowState.Maximized)
+                    {
+                        this.WindowState = WindowState.Normal;
+
+                        // Убираем отступы
+                        MainBorder.Margin = new Thickness(0, 0, 0, 0);
+
+                        // Пересчитываем координаты точки нажатия относительно нового размера окна
+                        var screenPosition = e.GetPosition(this);
+                        var newLeft = screenPosition.X - (this.Bounds.Width / 2);
+                        var newTop = screenPosition.Y - DragRegionHeight;
+
+                        this.Position = new PixelPoint((int)newLeft, (int)newTop);
+                    }
+
                     // Инициируем перетаскивание окна
                     BeginMoveDrag(e);
                 }

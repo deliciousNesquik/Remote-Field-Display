@@ -32,6 +32,8 @@
         <Color x:Key="BackgroundColor01">#858a86</Color>
         <Color x:Key="BackgroundColor02">#a6aab9</Color>
         <Color x:Key="BackgroundColor03">#ededed</Color>
+        <Color x:Key="ForegroundColor01">#101010</Color>
+        <Color x:Key="ForegroundColor02">#1B2046</Color>
         <Color x:Key="BorderColor">#778899</Color>
         <Color x:Key="FocusingColor">#3e66ad</Color>
         <Color x:Key="CoverFocusingColor">#2d4a7d</Color>

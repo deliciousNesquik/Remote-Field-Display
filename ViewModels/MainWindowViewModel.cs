@@ -164,7 +164,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
         OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
-        DisconnectCommand = new RelayCommand(() => Disconnect(), () => true);
+        DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
     }
 
     #region Методы: Методы для открытия окон соединения с сервером

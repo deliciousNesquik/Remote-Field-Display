@@ -25,8 +25,9 @@
 	</Window.Resources>
 	
 	
-	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="0">
+	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
 		<Grid RowDefinitions="Auto, *">
+			
 			<!--Кастомная верхняя панель-->
 			<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}">
 				<!--Заголовок приложения-->
@@ -85,12 +86,24 @@
 					<!--Блок меню-->
 					<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
 						<Menu DockPanel.Dock="Left">
-							<MenuItem Header="Подключение">
-								<MenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}"/>
-								<MenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
-								<MenuItem Header="Отключиться" Command="{Binding DisconnectCommand}"/>
+							<MenuItem Header="Подключение" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650">
+								<MenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Отключиться" Command="{Binding DisconnectCommand}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
 							</MenuItem>
-							<MenuItem Header="Настройки" Command="{Binding SettingsCommand}"/>
+							<MenuItem Header="Настройки" Command="{Binding SettingsCommand}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650"/>
+							
+							<MenuItem Header="Окна" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650">
+								<MenuItem Header="Мишень" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Информация" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Параметры" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Статусы" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="Состояния" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+							</MenuItem>
+							<MenuItem Header="Помощь" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650">
+								<MenuItem Header="Руководство пользователя" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+								<MenuItem Header="О приложении" Foreground="{DynamicResource ForegroundColor02}" FontWeight="500"/>
+							</MenuItem>
 						</Menu>
 						
 						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
