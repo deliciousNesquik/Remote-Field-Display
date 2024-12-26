@@ -11,9 +11,4 @@ public partial class ManualConnectionDialog : UserControl
     {
         InitializeComponent();
     }
-    public ManualConnectionDialog(ManualConnectionDialogViewModel viewModel)
-    {
-        InitializeComponent();
-        DataContext = viewModel;
-    }
 }

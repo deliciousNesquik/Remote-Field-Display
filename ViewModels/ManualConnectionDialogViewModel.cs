@@ -10,55 +10,55 @@ namespace RFD.ViewModels
 {
     public class ManualConnectionDialogViewModel
     {
-        private Action? _closeDialog;
-        private Action<string> _tryConnect;
-        private Action<bool> _statusConnect;
+        /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
+        public Action? CloseDialog;
         
-        public string IpAddress { get; set; }
-        public bool IsConnected { get; set; }
+        /// <summary>Триггер оповещает родителя о том, что диалоговое окно хочет выполнить попытку подключения</summary>
+        public Action<string> ConnectionAttempt;
+        
+        /// <summary>Триггер, который необходимо вызывать в родителе чтобы уведомить диалоговое окно о том что соединение успешно</summary>
+        public Action<bool> ConnectionStatus;
+        
+        public string FieldIpАddress { get; set; }
+        public bool IsActionInProgress { get; set; }
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public ManualConnectionDialogViewModel(Action<string> tryConnect, Action<bool> statusConnect, Action? closeDialog)
+        public ManualConnectionDialogViewModel()
         {
-            this._tryConnect += ipadress =>
-            {
-                tryConnect?.Invoke(ipadress);
-            };
-            this._closeDialog += () =>
-            {
-                closeDialog?.Invoke();
-            };
-                
-            statusConnect += status =>
-            {
-                if (status)
-                {
-                    this.IsConnected = false;
-                    this.CloseDialog();
-                }
-            };
+            IsActionInProgress = false;
 
-            this.IsConnected = false;    
+            ConnectionStatus += statusConnection =>
+            {
+                if (statusConnection) CloseDialog();
+            };
             
-            ConfirmCommand = new RelayCommand(() => this.Confirm(), () => true);
-            CancelCommand = new RelayCommand(() => this.CloseDialog(), () => true);
+            ConfirmCommand = new RelayCommand(() => this.Confirm(), () => !IsActionInProgress);
+            CancelCommand = new RelayCommand(() => this.Close(), () => !IsActionInProgress);
         }
-
         private void Confirm()
         {
-            var pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
-            if (Regex.IsMatch(this.IpAddress, pattern))
+            if (string.IsNullOrEmpty(this.FieldIpАddress))
             {
-                this._tryConnect.Invoke(this.IpAddress);
-                this.IsConnected = true;
+                return;
+            }
+
+            var pattern = @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
+            if (Regex.IsMatch(this.FieldIpАddress, pattern))
+            {
+                ConnectionAttempt?.Invoke(this.FieldIpАddress);
+                IsActionInProgress = true;
+            }
+            else
+            {
+                //Console.WriteLine("Invalid IP address format");
             }
         }
 
-        private void CloseDialog()
+        private void Close()
         {
-            Console.WriteLine("CloseDialog");
-            _closeDialog?.Invoke();
+            IsActionInProgress = false;
+            CloseDialog?.Invoke();
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

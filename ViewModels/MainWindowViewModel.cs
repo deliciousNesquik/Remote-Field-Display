@@ -96,13 +96,7 @@ namespace RFD.ViewModels
 
         #region Переменные: View Models модальных окон
         public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
-        private Action<string> _tryConnect;
-        
-        private Action? _closeDialog;
-        private Action<bool> _statusConnect;
-        
         public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
-        private Action? _userCloseDialog;
         #endregion
 
         #region Переменные: Команды основного меню
@@ -182,38 +176,31 @@ namespace RFD.ViewModels
         /*Метод для открытия ручного окна соединения*/
         public void OpenManualConnecting()
         {
-            /*Окно ручного подключения не имеет логики проверки, оно имеет только проверку на ввод данных и лишь просто вызывает триггеры для того чтобы
-             в основной логике приложения вызывались методы и выполнялось подключение
-             
-             App?.Current.ManualConnection(string IpAdress) возвращает bool значение которое огласит какой статус подключения*/
-            
-            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel( this._tryConnect, this._statusConnect, this._closeDialog);
-            CurrentUserControl = new ManualConnectionDialog(ManualConnectionDialogViewModel);
+            ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
+            CurrentUserControl = new ManualConnectionDialog()
+            {
+                DataContext = ManualConnectionDialogViewModel
+            };
             IsManualConnectingOpen = true;
-            this._tryConnect += ipadress =>
+
+            ManualConnectionDialogViewModel.ConnectionAttempt += ip =>
             {
                 //TODO
-                /*Добавить проверки ручного подключения к серверу*/
-                this._statusConnect?.Invoke(true);
+                //Добавить метод для передачи, проверки IP-адреса и подключение по нему
+                ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
             };
-            this._closeDialog += () =>
+            ManualConnectionDialogViewModel.CloseDialog += () =>
             {
-                Console.WriteLine("MainWindow Close Dialog");
                 IsManualConnectingOpen = false;
                 UpdateConnecting();
                 CurrentUserControl = null;
-
-                this._tryConnect = null;
-                this._statusConnect = null;
-                this._closeDialog = null;
-
             };
         }
         
         /*Метод для открытия автоматического окна соединения*/
         public void OpenAutomaticConnecting(Action? userCloseDialog = null, Action<bool> connectionStatus = null)
         {
-            if (connectionStatus == null && userCloseDialog == null)
+            /*if (connectionStatus == null && userCloseDialog == null)
             {
                 //TODO
                 /*Создать в App.xaml.cs метод для автоматического соединения
@@ -226,7 +213,7 @@ namespace RFD.ViewModels
                      IsAutomaticConnectingOpen = value;
                      UpdateConnecting(true);
                   }
-                 */
+                 #1#
             }
             else if (connectionStatus != null)
             {
@@ -245,7 +232,7 @@ namespace RFD.ViewModels
                     _statusConnect = null;
                     _closeDialog = null;
                 };
-            }
+            }*/
         }
         #endregion
         
