@@ -10,9 +10,14 @@ using CommunityToolkit.Mvvm.Input;
 namespace RFD.ViewModels;
 public class AutomaticConnectionDialogViewModel
 {
-    private readonly Action? _closeDialog;
-    private readonly Action? _userCloseDialog;
-    private readonly Action<bool> _connectionStatus;
+    /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
+    public Action? CloseDialog;
+    
+    /// <summary>Триггер который вызывается если пользователь закроет диалоговое окно</summary>
+    public Action? UserCloseDialog;
+    
+    /// <summary>Триггер, который необходимо вызывать в родителе чтобы уведомить диалоговое окно о том что соединение успешно</summary>
+    public Action<bool> ConnectionStatus;
 
     private bool _connection;
     public bool Connection
@@ -25,43 +30,34 @@ public class AutomaticConnectionDialogViewModel
         }
     }
     public ICommand CancelCommand { get; }
-    public AutomaticConnectionDialogViewModel(Action? userCloseDialog, Action<bool> connectionStatus, Action? closeDialog)
+    public AutomaticConnectionDialogViewModel()
     {
-        _closeDialog = closeDialog ?? throw new ArgumentNullException(nameof(closeDialog));
-        _userCloseDialog = userCloseDialog;
-        _connectionStatus = connectionStatus;
-
-        // Подписываемся на событие подключения
-        if (_connectionStatus != null)
-            _connectionStatus += ConnectionHasSuccess;
+        ConnectionStatus += statusConnection =>
+        {
+            if (statusConnection)
+            {
+                Connection = true;
+                Close();
+            }
+            else
+            {
+                Connection = false;
+                Close();
+            }
+        };
         
-        // Настраиваем команду для кнопки "Отмена"
-        CancelCommand = new RelayCommand(UserCloseDialog);
+        CancelCommand = new RelayCommand(UserClose);
     }
 
-    private void ConnectionHasSuccess(bool status)
+    private void UserClose()
     {
-        if (status)
-        {
-            Connection = true;
-            CloseDialog();
-        }
-        else
-        {
-            Connection = false;
-            CloseDialog();
-        }
+        UserCloseDialog?.Invoke();
+        Close();
     }
 
-    private void UserCloseDialog()
-    {
-        this._userCloseDialog?.Invoke();
-        this.CloseDialog();
-    }
-
-    private void CloseDialog() => this._closeDialog?.Invoke();
+    private void Close() => CloseDialog?.Invoke();
     
-    // Реализация INotifyPropertyChanged
+
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string propertyName = null!)
     {

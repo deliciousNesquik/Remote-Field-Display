@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -166,7 +168,7 @@ namespace RFD.ViewModels
             App.SettingsUpdated += SetSettings;
             
             //Команды основного меню
-            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(null, null), () => !IsModalWindowOpen && !ConnectionStatus);
+            OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
             OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
             DisconnectCommand = new RelayCommand(() => Disconnect(), () => true);
         }
@@ -198,42 +200,51 @@ namespace RFD.ViewModels
         }
         
         /*Метод для открытия автоматического окна соединения*/
-        public void OpenAutomaticConnecting(Action? userCloseDialog = null, Action<bool> connectionStatus = null)
+        public void OpenAutomaticConnecting()
         {
-            /*if (connectionStatus == null && userCloseDialog == null)
+            var cancellationTokenSource = new CancellationTokenSource();
+            AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel();
+            CurrentUserControl = new AutomaticConnectingDialog()
             {
-                //TODO
-                /*Создать в App.xaml.cs метод для автоматического соединения
-                  В аргументах должно принимать триггер на успешное или нет подключение
-                
-                  App?.Current.AutomaticConnection();
-                  AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel(userCloseDialog, connectionStatus, closeDialog);
-                 
-                  closeDialog += () => {
-                     IsAutomaticConnectingOpen = value;
-                     UpdateConnecting(true);
-                  }
-                 #1#
-            }
-            else if (connectionStatus != null)
-            {
-                AutomaticConnectionDialogViewModel =
-                    new AutomaticConnectionDialogViewModel(userCloseDialog, connectionStatus, this._closeDialog);
-                CurrentUserControl = new AutomaticConnectingDialog();
-                IsAutomaticConnectingOpen = true;
+                DataContext = AutomaticConnectionDialogViewModel
+            };
+            IsAutomaticConnectingOpen = true;
 
-                this._closeDialog += () =>
+            AutomaticConnectionDialogViewModel.UserCloseDialog += () =>
+            {
+                cancellationTokenSource.Cancel();
+                IsAutomaticConnectingOpen = false;
+                UpdateConnecting();
+                CurrentUserControl = null;
+            };
+
+            AutomaticConnectionDialogViewModel.CloseDialog += () =>
+            {
+                IsAutomaticConnectingOpen = false;
+                UpdateConnecting();
+                CurrentUserControl = null;
+            };
+            
+            // Имитация подключения с использованием Task.Run
+            Task.Run(async () =>
+            {
+                try
                 {
-                    IsAutomaticConnectingOpen = false;
-                    UpdateConnecting();
-                    CurrentUserControl = null;
+                    // Имитация ожидания 2 секунды
+                    await Task.Delay(3000, cancellationTokenSource.Token);
 
-                    _userCloseDialog = null;
-                    _statusConnect = null;
-                    _closeDialog = null;
-                };
-            }*/
+                    // Если задача не была отменена, сообщаем об успешном подключении
+                    AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
+                    Console.WriteLine("Connection was succsess");
+                }
+                catch (TaskCanceledException)
+                {
+                    // Обрабатываем отмену задачи (ничего делать не нужно)
+                    Console.WriteLine("Connection was canceled.");
+                }
+            });
         }
+        
         #endregion
         
 
