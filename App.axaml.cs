@@ -89,6 +89,8 @@ namespace RFD
                 };
                 
                 desktop.MainWindow = mainWindow;
+                
+                mainWindowViewModel.OpenAutomaticConnecting();
             }
 
             base.OnFrameworkInitializationCompleted();
