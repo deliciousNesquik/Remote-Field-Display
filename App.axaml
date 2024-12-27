@@ -9,10 +9,33 @@
     </Application.DataTemplates>
   
     <Application.Styles>
+        <Style Selector="Button.windowManipulation">
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
         <Style Selector="Button.close /template/ContentPresenter">
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Width" Value="45"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Style Selector="^:pointerover">
                 <Setter Property="Background" Value="{DynamicResource RedColor}"></Setter>
             </Style>
+        </Style>
+        <Style Selector="Label.section">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,0,0,10" />
+        </Style>
+        <Style Selector="MenuItem.main">
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}"/>
+            <Setter Property="FontWeight" Value="650"/>
+        </Style>
+        <Style Selector="MenuItem.sub">
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}"/>
+            <Setter Property="FontWeight" Value="500"/>
         </Style>
         
         <FluentTheme/>

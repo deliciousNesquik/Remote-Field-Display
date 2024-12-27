@@ -24,7 +24,7 @@ namespace RFD.Views
             {
                 if (state == WindowState.Maximized)
                 {
-                    MainBorder.Margin = new Thickness(5, 5, 5, 5); // Добавляем отступы
+                    MainBorder.Margin = new Thickness(7, 7, 7, 7); // Добавляем отступы
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace RFD.Views
             else
             {
                 this.WindowState = WindowState.Maximized;
-                MainBorder.Margin = new Thickness(5, 5, 5, 5);
+                MainBorder.Margin = new Thickness(7, 7, 7, 7);
             }
         }
 

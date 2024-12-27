@@ -93,6 +93,59 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
 
     #endregion
 
+    #region Переменные: Параметры отвечающие за настройку окон внутри главного окна
+    private bool _isTargetDisplayed;
+    public bool IsTargetDisplayed
+    {
+        get => _isTargetDisplayed;
+        set
+        {
+            _isTargetDisplayed = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _isInformationDisplayed;
+    public bool IsInformationDisplayed
+    {
+        get => _isInformationDisplayed;
+        set
+        {
+            _isInformationDisplayed = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _isParametersDisplayed;
+    public bool IsParametersDisplayed
+    {
+        get => _isParametersDisplayed;
+        set
+        {
+            _isParametersDisplayed = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _isStatusesDisplayed;
+    public bool IsStatusesDisplayed
+    {
+        get => _isStatusesDisplayed;
+        set
+        {
+            _isStatusesDisplayed = value;
+            OnPropertyChanged();
+        }
+    }
+    private bool _isConditionsDisplayed;
+    public bool IsConditionsDisplayed
+    {
+        get => _isConditionsDisplayed;
+        set
+        {
+            _isConditionsDisplayed = value;
+            OnPropertyChanged();
+        }
+    }
+    #endregion
+    
     #region Переменные: View Models модальных окон
     public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
     public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
@@ -104,6 +157,11 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
     public ICommand OpenManualConnectingCommand { get; }
     public ICommand DisconnectCommand { get; }
     public ICommand SettingsCommand { get; }
+    public ICommand TargetVisibleCommand { get; }
+    public ICommand InformationVisibleCommand { get; }
+    public ICommand ParametersVisibleCommand { get; }
+    public ICommand StatusesVisibleCommand { get; }
+    public ICommand ConditionsVisibleCommand { get; }
 
     #endregion
 
@@ -158,6 +216,12 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         MagneticDeclination = 0.00;
         ToolfaceOffset = 0.00;
 
+        IsTargetDisplayed = true;
+        IsInformationDisplayed = true;
+        IsParametersDisplayed = true;
+        IsStatusesDisplayed = true;
+        IsConditionsDisplayed = true;
+
         App.ConnectionUpdated += UpdateConnecting;
         App.SettingsUpdated += SetSettings;
             
@@ -165,6 +229,31 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
         OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
         DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
+        TargetVisibleCommand = new RelayCommand(() =>
+        {
+            IsTargetDisplayed = !IsTargetDisplayed;
+            Console.WriteLine(IsTargetDisplayed);
+        });
+        InformationVisibleCommand = new RelayCommand(() =>
+        {
+            IsInformationDisplayed = !IsInformationDisplayed;
+            Console.WriteLine(InformationVisibleCommand);
+        });
+        ParametersVisibleCommand = new RelayCommand(() =>
+        {
+            IsParametersDisplayed = !IsParametersDisplayed;
+            Console.WriteLine(IsParametersDisplayed);
+        });
+        StatusesVisibleCommand = new RelayCommand(() =>
+        {
+            IsStatusesDisplayed = !IsStatusesDisplayed;
+            Console.WriteLine(IsStatusesDisplayed);
+        });
+        ConditionsVisibleCommand = new RelayCommand(() =>
+        {
+            IsConditionsDisplayed = !IsConditionsDisplayed;
+            Console.WriteLine(IsConditionsDisplayed);
+        });
     }
 
     #region Методы: Методы для открытия окон соединения с сервером
