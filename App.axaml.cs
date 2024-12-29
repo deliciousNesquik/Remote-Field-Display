@@ -23,7 +23,6 @@ namespace RFD
     public partial class App : Application
     {
         public static event Action? ConnectionUpdated;
-        public static event Action<bool> AutomaticConnect;
         public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
         
         private Client _client;
@@ -104,7 +103,6 @@ namespace RFD
 
             _client.Address = e.Server.Address;
             _client.Connect();
-            //ConnectionControlViewModel.Current.Update();
             ConnectionUpdated?.Invoke();
             Console.WriteLine("Connected to " + _client.Address.ToString());
         }
