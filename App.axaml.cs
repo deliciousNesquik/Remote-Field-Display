@@ -3,7 +3,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using RFD.ViewModels;
 using RFD.Views;
-using NPFGEO.LWD.Net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +16,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using Avalonia.Threading;
+using NPFGEO.LWD.Net;
 
 namespace RFD
 {

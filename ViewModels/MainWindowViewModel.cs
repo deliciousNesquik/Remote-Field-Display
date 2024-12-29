@@ -10,10 +10,10 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NPFGEO.LWD.Net;
 using RFD.Models;
 using RFD.UserControls;
 using ReactiveUI;
+using NPFGEO.LWD.Net;
 
 namespace RFD.ViewModels;
 
