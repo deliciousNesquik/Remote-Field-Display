@@ -162,6 +162,8 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
     public ICommand ParametersVisibleCommand { get; }
     public ICommand StatusesVisibleCommand { get; }
     public ICommand ConditionsVisibleCommand { get; }
+    public ICommand UsersGuideCommand { get; }
+    public ICommand AboutApplicationCommand { get; }
 
     #endregion
 
@@ -196,6 +198,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         
     public MainWindowViewModel() 
     {
+        
         //Геофизические параметры заполнены для примера
         InfoBlockList = [
             new ("Высота блока", "-", "м"),

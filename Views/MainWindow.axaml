@@ -2,28 +2,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:animations="https://github.com/avaloniaui"
-        xmlns:controls="using:RFD.Controls"
         xmlns:vm="using:RFD.ViewModels"
-        xmlns:usercontrols="using:RFD.UserControls"
+        xmlns:controls="using:RFD.Controls"
         xmlns:converters="using:RFD.Converters"
-        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
+        xmlns:usercontrols="using:RFD.UserControls"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Background="{DynamicResource GradientBackground}"
-        
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1">
+        ExtendClientAreaTitleBarHeightHint="-1"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720">
 	
-	<!--Указывавется для designer binding-->
 	<Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-	<Window.Resources>
-		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
-	</Window.Resources>
+		<vm:MainWindowViewModel/>
+	 </Design.DataContext>
 	
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary>
+					<converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+				</ResourceDictionary>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Window.Resources>
+
 	
 	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
 		<Grid RowDefinitions="Auto, *">
@@ -46,8 +50,6 @@
 					</Button>
 				</StackPanel>
 			</Grid>
-			
-			
 			
 			<Grid Grid.Row="1" RowDefinitions="*" ColumnDefinitions="*">
 				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
@@ -97,8 +99,8 @@
 								<MenuItem Header="Состояния" Classes="sub" Command="{Binding ConditionsVisibleCommand}"/>
 							</MenuItem>
 							<MenuItem Header="Помощь" Classes="main">
-								<MenuItem Header="Руководство пользователя" Classes="sub"/>
-								<MenuItem Header="О приложении" Classes="sub"/>
+								<MenuItem Header="Руководство пользователя" Command="{Binding UsersGuideCommand}" Classes="sub"/>
+								<MenuItem Header="О приложении" Command="{Binding AboutApplicationCommand}" Classes="sub"/>
 							</MenuItem>
 						</Menu>
 						
@@ -106,9 +108,10 @@
 							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650" VerticalAlignment="Center"/>
 							<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
 						</StackPanel>
-						
 					</DockPanel>
 					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+					
+					
 					<!--Левая панель с графиком и парметрами бурения-->
 					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
 						<!--График бурения-->
@@ -142,6 +145,7 @@
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
 						</StackPanel>
+						
 						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
 							<Label Content="Статусы бурения:" Classes="section" />
 							<!--Блок со статусами элементов буровой-->
@@ -163,7 +167,4 @@
 			</Grid>
 		</Grid>
 	</Border>
-	
-	
-	
 </Window>
