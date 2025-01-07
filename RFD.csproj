@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NPFGEO.LWD.Net\NPFGEO.LWD.Net.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="GeoCore">
       <HintPath>Libraries\GeoCore.dll</HintPath>
     </Reference>

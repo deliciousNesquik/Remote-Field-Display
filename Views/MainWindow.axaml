@@ -31,15 +31,13 @@
 	
 	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
 		<Grid RowDefinitions="Auto, *">
-			
 			<!--Кастомная верхняя панель-->
 			<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}">
 				<!--Заголовок приложения-->
 				<StackPanel Grid.Column="0" Orientation="Horizontal">
-					<Image Source="../Assets/app-icon.png" Margin="5 0 0 0"></Image>
-					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="5логот 0 0 0">RFD "Пульт бурильщика"</Label>
+					<Image Source="{SvgImage ../Assets/app-icon.svg}"></Image>
+					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="5 0 0 0">RFD "Пульт бурильщика"</Label>
 				</StackPanel>
-				
 				
 				<!--Кнопки для управления приложением-->
 				<StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -93,9 +91,12 @@
 								<MenuItem Header="Ручное подключение" Classes="sub" Command="{Binding OpenManualConnectingCommand}"/>
 								<MenuItem Header="Отключиться" Classes="sub" Command="{Binding DisconnectCommand}"/>
 							</MenuItem>
-							<MenuItem Header="Настройки" Classes="main" Command="{Binding SettingsCommand}"/>
-							
+							<MenuItem Header="Настройки" Classes="main" Command="{Binding SettingsCommand}">
+							</MenuItem>
 							<MenuItem Header="Окна" Classes="main">
+								<MenuItem.Icon>
+									<Image Width="15" Height="15" Source="{SvgImage ../Assets/window.svg}"></Image>
+								</MenuItem.Icon>
 								<MenuItem Header="Мишень" Classes="sub" Command="{Binding TargetVisibleCommand}"/>
 								<MenuItem Header="Информация" Classes="sub" Command="{Binding InformationVisibleCommand}"/>
 								<MenuItem Header="Параметры" Classes="sub" Command="{Binding ParametersVisibleCommand}"/>
@@ -119,22 +120,28 @@
 					<!--Левая панель с графиком и парметрами бурения-->
 					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
 						<!--График бурения-->
-						<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsTargetDisplayed}">
+						<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsTargetDisplayed}"
+						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave" Background="Transparent">
 							<Label Grid.Row="0" Content="Бурение:" Classes="section"/>
 							<Label Grid.Row="0" Content="Нет данных" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 						</StackPanel>
+
+
 						
 						<!--Магнитное склонение-->
 						<!--Смещение поверхности инструмента-->
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}">
+						<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}"
+						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave" Background="Transparent">
 							<Label Content="Параметры бурения:" Classes="section"/>
 							<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
 							<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
 						</StackPanel>
+
 					</Grid>
 					<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
 						<!--Блок с информационными блоками-->
-						<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
+						<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}"
+						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave">
 							<Label Content="Информация о бурении:" Classes="section"/>
 							<ItemsControl ItemsSource="{Binding InfoBlockList}">
 								<ItemsControl.ItemsPanel>
@@ -150,9 +157,9 @@
 							</ItemsControl>
 						</StackPanel>
 						
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
+						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}"
+						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave">
 							<Label Content="Статусы бурения:" Classes="section" />
-							<!--Блок со статусами элементов буровой-->
 							<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>

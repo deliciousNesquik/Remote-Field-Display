@@ -33,10 +33,12 @@
             <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}"/>
             <Setter Property="FontWeight" Value="650"/>
         </Style>
+        
         <Style Selector="MenuItem.sub">
             <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}"/>
             <Setter Property="FontWeight" Value="500"/>
         </Style>
+
         
         <FluentTheme/>
         <StyleInclude Source="avares://RFD/Controls/InfoBox.axaml"/>
@@ -62,6 +64,8 @@
         <Color x:Key="CoverFocusingColor">#2d4a7d</Color>
         <Color x:Key="RedColor">#ff3333</Color>
         <Color x:Key="GreenColor">#00b300</Color>
+        <Color x:Key="HighlightBackground">#FFEEEEEE</Color>
+        <Color x:Key="PressedBackground">#FD6D6D6E</Color>
         
         
         <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="0,1">
