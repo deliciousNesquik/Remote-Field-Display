@@ -12,3 +12,8 @@ Avalonia UI — кроссплатформенная платформа поль
 
 Приложение придерживается паттерну программирования MVVM, что позволяет интерфейсу и логике быть независимыми друг от друга, а также создавать легкомасштабируемые приложения
 
+### Интерфейс приложения
+<img width="1372" alt="Снимок экрана 2025-01-08 в 5 42 10 PM" src="https://github.com/user-attachments/assets/cfbaa736-7927-4dda-b27f-c3b0d84b1741" />
+<img width="1372" alt="Снимок экрана 2025-01-08 в 5 43 20 PM" src="https://github.com/user-attachments/assets/413661a4-910f-41d3-93df-2bd81f06785f" />
+<img width="1372" alt="Снимок экрана 2025-01-08 в 5 43 47 PM" src="https://github.com/user-attachments/assets/61685da0-a334-44af-b0f9-3fb28dd67c74" />
+<img width="1372" alt="Снимок экрана 2025-01-08 в 5 44 21 PM" src="https://github.com/user-attachments/assets/34b9ca4b-7964-40c0-8f6c-a4d718ddc4f6" />
