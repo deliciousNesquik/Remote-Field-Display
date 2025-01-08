@@ -25,24 +25,20 @@ namespace RFD
         public static event Action? ConnectionUpdated;
         public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
         
+        //Отключение логики подключения, чтобы работать с интерфейсом
+        /*
         private Client _client;
         private ServerListener _listener;
         private bool _needAutoReconnect = true;
-        public bool Connected => _client.Connected;
+        
 
         private CancellationTokenSource _cancelTokenSource;
         private CancellationToken _token;
-        
-        public string CurrentIpAddress
-        {
-            get
-            {
-                if (_client.Address == null)
-                    return "Не найдено";
-                else
-                    return _client.Address.ToString();
-            }
-        }
+        */
+
+        public bool Connected => false;
+        public string CurrentIpAddress => "Нет подключения";
+
         public override void Initialize()
         {
             //TODO
@@ -64,7 +60,8 @@ namespace RFD
             at RFD.Program.Main(String[] args) in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\Program.cs:line 13
              */
             
-            _client = new Client();
+            
+            /*_client = new Client();
             _client.ReceiveData += Client_ReceiveData;
             _client.ReceiveSettings += Client_ReceiveSettings;
             _client.Disconnected += Client_Disconnected;
@@ -72,7 +69,7 @@ namespace RFD
 
             _listener = new ServerListener();
             _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
-            _listener.Start();
+            _listener.Start();*/
             
             AvaloniaXamlLoader.Load(this);
         }
@@ -95,6 +92,7 @@ namespace RFD
             base.OnFrameworkInitializationCompleted();
         }
         
+        /*
         void Listener_ReceiveBroadcast(object sender, ReceiveBroadcastEventArgs e)
         {
             if (_client != null && _client.Connected) return;
@@ -107,7 +105,7 @@ namespace RFD
             Console.WriteLine("Connected to " + _client.Address.ToString());
         }
 
-        /*private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+        private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
         {
             Console.WriteLine("SettingsUpdated");
             Action action = () =>
@@ -118,7 +116,7 @@ namespace RFD
             action();
             //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, action);
             Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
-        }*/
+        }
         
         private readonly object _settingsLock = new object();
 
@@ -139,10 +137,10 @@ namespace RFD
 
         private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
         {
-            /*Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 NavigationPanelVM.Current.SetData(e.Data);
-            });*/
+            });
         }
 
         private void Client_Disconnected(object sender, EventArgs e)
@@ -262,7 +260,7 @@ namespace RFD
                 _client.Disconnect();
             }
                 
-        }
+        }*/
         
         
         public event PropertyChangedEventHandler PropertyChanged;

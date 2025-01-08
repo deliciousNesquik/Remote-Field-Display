@@ -90,30 +90,5 @@ namespace RFD.Views
                 }
             }
         }
-        
-        private void StackPanel_PointerEnter(object sender, Avalonia.Input.PointerEventArgs e)
-        {
-            var stackPanel = sender as StackPanel;
-            if (stackPanel != null)
-            {
-                // Изменяем цвет фона для выделения
-                var brush = new SolidColorBrush(Colors.LightBlue);
-                stackPanel.Background = Brush.Parse("#783E66AD");
-            }
-        }
-
-        private void StackPanel_PointerLeave(object sender, Avalonia.Input.PointerEventArgs e)
-        {
-            var stackPanel = sender as StackPanel;
-            if (stackPanel != null)
-            {
-                // Возвращаем оригинальный фон
-                stackPanel.Background = Brushes.Transparent;
-            }
-        }
-
-
-
-        
     }
 }

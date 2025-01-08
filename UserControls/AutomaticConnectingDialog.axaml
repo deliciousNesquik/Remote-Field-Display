@@ -29,7 +29,7 @@
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                 <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
-                    <Label Content="Отменить"/>
+                    <Label Content="Отменить" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
             </StackPanel>
         </Grid>

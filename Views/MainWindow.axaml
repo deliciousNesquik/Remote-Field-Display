@@ -9,6 +9,7 @@
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Background="{DynamicResource GradientBackground}"
+        FontFamily="Helvetica"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
@@ -76,7 +77,7 @@
 				</Border>
 				
 				<!--Основное содержимое главного окна-->
-				<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
+				<Grid RowDefinitions="Auto, *">
 					
 					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
 					<Grid.Effect>
@@ -116,22 +117,102 @@
 					</DockPanel>
 					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
 					
+					<Grid Grid.Row="1" Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="{Binding LeftColumnWidth}" />
+							<ColumnDefinition Width="{Binding RightColumnWidth}" />
+						</Grid.ColumnDefinitions>
+						
+						<!-- Левая колонка -->
+						<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto" IsVisible="{Binding AreLeftElementsVisible}">
+						    <StackPanel Orientation="Vertical" IsVisible="{Binding IsTargetDisplayed}">
+						        <Label Content="Бурение:" Classes="section"/>
+						        <Ellipse Fill="{DynamicResource FocusingColor}" Width="450" Height="450" />
+						    </StackPanel>
+
+						    <StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}">
+						        <Label Content="Параметры бурения:" Classes="section"/>
+						        <Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
+						        <Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
+						    </StackPanel>
+						</Grid>
+
+						<!-- Правая колонка -->
+						<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto" IsVisible="{Binding AreRightElementsVisible}">
+						    <StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
+						        <Label Content="Информация о бурении:" Classes="section"/>
+						        <ItemsControl ItemsSource="{Binding InfoBlockList}">
+						            <ItemsControl.ItemsPanel>
+						                <ItemsPanelTemplate>
+						                    <WrapPanel Orientation="Horizontal"/>
+						                </ItemsPanelTemplate>
+						            </ItemsControl.ItemsPanel>
+						            <ItemsControl.ItemTemplate>
+						                <DataTemplate>
+						                    <controls:InfoBox Title="{Binding Title}" Content="{Binding Content}" />
+						                </DataTemplate>
+						            </ItemsControl.ItemTemplate>
+						        </ItemsControl>
+						    </StackPanel>
+
+						    <StackPanel Grid.Row="1" >
+							    <StackPanel Orientation="Vertical" IsVisible="{Binding IsStatusesDisplayed}">
+								    <Label Content="Статусы бурения:" Classes="section" />
+								    <ItemsControl ItemsSource="{Binding InfoStatusList}">
+									    <ItemsControl.ItemsPanel>
+										    <ItemsPanelTemplate>
+											    <WrapPanel Orientation="Horizontal"/>
+										    </ItemsPanelTemplate>
+									    </ItemsControl.ItemsPanel>
+									    <ItemsControl.ItemTemplate>
+										    <DataTemplate>
+											    <controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" />
+										    </DataTemplate>
+									    </ItemsControl.ItemTemplate>
+								    </ItemsControl>
+							    </StackPanel>
+							    
+							    <!-- Блок состояний (пока дублируем статусы) -->
+							    <StackPanel IsVisible="{Binding IsConditionsDisplayed}">
+								    <Label Content="Состояния бурения:" Classes="section" />
+								    <ItemsControl ItemsSource="{Binding InfoStatusList}">
+									    <ItemsControl.ItemsPanel>
+										    <ItemsPanelTemplate>
+											    <WrapPanel Orientation="Horizontal"/>
+										    </ItemsPanelTemplate>
+									    </ItemsControl.ItemsPanel>
+									    <ItemsControl.ItemTemplate>
+										    <DataTemplate>
+											    <controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" />
+										    </DataTemplate>
+									    </ItemsControl.ItemTemplate>
+								    </ItemsControl>
+							    </StackPanel>
+						    </StackPanel>
+
+						    
+						</Grid>
+					</Grid>
 					
-					<!--Левая панель с графиком и парметрами бурения-->
+
+					
+					
+					
+					<!--
+					Левая панель с графиком и парметрами бурения
 					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
-						<!--График бурения-->
+						График бурения
 						<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsTargetDisplayed}"
-						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave" Background="Transparent">
+						            Background="Transparent">
 							<Label Grid.Row="0" Content="Бурение:" Classes="section"/>
-							<Label Grid.Row="0" Content="Нет данных" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+							<Ellipse Fill="{DynamicResource FocusingColor}" Width="450" Height="450" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 						</StackPanel>
 
 
 						
-						<!--Магнитное склонение-->
-						<!--Смещение поверхности инструмента-->
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}"
-						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave" Background="Transparent">
+						Магнитное склонение
+						Смещение поверхности инструмента
+						<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}" Background="Transparent">
 							<Label Content="Параметры бурения:" Classes="section"/>
 							<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
 							<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
@@ -139,9 +220,8 @@
 
 					</Grid>
 					<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
-						<!--Блок с информационными блоками-->
-						<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}"
-						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave">
+						Блок с информационными блоками
+						<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
 							<Label Content="Информация о бурении:" Classes="section"/>
 							<ItemsControl ItemsSource="{Binding InfoBlockList}">
 								<ItemsControl.ItemsPanel>
@@ -157,8 +237,7 @@
 							</ItemsControl>
 						</StackPanel>
 						
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}"
-						            PointerEntered="StackPanel_PointerEnter" PointerExited="StackPanel_PointerLeave">
+						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
 							<Label Content="Статусы бурения:" Classes="section" />
 							<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
 								<ItemsControl.ItemsPanel>
@@ -173,7 +252,7 @@
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
 						</StackPanel>
-					</Grid>
+					</Grid>-->
 				</Grid>
 			</Grid>
 		</Grid>

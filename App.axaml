@@ -43,11 +43,10 @@
         <FluentTheme/>
         <StyleInclude Source="avares://RFD/Controls/InfoBox.axaml"/>
         <StyleInclude Source="avares://RFD/Controls/StatusBox.axaml"/>
-        
-        
     </Application.Styles>
              
     <Application.Resources>
+        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://RFD/UserControls/LoadingIndicators.axaml" />

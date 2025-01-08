@@ -27,8 +27,12 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Content="Подключится" Command="{Binding ConfirmCommand}" Width="110"/>
-                <Button Content="Отмена" Command="{Binding CancelCommand}" Width="80"/>
+                <Button Command="{Binding ConfirmCommand}" >
+                    <Label Content="Подключиться" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+                </Button>
+                <Button Command="{Binding CancelCommand}">
+                    <Label Content="Отмена" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>
