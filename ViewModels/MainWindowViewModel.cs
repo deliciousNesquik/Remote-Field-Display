@@ -246,7 +246,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         ];
         InfoStatusList = [
             new ("Клинья", false),
-            new ("Насос", false),
+            new ("Насос", true),
             new ("Забой", false),
         ];
             
