@@ -19,6 +19,7 @@
 		<vm:MainWindowViewModel/>
 	 </Design.DataContext>
 	
+	<!--Подключение всех ресурсов, необходимых для отрисовки и логики окна-->
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
@@ -31,9 +32,13 @@
 
 	
 	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+		
 		<Grid RowDefinitions="Auto, *">
-			<!--Кастомная верхняя панель-->
+			
+			<!--Кастомная верхняя панель управления, выполненая в стиле приложений Windows
+			Иконка приложения, название приложения, кнопка свернуть, кнопка разворачивания, кнопка закрытия приложения-->
 			<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}">
+				
 				<!--Заголовок приложения-->
 				<StackPanel Grid.Column="0" Orientation="Horizontal">
 					<Image Source="{SvgImage ../Assets/app-icon.svg}"></Image>
@@ -54,14 +59,18 @@
 				</StackPanel>
 			</Grid>
 			
+			
+			
 			<Grid Grid.Row="1" RowDefinitions="*" ColumnDefinitions="*">
-				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
+				<!--Вспомогательный элемент, позволяющий затемнять главный экран
+				от чего появляется приятный эффект и контраст модульного окна повышается на фоне главного-->
 				<Border Name="BlackoutWindow"
 				        IsVisible="{Binding IsModalWindowOpen}"
 				        Background="#80000000"
 				        ZIndex="1000"
 				        HorizontalAlignment="Stretch"
 				        VerticalAlignment="Stretch">
+					
 					
 					<!--DataTemplate для всех модальных окон-->
 					<ContentControl Content="{Binding CurrentUserControl}">
@@ -72,14 +81,19 @@
 							<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
 								<usercontrols:ManualConnectionDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
+							
+							<!--При создании нового модульного окна, необходимо вписать сюда шаблон для его отображения-->
+							
 						</ContentControl.DataTemplates>
 					</ContentControl>
 				</Border>
 				
+				
 				<!--Основное содержимое главного окна-->
 				<Grid RowDefinitions="Auto, *">
 					
-					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
+					<!--Вспомогательный элемент, позволяющий размывать(блюрить) главный экран
+					от чего появляется приятный эффект и контраст модульного окна повышается на фоне главного-->
 					<Grid.Effect>
 						<BlurEffect Radius="{Binding BlurRadius}"/>
 					</Grid.Effect>
@@ -87,35 +101,71 @@
 					<!--Блок меню-->
 					<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
 						<Menu DockPanel.Dock="Left">
+							
 							<MenuItem Header="Подключение" Classes="main">
-								<MenuItem Header="Автоматическое подключение" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}"/>
-								<MenuItem Header="Ручное подключение" Classes="sub" Command="{Binding OpenManualConnectingCommand}"/>
-								<MenuItem Header="Отключиться" Classes="sub" Command="{Binding DisconnectCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Автоматическое подключение" 
+								          Command="{Binding OpenAutomaticConnectingCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Ручное подключение" 
+								          Command="{Binding OpenManualConnectingCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Отключиться"
+								          Command="{Binding DisconnectCommand}"/>
 							</MenuItem>
-							<MenuItem Header="Настройки" Classes="main" Command="{Binding SettingsCommand}">
+							
+							<MenuItem Classes="main"
+							          Header="Настройки"
+							          Command="{Binding SettingsCommand}">
 							</MenuItem>
+							
 							<MenuItem Header="Окна" Classes="main">
-								<MenuItem.Icon>
-									<Image Width="15" Height="15" Source="{SvgImage ../Assets/window.svg}"></Image>
-								</MenuItem.Icon>
-								<MenuItem Header="Мишень" Classes="sub" Command="{Binding TargetVisibleCommand}"/>
-								<MenuItem Header="Информация" Classes="sub" Command="{Binding InformationVisibleCommand}"/>
-								<MenuItem Header="Параметры" Classes="sub" Command="{Binding ParametersVisibleCommand}"/>
-								<MenuItem Header="Статусы" Classes="sub" Command="{Binding StatusesVisibleCommand}"/>
-								<MenuItem Header="Состояния" Classes="sub" Command="{Binding ConditionsVisibleCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Мишень" 
+								          Command="{Binding TargetVisibleCommand}"/>
+								<MenuItem Classes="sub" 
+								          Header="Информация" 
+								          Command="{Binding InformationVisibleCommand}"/>
+								<MenuItem Classes="sub" 
+								          Header="Параметры" 
+								          Command="{Binding ParametersVisibleCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Статусы" 
+								          Command="{Binding StatusesVisibleCommand}"/>
+								<MenuItem Classes="sub"
+								          Header="Состояния" 
+								          Command="{Binding ConditionsVisibleCommand}"/>
 							</MenuItem>
+							
 							<MenuItem Header="Помощь" Classes="main">
-								<MenuItem Header="Руководство пользователя" Command="{Binding UsersGuideCommand}" Classes="sub"/>
-								<MenuItem Header="О приложении" Command="{Binding AboutApplicationCommand}" Classes="sub"/>
+								<MenuItem Classes="sub"
+								          Header="Руководство пользователя" 
+								          Command="{Binding UsersGuideCommand}"/>
+								
+								<MenuItem Classes="sub"
+								          Header="О приложении" 
+								          Command="{Binding AboutApplicationCommand}"/>
 							</MenuItem>
 						</Menu>
 						
 						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650" VerticalAlignment="Center"/>
-							<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+							<Label 
+								Content="{Binding IpAddress, 
+								UpdateSourceTrigger=PropertyChanged, 
+								StringFormat={}IP-Адрес: {0}}" 
+								
+								Foreground="{DynamicResource ForegroundColor02}" 
+								FontWeight="650" 
+								VerticalAlignment="Center"/>
+							
+							<Ellipse 
+								Fill="{Binding ConnectionStatus, 
+								UpdateSourceTrigger=PropertyChanged, 
+								Converter={StaticResource BoolToBrushConverter}}" 
+								Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
 						</StackPanel>
 					</DockPanel>
-					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+					<Border Grid.Row="0" Grid.Column="0" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
 					
 					
 					
@@ -128,7 +178,7 @@
 						<!-- Левая колонка -->
 						<Grid Grid.Column="0" Margin="20" RowDefinitions="*, Auto" IsVisible="{Binding AreLeftElementsVisible}">
 							<Grid Grid.Row="0" IsVisible="{Binding IsTargetDisplayed}">
-								<Label Content="Бурение:" Classes="section" HorizontalAlignment="Center" VerticalAlignment="Top" />
+								<Label Content="Мишень:" Classes="section" HorizontalAlignment="Left" VerticalAlignment="Top" />
         
 								<Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
 									<Grid>
@@ -139,19 +189,19 @@
 							</Grid>
 
 							<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}">
-								<Label Content="Параметры бурения:" Classes="section" />
+								<Label Content="Параметры:" Classes="section" />
 								<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
 								<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
 							</StackPanel>
 						</Grid>
 
 						<!-- Правая колонка -->
-						<Grid Grid.Column="1" IsVisible="{Binding AreRightElementsVisible}">
+						<Grid Grid.Column="1"  IsVisible="{Binding AreRightElementsVisible}">
 						    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-						        <StackPanel Margin="0 20 0 0">
+						        <StackPanel Margin="20">
 						            <!-- Информация о бурении -->
 						            <StackPanel IsVisible="{Binding IsInformationDisplayed}">
-						                <Label Content="Информация о бурении:" Classes="section"/>
+						                <Label Content="Информация:" Classes="section"/>
 						                <ItemsControl ItemsSource="{Binding InfoBlockList}">
 						                    <ItemsControl.ItemsPanel>
 						                        <ItemsPanelTemplate>
@@ -167,8 +217,8 @@
 						            </StackPanel>
 
 						            <!-- Статусы бурения -->
-						            <StackPanel Orientation="Vertical" IsVisible="{Binding IsStatusesDisplayed}">
-						                <Label Content="Статусы бурения:" Classes="section" />
+						            <StackPanel Margin="0 20 0 0" Orientation="Vertical" IsVisible="{Binding IsStatusesDisplayed}">
+						                <Label Content="Статусы:" Classes="section" />
 						                <ItemsControl ItemsSource="{Binding InfoStatusList}">
 						                    <ItemsControl.ItemsPanel>
 						                        <ItemsPanelTemplate>
@@ -184,8 +234,8 @@
 						            </StackPanel>
 
 						            <!-- Состояния бурения -->
-						            <StackPanel IsVisible="{Binding IsConditionsDisplayed}">
-						                <Label Content="Состояния бурения:" Classes="section" />
+						            <StackPanel Margin="0 20 0 0" IsVisible="{Binding IsConditionsDisplayed}">
+						                <Label Content="Состояния:" Classes="section" />
 						                <ItemsControl ItemsSource="{Binding InfoStatusList}">
 						                    <ItemsControl.ItemsPanel>
 						                        <ItemsPanelTemplate>
