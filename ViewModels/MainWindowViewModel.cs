@@ -102,7 +102,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             _isTargetDisplayed = value;
             OnPropertyChanged();
-            UpdateColumns();
         }
     }
     private bool _isInformationDisplayed;
@@ -113,7 +112,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             _isInformationDisplayed = value;
             OnPropertyChanged();
-            UpdateColumns();
         }
     }
     private bool _isParametersDisplayed;
@@ -124,7 +122,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             _isParametersDisplayed = value;
             OnPropertyChanged();
-            UpdateColumns();
         }
     }
     private bool _isStatusesDisplayed;
@@ -135,7 +132,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             _isStatusesDisplayed = value;
             OnPropertyChanged();
-            UpdateColumns();
         }
     }
     private bool _isConditionsDisplayed;
@@ -146,38 +142,8 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             _isConditionsDisplayed = value;
             OnPropertyChanged();
-            UpdateColumns();
         }
     }
-    
-    // Ширина колонок
-    private GridLength _leftColumnWidth = new GridLength(1, GridUnitType.Star);
-    private GridLength _rightColumnWidth = new GridLength(1, GridUnitType.Star);
-
-    public GridLength LeftColumnWidth
-    {
-        get => AreLeftElementsVisible ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        set
-        {
-            _leftColumnWidth = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public GridLength RightColumnWidth
-    {
-        get => AreRightElementsVisible ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
-        set
-        {
-            _rightColumnWidth = value;
-            OnPropertyChanged();
-        }
-    }
-
-    // Проверяем, видимы ли элементы в колонках
-    private bool AreLeftElementsVisible => IsTargetDisplayed || IsParametersDisplayed;
-    private bool AreRightElementsVisible => IsInformationDisplayed || IsStatusesDisplayed || IsConditionsDisplayed;
-
     #endregion
     
     #region Переменные: View Models модальных окон
@@ -196,8 +162,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
     public ICommand ParametersVisibleCommand { get; }
     public ICommand StatusesVisibleCommand { get; }
     public ICommand ConditionsVisibleCommand { get; }
-    public ICommand UsersGuideCommand { get; }
-    public ICommand AboutApplicationCommand { get; }
 
     #endregion
 
@@ -232,7 +196,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         
     public MainWindowViewModel() 
     {
-        
         //Геофизические параметры заполнены для примера
         InfoBlockList = [
             new ("Высота блока", "-", "м"),
@@ -246,7 +209,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         ];
         InfoStatusList = [
             new ("Клинья", false),
-            new ("Насос", true),
+            new ("Насос", false),
             new ("Забой", false),
         ];
             
@@ -258,14 +221,13 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         IsParametersDisplayed = true;
         IsStatusesDisplayed = true;
         IsConditionsDisplayed = true;
-
-        //Убрал логику подключения для работы только с интерфейсом
-        //App.ConnectionUpdated += UpdateConnecting;
+    
+        App.ConnectionUpdated += UpdateConnecting;
         //App.SettingsUpdated += SetSettings;
             
         //Команды основного меню
-        OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen && !ConnectionStatus);
-        OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen  && !ConnectionStatus);
+        OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
+        OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
         DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
         TargetVisibleCommand = new RelayCommand(() =>
         {
@@ -293,17 +255,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
             Console.WriteLine(IsConditionsDisplayed);
         });
     }
-
-    #region Методы для работы с распложением окон
-
-    // Обновление ширины колонок
-        private void UpdateColumns()
-        {
-            OnPropertyChanged(nameof(LeftColumnWidth));
-            OnPropertyChanged(nameof(RightColumnWidth));
-        }
-
-    #endregion
 
     #region Методы: Методы для открытия окон соединения с сервером
 
@@ -389,7 +340,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
             
         Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
         Console.WriteLine("Info block list count items: " + InfoBlockList.Count);
-        
         /*if (Model != null)
         {
             Model.Disconnect();
@@ -397,14 +347,14 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
     }
     public void UpdateConnecting()
     {
-        Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + Model.Connected + "}");
+        Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + true + "}");
         IpAddress = Model.CurrentIpAddress;
-        ConnectionStatus = Model.Connected;
+        ConnectionStatus = true;
     }
     #endregion
         
     #region Методы для получения данных из Genesis LWD
-    public void SetSettings(ReceiveSettingsEventArgs e)
+    /*public void SetSettings(ReceiveSettingsEventArgs e)
     {
         Console.WriteLine("SetSettings ZOV");
         InfoBlockList.Clear();
@@ -436,8 +386,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
             Console.WriteLine("parameter Name " + param.Name.ToString());
             Console.WriteLine("parameter Value " + param.Value.ToString());
         }*/
-    }
-        
+        /*
     static StatusBox Convert(StatusInfo info)
     {
         return new StatusBox(info.Name.ToString(), false);

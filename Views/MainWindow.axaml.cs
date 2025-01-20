@@ -6,88 +6,90 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using ReactiveUI;
 using RFD.ViewModels;
+using static System.Environment;
 
 namespace RFD.Views
 {
     public partial class MainWindow : Window
     {
-        private const int DragRegionHeight = 30; // Высота области для перетаскивания
+        /// <summary>
+        /// Поле получающее значение высоты верхней панели управления приложением
+        /// </summary>
+        private readonly double _dragRegionHeight;
+
+        /// <summary>
+        /// Функция, возвращающая отступ в зависимости от состояния окна.
+        /// При нормальном состоянии отступ нулевой, при открытии на весь экран появляется отступ для избежания артефактов
+        /// </summary>
+        /// <param name="windowState">Текущее состояние по которому определяется отступ</param>
+        /// <returns></returns>
+        private static Thickness GetMargin(WindowState windowState)
+        {
+            return windowState == WindowState.Maximized ? new Thickness(7) : new Thickness(0);
+        }
+
+        
 
         public MainWindow()
         {
             InitializeComponent();
-            MainBorder.PointerPressed += MainBorder_PointerPressed;
-
             DataContext = new MainWindowViewModel();
             
+            _dragRegionHeight = TopBar.Height;
+            MainBorder.PointerPressed += MainBorder_PointerPressed;
+            
             // Подписываемся на событие изменения состояния окна
-            this.GetObservable(WindowStateProperty).Subscribe(state =>
-            {
-                if (state == WindowState.Maximized)
-                {
-                    MainBorder.Margin = new Thickness(7, 7, 7, 7); // Добавляем отступы
-                }
-                else
-                {
-                    MainBorder.Margin = new Thickness(0, 0, 0, 0); // Убираем отступы
-                }
-            });
+            this.GetObservable(WindowStateProperty).Subscribe(state => { MainBorder.Margin = GetMargin(this.WindowState); });
         }
 
-        private void WindowMinimizeButton_OnClick(object? sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
+        
+        
+        private void WindowMinimizeButton_OnClick(object? sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
+        private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e) => Exit(0);
         private void WindowMaximizeButton_OnClick(object? sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.WindowState = WindowState.Normal;
-                MainBorder.Margin = new Thickness(0, 0, 0, 0);
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
-                MainBorder.Margin = new Thickness(7, 7, 7, 7);
-            }
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            MainBorder.Margin = GetMargin(WindowState);
         }
 
-        private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e)
-        {
-            Environment.Exit(0);
-        }
+        
 
         private void MainBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            // Проверяем, что событие вызвано левой кнопкой мыши
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            //Обработка события нажатия два раза на панель управления окном
+            if (e.ClickCount == 2)
             {
+                WindowState = WindowState.Maximized;
+                MainBorder.Margin = GetMargin(WindowState);
+            }
+            //Обработка перемещения с помощью зажатия на панели управлением окном
+            else
+            {
+                // Проверяем, что событие вызвано левой кнопкой мыши
+                if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed) return;
+            
                 // Получаем координаты точки нажатия относительно окна
                 var position = e.GetPosition(MainBorder);
 
                 // Проверяем, что точка находится в верхней части области MainBorder
-                if (position.Y <= DragRegionHeight)
+                if (!(position.Y <= _dragRegionHeight)) return;
+            
+                // Если окно в полноэкранном режиме, возвращаем его в нормальный режим перед началом перетаскивания
+                if (WindowState == WindowState.Maximized)
                 {
-                    // Если окно в полноэкранном режиме, возвращаем его в нормальный режим перед началом перетаскивания
-                    if (this.WindowState == WindowState.Maximized)
-                    {
-                        this.WindowState = WindowState.Normal;
+                    WindowState = WindowState.Normal;
+                    MainBorder.Margin = GetMargin(WindowState);
 
-                        // Убираем отступы
-                        MainBorder.Margin = new Thickness(0, 0, 0, 0);
+                    // Пересчитываем координаты точки нажатия относительно нового размера окна
+                    var screenPosition = e.GetPosition(this);
+                    var newLeft = screenPosition.X - (Bounds.Width / 2);
+                    var newTop = screenPosition.Y - _dragRegionHeight;
 
-                        // Пересчитываем координаты точки нажатия относительно нового размера окна
-                        var screenPosition = e.GetPosition(this);
-                        var newLeft = screenPosition.X - (this.Bounds.Width / 2);
-                        var newTop = screenPosition.Y - DragRegionHeight;
-
-                        this.Position = new PixelPoint((int)newLeft, (int)newTop);
-                    }
-
-                    // Инициируем перетаскивание окна
-                    BeginMoveDrag(e);
+                    Position = new PixelPoint((int)newLeft, (int)newTop);
                 }
+
+                // Инициируем перетаскивание окна
+                BeginMoveDrag(e);
             }
         }
     }
