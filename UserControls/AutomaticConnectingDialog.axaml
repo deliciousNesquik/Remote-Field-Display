@@ -14,7 +14,10 @@
     
     <Border BorderBrush="Gray" BorderThickness="1" Background="White" Padding="15" Width="400" Height="270">
         <Grid>
-            <TextBlock Text="Автоматическое подключение" VerticalAlignment="Top" FontSize="16" HorizontalAlignment="Left" FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,10"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
+                <Image Source="{SvgImage ../Assets/internet-connection.svg}" Width="18" Height="18" Margin="0 0 5 0"></Image>
+                <TextBlock Text="Автоматическое подключение"  FontSize="16"  FontWeight="Bold" TextAlignment="Center" />
+            </StackPanel>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
