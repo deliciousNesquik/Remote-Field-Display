@@ -29,8 +29,11 @@
 			
 			<!--Кастомная верхняя панель-->
 			<Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}" >
-				<!--Заголовок приложения-->
-				<Label Grid.Column="0" VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="10 0 0 0">RFD "Пульт бурильщика"</Label>
+				<!--Заголовок приложения и картинка-->
+				<StackPanel Grid.Column="0" Orientation="Horizontal">
+					<Image Source="{SvgImage ../Assets/app-icon.svg}" Margin="5 2 0 2"></Image>
+					<Label  VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Пульт бурильщика"</Label>
+				</StackPanel>
 				
 				<!--Кнопки для управления приложением-->
 				<StackPanel Grid.Column="1" Orientation="Horizontal">

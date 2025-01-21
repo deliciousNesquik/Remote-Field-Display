@@ -36,4 +36,10 @@
       <HintPath>Libraries\NPFGEO.LWD.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Styles\Common.axaml" />
+    <UpToDateCheckInput Remove="Styles\DarkTheme.axaml" />
+    <UpToDateCheckInput Remove="Styles\LightTheme.axaml" />
+  </ItemGroup>
 </Project>
