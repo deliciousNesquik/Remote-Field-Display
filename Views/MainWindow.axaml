@@ -15,35 +15,46 @@
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1">
 	
-	<!--Указывавется для designer binding-->
 	<Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
+	
 	<Window.Resources>
 		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
 	</Window.Resources>
 	
 	
-	<Border Name="MainBorder" Margin="0 0 0 0" BorderThickness="1" BorderBrush="{DynamicResource BorderColor}">
+	<Border Name="MainBorder" 
+	        BorderThickness="1" 
+	        BorderBrush="{DynamicResource BorderColor}">
+		
 		<Grid RowDefinitions="Auto, *">
+			
+			<!--Картинка приложения по центру на заднем фоне-->
+			<Image Grid.Row="0" Grid.RowSpan="2" Source="{SvgImage ../Assets/app-icon.svg}">
+				<Image.Effect>
+					<BlurEffect Radius="20"/>
+				</Image.Effect>
+			</Image>
 			
 			<!--Кастомная верхняя панель-->
 			<Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}" >
+				
 				<!--Заголовок приложения и картинка-->
-				<StackPanel Grid.Column="0" Orientation="Horizontal">
+				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
 					<Image Source="{SvgImage ../Assets/app-icon.svg}" Margin="5 2 0 2"></Image>
-					<Label  VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Пульт бурильщика"</Label>
+					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Пульт бурильщика"</Label>
 				</StackPanel>
 				
 				<!--Кнопки для управления приложением-->
 				<StackPanel Grid.Column="1" Orientation="Horizontal">
-					<Button Name="WindowMinimizeButton" Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
+					<Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
 						<Svg Path="../Assets/window-minimize.svg"/>
 					</Button>
-					<Button Name="WindowMaximizeButton" Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
+					<Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
 						<Svg Path="../Assets/window-maximize.svg"/>
 					</Button>
-					<Button Name="WindowCloseButton" Classes="close" Click="WindowCloseButton_OnClick">
+					<Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
 						<Svg Path="../Assets/window-close.svg"/>
 					</Button>
 				</StackPanel>
@@ -51,7 +62,8 @@
 			
 			
 			
-			<Grid Grid.Row="1" RowDefinitions="*" ColumnDefinitions="*">
+			<Grid Grid.Row="1">
+				
 				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
 				<Border Name="BlackoutWindow"
 				        IsVisible="{Binding IsModalWindowOpen}"
@@ -105,12 +117,14 @@
 						</Menu>
 						
 						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP (Адрес): {0}}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650" VerticalAlignment="Center"/>
+							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP-Адрес: {0}}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650" VerticalAlignment="Center"/>
 							<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
 						</StackPanel>
-						
 					</DockPanel>
+					
 					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+					
+					
 					<!--Левая панель с графиком и парметрами бурения-->
 					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
 						<!--График бурения-->

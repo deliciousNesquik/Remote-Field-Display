@@ -24,7 +24,7 @@
         </Style>
         
         <!--Стиль для кнопки закрытия окна-->
-        <Style Selector="Button.close /template/ContentPresenter">
+        <Style Selector="Button.windowСlose /template/ContentPresenter">
             <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="Width" Value="{DynamicResource ButtonWidth}"/>
             <Setter Property="Height" Value="{DynamicResource ButtonHeight}"/>
