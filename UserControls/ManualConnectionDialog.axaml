@@ -11,17 +11,20 @@
         <vm:ManualConnectionDialogViewModel/>
     </Design.DataContext>
     
-    <Border BorderBrush="Gray" BorderThickness="1" Background="White" Padding="15" Width="400" Height="270">
+    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" 
+            Background="{DynamicResource GradientBackground}" Padding="15" 
+            Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
+        
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Image Source="{SvgImage ../Assets/internet-connection.svg}" Width="18" Height="18" Margin="0 0 5 0"></Image>
-                <TextBlock Text="Ручное подключение" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                <Image Source="{SvgImage ../Assets/internet-connection.svg}" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"></Image>
+                <TextBlock Text="Ручное подключение" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold" TextAlignment="Center"/>
             </StackPanel>
             
             <!-- Пример полей для ввода -->
             <StackPanel Orientation="Vertical" VerticalAlignment="Center"> 
                 <TextBox Watermark="Введите IP-адрес" Text="{Binding FieldIpАddress, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0 20 0 20" TextAlignment="Center">
+                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" Margin="0 20 0 20" TextAlignment="Center">
                     Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
                     <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
                     Например: <Run Foreground="Green">192.168.1.100</Run>. 
