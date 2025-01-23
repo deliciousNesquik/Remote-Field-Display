@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
-using ReactiveUI;
-using NPFGEO.LWD.Net;
 
 namespace RFD.ViewModels;
 
-public partial class MainWindowViewModel : INotifyPropertyChanged
+public class MainWindowViewModel : INotifyPropertyChanged
 {
     #region Переменные: Геофизические параметры
     public ObservableCollection<InfoBox> InfoBlockList { get; private set; }
@@ -38,7 +34,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         }
     }
         
-    private bool _isModalWindowOpen = false;
+    private bool _isModalWindowOpen;
     public bool IsModalWindowOpen
     {
         get => _isModalWindowOpen;
@@ -56,7 +52,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    private bool _isManualConnectingOpen = false;
+    private bool _isManualConnectingOpen;
     public bool IsManualConnectingOpen
     {
         get => _isManualConnectingOpen;
@@ -68,7 +64,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    private bool _isAutomaticConnectingOpen = false;
+    private bool _isAutomaticConnectingOpen;
     public bool IsAutomaticConnectingOpen
     {
         get => _isAutomaticConnectingOpen;
@@ -80,7 +76,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         }
     }
         
-    private double _blurRadius = 0;
+    private double _blurRadius;
     public double BlurRadius
     {
         get => _blurRadius;
@@ -191,7 +187,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
     #endregion
 
     #region Переменные: Для связи между App.xaml.cs и текущим файлом
-    private RFD.App Model => App.Current as RFD.App;
+    private static App? Model => Application.Current as App;
     #endregion
         
     public MainWindowViewModel() 
@@ -212,7 +208,6 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
             new ("Насос", false),
             new ("Забой", false),
         ];
-            
         MagneticDeclination = 0.00;
         ToolfaceOffset = 0.00;
 
@@ -226,9 +221,10 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         //App.SettingsUpdated += SetSettings;
             
         //Команды основного меню
-        OpenAutomaticConnectingCommand = new RelayCommand(() => OpenAutomaticConnecting(), () => !IsModalWindowOpen);
-        OpenManualConnectingCommand = new RelayCommand(() => OpenManualConnecting(), () => !IsModalWindowOpen);
-        DisconnectCommand = new RelayCommand(() => Disconnect(), () => ConnectionStatus);
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
+        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
+        SettingsCommand = new RelayCommand((() => Console.WriteLine("Open settings")), () => true);
         TargetVisibleCommand = new RelayCommand(() =>
         {
             IsTargetDisplayed = !IsTargetDisplayed;
@@ -272,6 +268,7 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         {
             //TODO
             //Добавить метод для передачи, проверки IP-адреса и подключение по нему
+            Console.WriteLine("Попытка подключения к адресу: " + ip);
             ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
         };
         ManualConnectionDialogViewModel.CloseDialog += () =>
@@ -325,12 +322,13 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
                 // Обрабатываем отмену задачи (ничего делать не нужно)
                 Console.WriteLine("Connection was canceled.");
             }
-        });
+        }, cancellationTokenSource.Token);
     }
     #endregion
 
     #region Методы: Методы для соединения с сервером
-    public void Disconnect()
+
+    private void Disconnect()
     {
         Console.WriteLine("User disconnect from server");
         Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
@@ -345,7 +343,8 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
             Model.Disconnect();
         }*/
     }
-    public void UpdateConnecting()
+
+    private void UpdateConnecting()
     {
         Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + true + "}");
         IpAddress = Model.CurrentIpAddress;
@@ -400,15 +399,16 @@ public partial class MainWindowViewModel : INotifyPropertyChanged
         return flag;
     }*/
 
-    static InfoBox Convert(ParameterInfo info)
+    /*static InfoBox Convert(ParameterInfo info)
     {
         return new InfoBox(info.Name.ToString(), "-999", info.Units.ToString());
-    }
+    }*/
     #endregion
 
     #region Доп. методы
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

@@ -1,7 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -14,12 +11,12 @@ namespace RFD.ViewModels
         public Action? CloseDialog;
         
         /// <summary>Триггер оповещает родителя о том, что диалоговое окно хочет выполнить попытку подключения</summary>
-        public Action<string> ConnectionAttempt;
+        public Action<string>? ConnectionAttempt;
         
         /// <summary>Триггер, который необходимо вызывать в родителе чтобы уведомить диалоговое окно о том что соединение успешно</summary>
         public Action<bool> ConnectionStatus;
         
-        public string FieldIpАddress { get; set; }
+        public string? FieldIpАddress { get; set; }
         public bool IsActionInProgress { get; set; }
         public ICommand ConfirmCommand { get; }
         public ICommand CancelCommand { get; }
@@ -59,12 +56,6 @@ namespace RFD.ViewModels
         {
             IsActionInProgress = false;
             CloseDialog?.Invoke();
-        }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

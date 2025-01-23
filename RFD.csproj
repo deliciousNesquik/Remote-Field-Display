@@ -29,17 +29,33 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="GeoCore">
-      <HintPath>Libraries\GeoCore.dll</HintPath>
-    </Reference>
-    <Reference Include="NPFGEO.LWD.Net">
-      <HintPath>Libraries\NPFGEO.LWD.Net.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <UpToDateCheckInput Remove="Styles\Common.axaml" />
     <UpToDateCheckInput Remove="Styles\DarkTheme.axaml" />
     <UpToDateCheckInput Remove="Styles\LightTheme.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\Arc.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\Arcs.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\ArcsRing.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\DoubleBounce.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\FlipPlane.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\Pulse.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\Ring.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\ThreeDots.axaml" />
+    <UpToDateCheckInput Remove="UserControls\Themes\Wave.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Libraries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Controls\Themes\Arc.axaml" />
+    <AdditionalFiles Include="Controls\Themes\Arcs.axaml" />
+    <AdditionalFiles Include="Controls\Themes\ArcsRing.axaml" />
+    <AdditionalFiles Include="Controls\Themes\DoubleBounce.axaml" />
+    <AdditionalFiles Include="Controls\Themes\FlipPlane.axaml" />
+    <AdditionalFiles Include="Controls\Themes\Pulse.axaml" />
+    <AdditionalFiles Include="Controls\Themes\Ring.axaml" />
+    <AdditionalFiles Include="Controls\Themes\ThreeDots.axaml" />
+    <AdditionalFiles Include="Controls\Themes\Wave.axaml" />
   </ItemGroup>
 </Project>

@@ -63,7 +63,7 @@
         
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://RFD/UserControls/LoadingIndicators.axaml" />
+                <ResourceInclude Source="avares://RFD/Controls/LoadingIndicators.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         
