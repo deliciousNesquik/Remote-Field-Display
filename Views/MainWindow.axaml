@@ -49,13 +49,13 @@
 				<!--Кнопки для управления приложением-->
 				<StackPanel Grid.Column="1" Orientation="Horizontal">
 					<Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
-						<Svg Path="../Assets/window-minimize.svg"/>
+						<Svg Path="../Assets/button-minimize.svg"/>
 					</Button>
 					<Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
-						<Svg Path="../Assets/window-maximize.svg"/>
+						<Svg Path="../Assets/button-maximize.svg"/>
 					</Button>
 					<Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
-						<Svg Path="../Assets/window-close.svg"/>
+						<Svg Path="../Assets/button-close.svg"/>
 					</Button>
 				</StackPanel>
 			</Grid>
