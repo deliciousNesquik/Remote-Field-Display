@@ -43,7 +43,7 @@
 				<!--Заголовок приложения и картинка-->
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
 					<Image Source="{SvgImage ../Assets/app-icon.svg}" Margin="5 2 0 2"></Image>
-					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Пульт бурильщика"</Label>
+					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Монитор бурильщика"</Label>
 				</StackPanel>
 				
 				<!--Кнопки для управления приложением-->
