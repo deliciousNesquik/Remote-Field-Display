@@ -1,11 +1,11 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="RFD.App"
-             xmlns:local="using:RFD"
+             xmlns:interfaces="clr-namespace:RFD.Interfaces"
              RequestedThemeVariant="Default">
 
     <Application.DataTemplates>
-        <local:ViewLocator/>
+        <interfaces:ViewLocator/>
     </Application.DataTemplates>
   
     <Application.Styles>

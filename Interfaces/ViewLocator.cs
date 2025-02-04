@@ -3,7 +3,7 @@ using Avalonia.Controls.Templates;
 using RFD.ViewModels;
 using System;
 
-namespace RFD
+namespace RFD.Interfaces
 {
     public class ViewLocator : IDataTemplate
     {
