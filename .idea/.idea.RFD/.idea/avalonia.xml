@@ -16,6 +16,7 @@
         <entry key="UserControls/ConnectionControl.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />
         <entry key="UserControls/ManualConnectionDialog.axaml" value="RFD.csproj" />
+        <entry key="UserControls/ParametersSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/TargetSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/TitleBarWindows.axaml" value="RFD.csproj" />
         <entry key="Views/MainWindow.axaml" value="RFD.csproj" />

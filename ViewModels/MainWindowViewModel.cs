@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -90,53 +91,54 @@ public class MainWindowViewModel : INotifyPropertyChanged
     #endregion
 
     #region Переменные: Параметры отвечающие за настройку окон внутри главного окна
-    private bool _isTargetDisplayed;
-    public bool IsTargetDisplayed
+
+    /// <summary> Принимает любой UserControl и отобразит его в левом верхнем углу </summary>
+    public ContentControl FirstCell { get; set; }
+    /// <summary> Принимает любой UserControl и отобразит его в левом нижнем углу </summary>
+    public ContentControl SecondCell { get; set; }
+    /// <summary> Принимает любой UserControl и отобразит его в правом верхнем углу </summary>
+    public ContentControl ThirdCell { get; set; }
+    /// <summary> Принимает любой UserControl и отобразит его в правом нижнем углу </summary>
+    public ContentControl FourCell { get; set; }
+    
+    private bool _isFirstCellVisible;
+    
+    private bool IsFirstCellVisible
     {
-        get => _isTargetDisplayed;
+        get => _isFirstCellVisible;
         set
         {
-            _isTargetDisplayed = value;
+            _isFirstCellVisible = value;
             OnPropertyChanged();
         }
     }
-    private bool _isInformationDisplayed;
-    public bool IsInformationDisplayed
+    private bool _isSecondCellVisible;
+    public bool IsSecondCellVisible
     {
-        get => _isInformationDisplayed;
+        get => _isSecondCellVisible;
         set
         {
-            _isInformationDisplayed = value;
+            _isSecondCellVisible = value;
             OnPropertyChanged();
         }
     }
-    private bool _isParametersDisplayed;
-    public bool IsParametersDisplayed
+    private bool _isThirdCellVisible;
+    public bool IsThirdCellVisible
     {
-        get => _isParametersDisplayed;
+        get => _isThirdCellVisible;
         set
         {
-            _isParametersDisplayed = value;
+            _isThirdCellVisible = value;
             OnPropertyChanged();
         }
     }
-    private bool _isStatusesDisplayed;
-    public bool IsStatusesDisplayed
+    private bool _isFourCellVisible;
+    public bool IsFourCellVisible
     {
-        get => _isStatusesDisplayed;
+        get => _isFourCellVisible;
         set
         {
-            _isStatusesDisplayed = value;
-            OnPropertyChanged();
-        }
-    }
-    private bool _isConditionsDisplayed;
-    public bool IsConditionsDisplayed
-    {
-        get => _isConditionsDisplayed;
-        set
-        {
-            _isConditionsDisplayed = value;
+            _isFourCellVisible = value;
             OnPropertyChanged();
         }
     }
@@ -157,7 +159,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand InformationVisibleCommand { get; }
     public ICommand ParametersVisibleCommand { get; }
     public ICommand StatusesVisibleCommand { get; }
-    public ICommand ConditionsVisibleCommand { get; }
 
     #endregion
 
@@ -190,8 +191,25 @@ public class MainWindowViewModel : INotifyPropertyChanged
     private static App? Model => Application.Current as App;
     #endregion
         
-    public MainWindowViewModel() 
+    public MainWindowViewModel()
     {
+        FirstCell = new TargetSection
+        {
+            DataContext = new TargetSectionViewModel()
+        };
+        SecondCell = new ParametersSection
+        {
+            DataContext = new ParametersSectionViewModel()
+        };
+        ThirdCell = new TargetSection
+        {
+            DataContext = new TargetSectionViewModel()
+        };
+        FourCell = new ParametersSection
+        {
+            DataContext = new ParametersSectionViewModel()
+        };
+        
         //Геофизические параметры заполнены для примера
         InfoBlockList = [
             new ("Высота блока", "-", "м"),
@@ -211,11 +229,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
         MagneticDeclination = 0.00;
         ToolfaceOffset = 0.00;
 
-        IsTargetDisplayed = true;
-        IsInformationDisplayed = true;
-        IsParametersDisplayed = true;
-        IsStatusesDisplayed = true;
-        IsConditionsDisplayed = true;
+        IsFirstCellVisible = true;
+        IsSecondCellVisible = true;
+        IsThirdCellVisible = true;
+        IsFourCellVisible = true;
     
         App.ConnectionUpdated += UpdateConnecting;
         //App.SettingsUpdated += SetSettings;
@@ -227,28 +244,23 @@ public class MainWindowViewModel : INotifyPropertyChanged
         SettingsCommand = new RelayCommand((() => Console.WriteLine("Open settings")), () => true);
         TargetVisibleCommand = new RelayCommand(() =>
         {
-            IsTargetDisplayed = !IsTargetDisplayed;
-            Console.WriteLine(IsTargetDisplayed);
+            IsFirstCellVisible = !IsFirstCellVisible;
+            Console.WriteLine(IsFirstCellVisible);
         });
         InformationVisibleCommand = new RelayCommand(() =>
         {
-            IsInformationDisplayed = !IsInformationDisplayed;
-            Console.WriteLine(InformationVisibleCommand);
+            IsThirdCellVisible = !IsThirdCellVisible;
+            Console.WriteLine(IsThirdCellVisible);
         });
         ParametersVisibleCommand = new RelayCommand(() =>
         {
-            IsParametersDisplayed = !IsParametersDisplayed;
-            Console.WriteLine(IsParametersDisplayed);
+            IsSecondCellVisible = !IsSecondCellVisible;
+            Console.WriteLine(IsSecondCellVisible);
         });
         StatusesVisibleCommand = new RelayCommand(() =>
         {
-            IsStatusesDisplayed = !IsStatusesDisplayed;
-            Console.WriteLine(IsStatusesDisplayed);
-        });
-        ConditionsVisibleCommand = new RelayCommand(() =>
-        {
-            IsConditionsDisplayed = !IsConditionsDisplayed;
-            Console.WriteLine(IsConditionsDisplayed);
+            IsFourCellVisible = !IsFourCellVisible;
+            Console.WriteLine(IsFourCellVisible);
         });
     }
 

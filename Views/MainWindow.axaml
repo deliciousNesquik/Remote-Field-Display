@@ -31,7 +31,7 @@
 		<Grid RowDefinitions="Auto, *">
 			
 			<!--Картинка приложения по центру на заднем фоне-->
-			<Image Grid.Row="0" Grid.RowSpan="2" Source="{SvgImage ../Assets/app-icon.svg}">
+			<Image IsVisible="True" Grid.Row="0" Grid.RowSpan="2" Source="{SvgImage ../Assets/app-icon.svg}">
 				<Image.Effect>
 					<BlurEffect Radius="20"/>
 				</Image.Effect>
@@ -60,10 +60,7 @@
 				</StackPanel>
 			</Grid>
 			
-			
-			
 			<Grid Grid.Row="1">
-				
 				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
 				<Border Name="BlackoutWindow"
 				        IsVisible="{Binding IsModalWindowOpen}"
@@ -87,6 +84,7 @@
 				
 				<!--Основное содержимое главного окна-->
 				<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
+					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
 					
 					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
 					<Grid.Effect>
@@ -94,7 +92,7 @@
 					</Grid.Effect>
 					
 					<!--Блок меню-->
-					<DockPanel Grid.Row="0" Grid.ColumnSpan="2">
+					<DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
 						<Menu DockPanel.Dock="Left">
 							<MenuItem Header="Подключение" Classes="main">
 								<MenuItem Header="Автоматическое подключение" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}"/>
@@ -104,11 +102,10 @@
 							<MenuItem Header="Настройки" Classes="main" Command="{Binding SettingsCommand}"/>
 							
 							<MenuItem Header="Окна" Classes="main">
-								<MenuItem Header="Мишень" Classes="sub" Command="{Binding TargetVisibleCommand}"/>
-								<MenuItem Header="Информация" Classes="sub" Command="{Binding InformationVisibleCommand}"/>
-								<MenuItem Header="Параметры" Classes="sub" Command="{Binding ParametersVisibleCommand}"/>
-								<MenuItem Header="Статусы" Classes="sub" Command="{Binding StatusesVisibleCommand}"/>
-								<MenuItem Header="Состояния" Classes="sub" Command="{Binding ConditionsVisibleCommand}"/>
+								<MenuItem Header="Показать/Скрыть: Левая верхняя" Classes="sub" Command="{Binding TargetVisibleCommand}"/>
+								<MenuItem Header="Показать/Скрыть: Правая верхняя" Classes="sub" Command="{Binding InformationVisibleCommand}"/>
+								<MenuItem Header="Показать/Скрыть: Левая нижняя" Classes="sub" Command="{Binding ParametersVisibleCommand}"/>
+								<MenuItem Header="Показать/Скрыть: Правая нижняя" Classes="sub" Command="{Binding StatusesVisibleCommand}"/>
 							</MenuItem>
 							<MenuItem Header="Помощь" Classes="main">
 								<MenuItem Header="Руководство пользователя" Classes="sub"/>
@@ -122,59 +119,65 @@
 						</StackPanel>
 					</DockPanel>
 					
-					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
-					
-					
-					<!--Левая панель с графиком и парметрами бурения-->
-					<Grid Grid.Row="1" Grid.Column="0" Margin="20" RowDefinitions="*, Auto">
-						<!--График бурения-->
-						<StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsTargetDisplayed}">
-							<Label Content="Бурение:" Classes="section"/>
-							<Label Content="Нет данных" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-						</StackPanel>
-						
-						<!--Магнитное склонение-->
-						<!--Смещение поверхности инструмента-->
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsParametersDisplayed}">
-							<Label Content="Параметры бурения:" Classes="section"/>
-							<Label Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
-							<Label Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
-						</StackPanel>
+					<Grid ColumnDefinitions="*, *" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ShowGridLines="True"
+					      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+						<!-- Первый столбец -->
+						<Grid Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" RowDefinitions="*,*">
+							<ContentControl Grid.Row="0" IsVisible="{Binding IsFirstCellVisible}"
+							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+							                Content="{Binding FirstCell}"/>
+							<ContentControl Grid.Row="1" IsVisible="{Binding IsSecondCellVisible}"
+							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+							                Content="{Binding SecondCell}" />
+						</Grid>
+    
+						<!-- Второй столбец -->
+						<Grid Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" RowDefinitions="*,*">
+							<ContentControl Grid.Row="0" IsVisible="{Binding IsThirdCellVisible}"
+							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+							                Content="{Binding ThirdCell}" />
+							<ContentControl Grid.Row="1" IsVisible="{Binding IsFourCellVisible}"
+							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+							                Content="{Binding FourCell}"/>
+						</Grid>
 					</Grid>
-					<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
-						<!--Блок с информационными блоками-->
-						<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
-							<Label Content="Информация о бурении:" Classes="section"/>
-							<ItemsControl ItemsSource="{Binding InfoBlockList}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<WrapPanel Orientation="Horizontal"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<controls:InfoBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
-						<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
-							<Label Content="Статусы бурения:" Classes="section" />
-							<!--Блок со статусами элементов буровой-->
-							<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<WrapPanel Orientation="Horizontal"/>
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" Margin="1"/>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
-					</Grid>
+
+
+						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">-->
+							<!--Блок с информационными блоками-->
+							<!--<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
+								<Label Content="Информация о бурении:" Classes="section"/>
+								<ItemsControl ItemsSource="{Binding InfoBlockList}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<WrapPanel Orientation="Horizontal"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<controls:InfoBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+							<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
+								<Label Content="Статусы бурения:" Classes="section" />
+								~1~Блок со статусами элементов буровой@1@
+								<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<WrapPanel Orientation="Horizontal"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" Margin="1"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+						</Grid>-->
+					
 				</Grid>
 			</Grid>
 		</Grid>
