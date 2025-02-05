@@ -205,9 +205,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             DataContext = new TargetSectionViewModel()
         };
-        FourCell = new ParametersSection
+        FourCell = new TargetSection
         {
-            DataContext = new ParametersSectionViewModel()
+            DataContext = new TargetSectionViewModel()
         };
         
         //Геофизические параметры заполнены для примера

@@ -119,28 +119,59 @@
 						</StackPanel>
 					</DockPanel>
 					
-					<Grid ColumnDefinitions="*, *" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ShowGridLines="True"
-					      VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-						<!-- Первый столбец -->
-						<Grid Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" RowDefinitions="*,*">
-							<ContentControl Grid.Row="0" IsVisible="{Binding IsFirstCellVisible}"
+					<UniformGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Rows="2" Columns="2">
+						<DockPanel LastChildFill="True">
+							<ContentControl IsVisible="{Binding IsFirstCellVisible}"
+							                VerticalAlignment="Top"
+							                Content="{Binding FirstCell}"/>
+						</DockPanel>
+    
+						<DockPanel LastChildFill="True">
+							<ContentControl IsVisible="{Binding IsSecondCellVisible}"
+							                VerticalAlignment="Stretch"
+							                Content="{Binding SecondCell}"/>
+						</DockPanel>
+    
+						<DockPanel LastChildFill="True">
+							<ContentControl IsVisible="{Binding IsThirdCellVisible}"
+							                VerticalAlignment="Stretch"
+							                Content="{Binding ThirdCell}"/>
+						</DockPanel>
+    
+						<DockPanel LastChildFill="True">
+							<ContentControl IsVisible="{Binding IsFourCellVisible}"
+							                VerticalAlignment="Stretch"
+							                Content="{Binding FourCell}"/>
+						</DockPanel>
+					</UniformGrid>
+					
+					<!--<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+						~1~ Первый столбец @1@
+						<DockPanel>
+							<ContentControl DockPanel.Dock="Top"
+							                IsVisible="{Binding IsFirstCellVisible}"
 							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 							                Content="{Binding FirstCell}"/>
-							<ContentControl Grid.Row="1" IsVisible="{Binding IsSecondCellVisible}"
+							
+							<ContentControl DockPanel.Dock="Bottom"
+							                IsVisible="{Binding IsSecondCellVisible}"
 							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 							                Content="{Binding SecondCell}" />
-						</Grid>
-    
-						<!-- Второй столбец -->
-						<Grid Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" RowDefinitions="*,*">
-							<ContentControl Grid.Row="0" IsVisible="{Binding IsThirdCellVisible}"
+						</DockPanel>
+						
+						~1~ Второй столбец @1@
+						<DockPanel>
+							<ContentControl DockPanel.Dock="Top"
+							                IsVisible="{Binding IsThirdCellVisible}"
 							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding ThirdCell}" />
-							<ContentControl Grid.Row="1" IsVisible="{Binding IsFourCellVisible}"
+							                Content="{Binding ThirdCell}"/>
+							
+							<ContentControl DockPanel.Dock="Bottom"
+							                IsVisible="{Binding IsFourCellVisible}"
 							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding FourCell}"/>
-						</Grid>
-					</Grid>
+							                Content="{Binding FourCell}" />
+						</DockPanel>
+					</StackPanel>-->
 
 
 						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">-->
