@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:RFD.ViewModels"
+             xmlns:controls="using:RFD.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="RFD.UserControls.InformationSection"
+             x:DataType="vm:InformationSectionViewModel">
+    
+    <!--Блок с информационными блоками-->
+    <Grid RowDefinitions="Auto, *" Margin="5">
+	    <Border Grid.Row="0" Grid.RowSpan="2" BorderBrush="Gray" BorderThickness="0"></Border>
+	    
+	    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 5">
+		    <Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="13" Margin="0 0 5 0"/>
+		    <TextBlock Text="Информация о бурении" FontWeight="Bold" Classes="section" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+	    </StackPanel>
+	    
+	    <ItemsControl Grid.Row="1" ItemsSource="{Binding InfoBlockList}">
+		    <ItemsControl.ItemsPanel>
+			    <ItemsPanelTemplate>
+				    <WrapPanel Orientation="Horizontal"/>
+			    </ItemsPanelTemplate>
+		    </ItemsControl.ItemsPanel>
+		    <ItemsControl.ItemTemplate>
+			    <DataTemplate>
+				    <controls:InfoBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+			    </DataTemplate>
+		    </ItemsControl.ItemTemplate>
+	    </ItemsControl>
+    </Grid>
+</UserControl>

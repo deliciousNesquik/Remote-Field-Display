@@ -59,7 +59,7 @@ public partial class TargetSectionViewModel : INotifyPropertyChanged
     {
         var window = new Window
         {
-            Content = new UserControls.TargetSection { DataContext = new TargetSectionViewModel() },
+            Content = new UserControls.TargetSection { DataContext = this },
             Width = SelectedWidth,
             Height = SelectedHeight
         };

@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="using:RFD.Controls"
         xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
         xmlns:converters="using:RFD.Converters"
@@ -122,7 +121,7 @@
 					<UniformGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Rows="2" Columns="2">
 						<DockPanel LastChildFill="True">
 							<ContentControl IsVisible="{Binding IsFirstCellVisible}"
-							                VerticalAlignment="Top"
+							                VerticalAlignment="Stretch"
 							                Content="{Binding FirstCell}"/>
 						</DockPanel>
     
@@ -174,23 +173,8 @@
 					</StackPanel>-->
 
 
-						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">-->
-							<!--Блок с информационными блоками-->
-							<!--<StackPanel Grid.Row="0" Margin="0 20 0 0" IsVisible="{Binding IsInformationDisplayed}">
-								<Label Content="Информация о бурении:" Classes="section"/>
-								<ItemsControl ItemsSource="{Binding InfoBlockList}">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<WrapPanel Orientation="Horizontal"/>
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<controls:InfoBox Margin="1" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</StackPanel>
+						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
+							
 							<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
 								<Label Content="Статусы бурения:" Classes="section" />
 								~1~Блок со статусами элементов буровой@1@

@@ -17,7 +17,6 @@ namespace RFD.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     #region Переменные: Геофизические параметры
-    public ObservableCollection<InfoBox> InfoBlockList { get; private set; }
     public ObservableCollection<StatusBox> InfoStatusList { get; private set; }
     public double MagneticDeclination { get; private set; } 
     public double ToolfaceOffset { get; private set; } 
@@ -197,13 +196,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             DataContext = new TargetSectionViewModel()
         };
-        SecondCell = new ParametersSection
+        ThirdCell = new ParametersSection
         {
             DataContext = new ParametersSectionViewModel()
         };
-        ThirdCell = new TargetSection
+        SecondCell = new InformationSection
         {
-            DataContext = new TargetSectionViewModel()
+            DataContext = new InformationSectionViewModel()
         };
         FourCell = new TargetSection
         {
@@ -211,16 +210,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         };
         
         //Геофизические параметры заполнены для примера
-        InfoBlockList = [
-            new ("Высота блока", "-", "м"),
-            new ("Глубина долота", "-", "м"),
-            new ("Текущий забой", "-", "м"),
-            new ("TVD", "-", "м"),
-            new ("Расстояние до забоя", "-", "м"),
-            new ("Rop средний", "-", "м/ч"),
-            new ("Зенит", "-", "°"),
-            new ("Азимут", "-", "°"),
-        ];
+        
         InfoStatusList = [
             new ("Клинья", false),
             new ("Насос", false),
@@ -342,14 +332,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private void Disconnect()
     {
-        Console.WriteLine("User disconnect from server");
-        Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
-        Console.WriteLine("Info block list count items: " + InfoBlockList.Count);
-        InfoStatusList.Clear();
-        InfoBlockList.Clear();
-            
-        Console.WriteLine("Info status list count items: " + InfoStatusList.Count);
-        Console.WriteLine("Info block list count items: " + InfoBlockList.Count);
         /*if (Model != null)
         {
             Model.Disconnect();

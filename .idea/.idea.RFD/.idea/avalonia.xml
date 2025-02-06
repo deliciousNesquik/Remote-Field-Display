@@ -14,6 +14,7 @@
         <entry key="Converters/Converters.axaml" value="RFD.csproj" />
         <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ConnectionControl.axaml" value="RFD.csproj" />
+        <entry key="UserControls/InformationSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />
         <entry key="UserControls/ManualConnectionDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ParametersSection.axaml" value="RFD.csproj" />

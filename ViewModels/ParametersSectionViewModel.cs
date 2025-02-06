@@ -39,7 +39,7 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
     {
         var window = new Window
         {
-            Content = new UserControls.ParametersSection { DataContext = new TargetSectionViewModel() },
+            Content = new UserControls.ParametersSection { DataContext = this },
             Width = SelectedWidth,
             Height = SelectedHeight
         };
