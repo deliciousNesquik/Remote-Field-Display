@@ -17,7 +17,6 @@
                 Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"/>
        
         <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
-            
             <Grid>
                 <Ellipse Width="200" Height="200" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
                 <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="#67808080" StrokeThickness="10"/>
@@ -43,14 +42,9 @@
                 <TextBlock Text="-135°" FontSize="4" Margin="27 164 0 0"></TextBlock>
                 <TextBlock Text=" -90°" FontSize="4" Margin="0 97 0 0"></TextBlock>
                 <TextBlock Text="-45°" FontSize="4" Margin="30 30 0 0"></TextBlock>
-
-
-
+                
+                <Polygon Points="{Binding Sector}" Fill="#2B0068FF"></Polygon>
             </Grid>
-
-            
         </Viewbox>
-        
-        
     </Grid>
 </UserControl>

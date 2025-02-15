@@ -226,9 +226,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
         ParametersSectionViewModel.MagneticDeclination = 10.0;
         ParametersSectionViewModel.ToolfaceOffset = 12.0;
-
-        TargetSectionViewModel.CreateSectorGeometry(0, 45, 100, 100);
         
+        TargetSectionViewModel.SetSector(45, 135);
         
         //Геофизические параметры заполнены для примера
         
