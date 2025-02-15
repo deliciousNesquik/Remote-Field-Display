@@ -215,19 +215,22 @@ public class MainWindowViewModel : INotifyPropertyChanged
             DataContext = InformationSectionViewModel
         };
 
+        //Использовать только эти два методы для создания сектора и его очистки
+        TargetSectionViewModel.SetSector(45, 135);
+        TargetSectionViewModel.ClearSector();
+        
+        
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.ClearInfoBox();
+        
+        
         ParametersSectionViewModel.MagneticDeclination = 10.0;
         ParametersSectionViewModel.ToolfaceOffset = 12.0;
+        ParametersSectionViewModel.MagneticDeclination = 0;
+        ParametersSectionViewModel.ToolfaceOffset = 0;
         
-        TargetSectionViewModel.SetSector(45, 135);
+        
         
         //Геофизические параметры заполнены для примера
         

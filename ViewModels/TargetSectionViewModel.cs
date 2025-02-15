@@ -29,6 +29,7 @@ public partial class TargetSectionViewModel : INotifyPropertyChanged
     public TargetSectionViewModel()
     {
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
+        ClearSector();
     }
 
     /// <summary>
@@ -39,6 +40,11 @@ public partial class TargetSectionViewModel : INotifyPropertyChanged
     public void SetSector(double startAngle, double endAngle)
     {
         Sector = CreateSectorPoints(new Point(100, 100), GetPointForAngle(startAngle), GetPointForAngle(endAngle), 100);
+    }
+
+    public void ClearSector()
+    {
+        Sector = [new Point(100, 10)];
     }
 
     private void OpenInNewWindow()

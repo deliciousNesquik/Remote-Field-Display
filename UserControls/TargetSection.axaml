@@ -44,6 +44,10 @@
                 <TextBlock Text="-45°" FontSize="4" Margin="30 30 0 0"></TextBlock>
                 
                 <Polygon Points="{Binding Sector}" Fill="#2B0068FF"></Polygon>
+                
+                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="25 0 0 25"></Ellipse>
+                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="52 0 0 52"></Ellipse>
+
             </Grid>
         </Viewbox>
     </Grid>
