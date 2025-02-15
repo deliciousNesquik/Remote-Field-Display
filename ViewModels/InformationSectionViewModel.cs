@@ -8,33 +8,12 @@ namespace RFD.ViewModels;
 
 public class InformationSectionViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<InfoBox> InfoBlockList { get; private set; }
+    public ObservableCollection<InfoBox> InfoBlockList { get; set; } = new();
 
-    
-    public InformationSectionViewModel()
-    {
-        InfoBlockList = [
-            new ("Высота блока", "-", "м"),
-            new ("Глубина долота", "-", "м"),
-            new ("Текущий забой", "-", "м"),
-            new ("TVD", "-", "м"),
-            new ("Расстояние до забоя", "-", "м"),
-            new ("Rop средний", "-", "м/ч"),
-            new ("Зенит", "-", "°"),
-            new ("Азимут", "-", "°"),
-        ];
-    }
 
     public void AddInfoBox(InfoBox infoBox)
     {
         InfoBlockList.Add(infoBox);
-    }
-    public void AddInfoBox(List<InfoBox> infoBoxList)
-    {
-        foreach (InfoBox infoBox in infoBoxList)
-        {
-            AddInfoBox(infoBox);
-        }
     }
     public void ClearInfoBox()
     {

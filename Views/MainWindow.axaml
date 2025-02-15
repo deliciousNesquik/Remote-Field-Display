@@ -118,63 +118,29 @@
 						</StackPanel>
 					</DockPanel>
 					
-					<UniformGrid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Rows="2" Columns="2">
-						<DockPanel LastChildFill="True">
-							<ContentControl IsVisible="{Binding IsFirstCellVisible}"
-							                VerticalAlignment="Stretch"
-							                Content="{Binding FirstCell}"/>
-						</DockPanel>
-    
-						<DockPanel LastChildFill="True">
-							<ContentControl IsVisible="{Binding IsSecondCellVisible}"
-							                VerticalAlignment="Stretch"
-							                Content="{Binding SecondCell}"/>
-						</DockPanel>
-    
-						<DockPanel LastChildFill="True">
-							<ContentControl IsVisible="{Binding IsThirdCellVisible}"
+					<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+					      ColumnDefinitions="0.5*,0.5*" RowDefinitions="0.9*,0.15*">
+						
+						<ContentControl Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsFirstCellVisible}"
+						                VerticalAlignment="Stretch"
+						                Content="{Binding FirstCell}"/>
+						<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsSecondCellVisible}"
+						                VerticalAlignment="Stretch"
+						                Content="{Binding SecondCell}"/>
+						
+						
+						<Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" RowDefinitions="*, *">
+							<ContentControl Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsThirdCellVisible}"
 							                VerticalAlignment="Stretch"
 							                Content="{Binding ThirdCell}"/>
-						</DockPanel>
-    
-						<DockPanel LastChildFill="True">
-							<ContentControl IsVisible="{Binding IsFourCellVisible}"
+						
+							<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsFourCellVisible}"
 							                VerticalAlignment="Stretch"
 							                Content="{Binding FourCell}"/>
-						</DockPanel>
-					</UniformGrid>
-					
-					<!--<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
-						~1~ Первый столбец @1@
-						<DockPanel>
-							<ContentControl DockPanel.Dock="Top"
-							                IsVisible="{Binding IsFirstCellVisible}"
-							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding FirstCell}"/>
-							
-							<ContentControl DockPanel.Dock="Bottom"
-							                IsVisible="{Binding IsSecondCellVisible}"
-							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding SecondCell}" />
-						</DockPanel>
+						</Grid>
 						
-						~1~ Второй столбец @1@
-						<DockPanel>
-							<ContentControl DockPanel.Dock="Top"
-							                IsVisible="{Binding IsThirdCellVisible}"
-							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding ThirdCell}"/>
-							
-							<ContentControl DockPanel.Dock="Bottom"
-							                IsVisible="{Binding IsFourCellVisible}"
-							                VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-							                Content="{Binding FourCell}" />
-						</DockPanel>
-					</StackPanel>-->
-
-
+					</Grid>
 						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
-							
 							<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
 								<Label Content="Статусы бурения:" Classes="section" />
 								~1~Блок со статусами элементов буровой@1@
@@ -192,7 +158,6 @@
 								</ItemsControl>
 							</StackPanel>
 						</Grid>-->
-					
 				</Grid>
 			</Grid>
 		</Grid>

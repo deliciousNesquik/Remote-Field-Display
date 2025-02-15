@@ -17,7 +17,38 @@
                 Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"/>
        
         <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
-            <Ellipse Fill="{DynamicResource FocusingColor}" MinHeight="150" MinWidth="150"/>
+            
+            <Grid>
+                <Ellipse Width="200" Height="200" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="#67808080" StrokeThickness="10"/>
+                
+                <Ellipse Width="180" Height="180" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Ellipse Width="144" Height="144" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Ellipse Width="108" Height="108" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Ellipse Width="72" Height="72" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Ellipse Width="36" Height="36" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+
+                <Line StartPoint="100,10" EndPoint="100,190" Stroke="#81000000" StrokeThickness="1"/>
+                <Line StartPoint="10,100" EndPoint="190,100" Stroke="#81000000" StrokeThickness="1"/>
+    
+                <Line StartPoint="36.5,36.5" EndPoint="163,163" Stroke="#4B000000" StrokeThickness="0.5"/>
+                <Line StartPoint="163,36.5" EndPoint="36.5,163" Stroke="#4B000000" StrokeThickness="0.5"/>
+                
+                <TextBlock Text="0°" FontSize="4" Margin="98 3 0 0" Padding="0"></TextBlock>
+                <TextBlock Text="45°" FontSize="4" Margin="163 30 0 0"></TextBlock>
+                <TextBlock Text=" 90°" FontSize="4" Margin="190 97 0 0"></TextBlock>
+                <TextBlock Text="135°" FontSize="4" Margin="164 164 0 0"></TextBlock>
+                <TextBlock Text="180°" FontSize="4" Margin="96 192 0 0"></TextBlock>
+                
+                <TextBlock Text="-135°" FontSize="4" Margin="27 164 0 0"></TextBlock>
+                <TextBlock Text=" -90°" FontSize="4" Margin="0 97 0 0"></TextBlock>
+                <TextBlock Text="-45°" FontSize="4" Margin="30 30 0 0"></TextBlock>
+
+
+
+            </Grid>
+
+            
         </Viewbox>
         
         

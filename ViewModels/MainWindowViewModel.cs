@@ -17,7 +17,9 @@ namespace RFD.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     #region Переменные: Геофизические параметры
-    public ObservableCollection<StatusBox> InfoStatusList { get; private set; }
+    public TargetSectionViewModel TargetSectionViewModel { get; set; }
+    public ParametersSectionViewModel ParametersSectionViewModel { get; set; }
+    public InformationSectionViewModel InformationSectionViewModel { get; set; }
     public double MagneticDeclination { get; private set; } 
     public double ToolfaceOffset { get; private set; } 
     #endregion
@@ -192,32 +194,49 @@ public class MainWindowViewModel : INotifyPropertyChanged
         
     public MainWindowViewModel()
     {
+        TargetSectionViewModel = new TargetSectionViewModel();
+        ParametersSectionViewModel = new ParametersSectionViewModel();
+        InformationSectionViewModel = new InformationSectionViewModel();
+        
         FirstCell = new TargetSection
         {
-            DataContext = new TargetSectionViewModel()
+            DataContext = TargetSectionViewModel
         };
-        ThirdCell = new ParametersSection
+        SecondCell = new ParametersSection
         {
-            DataContext = new ParametersSectionViewModel()
+            DataContext = ParametersSectionViewModel
         };
-        SecondCell = new InformationSection
+        ThirdCell = new InformationSection
         {
-            DataContext = new InformationSectionViewModel()
+            DataContext = InformationSectionViewModel
         };
-        FourCell = new TargetSection
+        FourCell = new InformationSection
         {
-            DataContext = new TargetSectionViewModel()
+            DataContext = InformationSectionViewModel
         };
+
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        ParametersSectionViewModel.MagneticDeclination = 10.0;
+        ParametersSectionViewModel.ToolfaceOffset = 12.0;
+
+        TargetSectionViewModel.CreateSectorGeometry(0, 45, 100, 100);
+        
         
         //Геофизические параметры заполнены для примера
         
-        InfoStatusList = [
-            new ("Клинья", false),
-            new ("Насос", false),
-            new ("Забой", false),
-        ];
-        MagneticDeclination = 0.00;
-        ToolfaceOffset = 0.00;
+        //InfoStatusList = [
+        //    new ("Клинья", false),
+        //    new ("Насос", false),
+        //    new ("Забой", false),
+        //];
 
         IsFirstCellVisible = true;
         IsSecondCellVisible = true;
