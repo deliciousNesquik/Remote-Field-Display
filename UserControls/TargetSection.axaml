@@ -45,10 +45,12 @@
                 
                 <Polygon Points="{Binding Sector}" Fill="{Binding SectorColor}"></Polygon>
                 
+                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="0"></Ellipse>
                 <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point1}"></Ellipse>
                 <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point2}"></Ellipse>
                 <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point3}"></Ellipse>
                 <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point4}"></Ellipse>
+                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point5}"></Ellipse>
 
             </Grid>
         </Viewbox>

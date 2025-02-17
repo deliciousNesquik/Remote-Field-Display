@@ -16,19 +16,20 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using Avalonia.Threading;
-//using NPFGEO.LWD.Net;
+using NPFGEO.LWD.Net;
+using RFD.Models;
 
 namespace RFD;
 
 public partial class App : Application
 {
     public static event Action? ConnectionUpdated;
-    //public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
+    public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
 
-    //private Client _client;
-    //private ServerListener _listener;
-    //private bool _needAutoReconnect = true;
-    //public bool Connected => _client.Connected;
+    private Client _client;
+    private ServerListener _listener;
+    private bool _needAutoReconnect = true;
+    public bool Connected => _client.Connected;
 
     private CancellationTokenSource _cancelTokenSource;
     private CancellationToken _token;
@@ -37,11 +38,10 @@ public partial class App : Application
     {
         get
         {
-            return "192.168.1.1";
-            //if (_client.Address == null)
-            //return "Не найдено";
-            //else
-            //return _client.Address.ToString();
+            if (_client.Address == null)
+            return "Не найдено";
+            else
+            return _client.Address.ToString();
         }
     }
 
@@ -66,7 +66,7 @@ public partial class App : Application
         at RFD.Program.Main(String[] args) in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\Program.cs:line 13
          */
 
-        /*_client = new Client();
+        _client = new Client();
         _client.ReceiveData += Client_ReceiveData;
         _client.ReceiveSettings += Client_ReceiveSettings;
         _client.Disconnected += Client_Disconnected;
@@ -74,16 +74,15 @@ public partial class App : Application
 
         _listener = new ServerListener();
         _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
-        _listener.Start();*/
+        _listener.Start();
 
         AvaloniaXamlLoader.Load(this);
     }
-
+    MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
     public override void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
             MainWindow mainWindow = new MainWindow()
             {
                 DataContext = mainWindowViewModel,
@@ -97,7 +96,7 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    /*void Listener_ReceiveBroadcast(object sender, ReceiveBroadcastEventArgs e)
+    void Listener_ReceiveBroadcast(object sender, ReceiveBroadcastEventArgs e)
     {
         if (_client != null && _client.Connected) return;
 
@@ -109,9 +108,18 @@ public partial class App : Application
         Console.WriteLine("Connected to " + _client.Address.ToString());
     }
 
-    /*private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+    private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
     {
         Console.WriteLine("SettingsUpdated");
+        mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
+        mainWindowViewModel.TargetSectionViewModel.SetSector((e.Settings.Target.SectorDirection - e.Settings.Target.SectorWidth / 2), 
+            (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2));
+        mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
+        /*foreach (var i in e.Settings.Parameters)
+        {
+            mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Float.ToString(), i.Units));
+        }*/
+        //mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(e.Settings.Parameters.GetEnumerator().));
         Action action = () =>
         {
             Console.WriteLine("SettingsUpdatedAction");
@@ -120,11 +128,11 @@ public partial class App : Application
         action();
         //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, action);
         Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
-    }*/
-    /*
+    }
+    
            private readonly object _settingsLock = new object();
 
-           private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+           /*private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
            {
                Console.WriteLine("SettingsUpdated");
                Action action = () =>
@@ -137,16 +145,34 @@ public partial class App : Application
                };
                action();
                Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
-           }
+           }*/
 
            private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
            {
-               /*Dispatcher.Invoke(() =>
+               foreach (var i in e.Data.Parameters)
                {
-                   NavigationPanelVM.Current.SetData(e.Data);
-               });*/
-/*
-        private void Client_Disconnected(object sender, EventArgs e)
+                   mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
+               }
+               foreach (var i in e.Data.Flags)
+               {
+                   mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
+               }
+               foreach (var i in e.Data.TargetPoints)
+               {
+                   mainWindowViewModel.TargetSectionViewModel.SetPoint((int)i.Order, i.Angle);
+                   //TODO
+                   /*
+                    * timestamp
+                    * value == angle
+                    * toolfacetype
+                    * 6 points 
+                    */
+                   Console.WriteLine(i.Angle.ToString());
+               }
+               //mainWindowViewModel.TargetSectionViewModel.SetPoint((int)e.Data.TargetPoints.GetEnumerator().Current.Order, e.Data.TargetPoints.GetEnumerator().Current.Angle);
+           }
+
+           private void Client_Disconnected(object sender, EventArgs e)
         {
             Console.WriteLine("Disconnected");
             ConnectionUpdated?.Invoke();
@@ -174,7 +200,7 @@ public partial class App : Application
             ConnectionUpdated?.Invoke();
             //ConnectionControlViewModel.Current.Update();
         }
-/*
+
         private Task AutoConnectAsync()
         {
             var task = Task.Factory.StartNew(() =>
@@ -199,11 +225,11 @@ public partial class App : Application
             await autoConnect;
             _needAutoReconnect = true;
         }
-/*
+
         public bool Connect(string address)
         {
-            _needAutoReconnect = false;
-            try
+            _needAutoReconnect = false; 
+            try 
             {
                 _listener.Stop();
 
@@ -216,7 +242,7 @@ public partial class App : Application
                 _client.Address = System.Net.IPAddress.Parse(address);
                 _client.Connect();
                 Console.WriteLine("Connected to " + _client.Address.ToString());
-                return true;
+                return true; 
             }
             catch (Exception exc)
             {
@@ -226,7 +252,7 @@ public partial class App : Application
             }
             _needAutoReconnect = true;
         }
-/*
+
         private void Reconnect(IPAddress address)
         {
             _needAutoReconnect = false;
@@ -247,7 +273,7 @@ public partial class App : Application
 
             _needAutoReconnect = true;
         }
-    /*
+    
         public void Disconnect()
         {
             //TODO
@@ -263,6 +289,6 @@ public partial class App : Application
                 _client.Disconnect();
             }
 
-        }*/
+        }
 
 }

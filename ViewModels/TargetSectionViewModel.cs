@@ -35,12 +35,13 @@ public class TargetSectionViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _sector, value);
     }
 
-    private readonly Thickness[] _points = new Thickness[4];
+    private readonly Thickness[] _points = new Thickness[5];
     public Thickness Point1 => _points[0];
     public Thickness Point2 => _points[1];
     public Thickness Point3 => _points[2];
     public Thickness Point4 => _points[3];
-    
+
+    public Thickness Point5 => _points[4];
     public TargetSectionViewModel()
     {
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);

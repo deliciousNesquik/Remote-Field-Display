@@ -17,6 +17,9 @@ namespace RFD.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
+    
+    
+    
     #region Переменные: Геофизические параметры
     public TargetSectionViewModel TargetSectionViewModel { get; set; }
     public ParametersSectionViewModel ParametersSectionViewModel { get; set; }
@@ -191,10 +194,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     #region Переменные: Для связи между App.xaml.cs и текущим файлом
     private static App? Model => Application.Current as App;
+    
     #endregion
         
     public MainWindowViewModel()
     {
+        
         TargetSectionViewModel = new TargetSectionViewModel();
         ParametersSectionViewModel = new ParametersSectionViewModel();
         InformationSectionViewModel = new InformationSectionViewModel();
@@ -220,10 +225,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         TargetSectionViewModel.SetSector(17.5, 37.5);
         TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
         //TargetSectionViewModel.ClearSector();
-        TargetSectionViewModel.SetPoint(0, 20);
-        TargetSectionViewModel.SetPoint(1, 25);
-        TargetSectionViewModel.SetPoint(2, 30);
-        TargetSectionViewModel.SetPoint(3, 35);
+        
         
         
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));

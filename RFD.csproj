@@ -44,10 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Libraries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="Controls\Themes\Arc.axaml" />
     <AdditionalFiles Include="Controls\Themes\Arcs.axaml" />
     <AdditionalFiles Include="Controls\Themes\ArcsRing.axaml" />
@@ -57,5 +53,14 @@
     <AdditionalFiles Include="Controls\Themes\Ring.axaml" />
     <AdditionalFiles Include="Controls\Themes\ThreeDots.axaml" />
     <AdditionalFiles Include="Controls\Themes\Wave.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="GeoCore">
+      <HintPath>Libraries\GeoCore.dll</HintPath>
+    </Reference>
+    <Reference Include="NPFGEO.LWD.Net">
+      <HintPath>Libraries\NPFGEO.LWD.Net.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
