@@ -10,121 +10,95 @@ using ReactiveUI;
 
 namespace RFD.ViewModels;
 
-public partial class TargetSectionViewModel : INotifyPropertyChanged
+public class TargetSectionViewModel : ReactiveObject
 {
+    private static readonly Point CenterTarget = new(100, 100);
+    private const int SectorSmooth = 100;
+
+    private static int WindowWidth => 500;
+    private static int WindowHeight => 400;
+    private static string WindowTitle => "Мишень";
+
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
 
-    private List<Point> _sector;
+    private IBrush _sectorColor = Brush.Parse("#2B0068FF");
+    public IBrush SectorColor
+    {
+        get => _sectorColor;
+        set => this.RaiseAndSetIfChanged(ref _sectorColor, value);
+    }
 
+    private List<Point> _sector = [CenterTarget];
     public List<Point> Sector
     {
         get => _sector;
-        set
-        {
-            _sector = value;
-            OnPropertyChanged();
-        }
+        set => this.RaiseAndSetIfChanged(ref _sector, value);
     }
 
+    private readonly Thickness[] _points = new Thickness[4];
+    public Thickness Point1 => _points[0];
+    public Thickness Point2 => _points[1];
+    public Thickness Point3 => _points[2];
+    public Thickness Point4 => _points[3];
+    
     public TargetSectionViewModel()
     {
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
-        ClearSector();
     }
-
-    /// <summary>
-    /// Выделяет область в мишени начиная со стартового угла заканчивая конечным
-    /// </summary>
-    /// <param name="startAngle">Начальный угол сектора (0 - 180; -179 - -1)</param>
-    /// <param name="endAngle">Конечный угол сектора (0 - 180; -179 - -1)</param>
+    
     public void SetSector(double startAngle, double endAngle)
     {
-        Sector = CreateSectorPoints(new Point(100, 100), GetPointForAngle(startAngle), GetPointForAngle(endAngle), 100);
+        Sector = CreateSectorPoints(
+            CenterTarget,
+            GetPointForAngle(startAngle, CenterTarget, 90),
+            GetPointForAngle(endAngle, CenterTarget, 90),
+            SectorSmooth
+        );
     }
-
-    public void ClearSector()
+    public void ClearSector() => Sector = [CenterTarget];
+    public void SetSectorColor(IBrush color) => SectorColor = color;
+    
+    public void SetPoint(int index, double angle)
     {
-        Sector = [new Point(100, 10)];
+        if (index < 0 || index >= _points.Length) return;
+        double radius = (index + 1) * 36;
+        var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
+        _points[index] = new Thickness(newPoint.X, newPoint.Y, 0, 0);
+        this.RaisePropertyChanged($"Point{index + 1}");
     }
-
+    
     private void OpenInNewWindow()
     {
-        var window = new Window
+        new Window
         {
-            Title = "Мишень",
+            Title = WindowTitle,
             Content = new UserControls.TargetSection { DataContext = this },
-            Width = 500,
-            Height = 400
-        };
-        window.Show();
+            Width = WindowWidth,
+            Height = WindowHeight
+        }.Show();
     }
-    private static Point GetPointForAngle(double angleDegrees)
+
+    private static Point GetPointForAngle(double angle, Point center, double radius)
     {
-        // Исходные данные: для 0° точка (100,10)
-        // Центр определяется как (100, r + 10), а r вычисляется из условия для 45°.
-        double cx = 100;
-    
-        // Для 45°: x = 163 = 100 + r * sin(45°)
-        // r = (163 - 100) / sin(45°)
-        double r = (163 - 100) / Math.Sin(Math.PI / 4);  // sin(45°) = √2/2
-    
-        double cy = r + 10;
-    
-        // Переводим угол в радианы
-        double rad = angleDegrees * Math.PI / 180.0;
-    
-        double x = cx + r * Math.Sin(rad);
-        double y = cy - r * Math.Cos(rad);
-    
-        return new Point(x, y);
+        double rad = Math.PI * angle / 180.0;
+        return new Point(center.X + radius * Math.Sin(rad), center.Y - radius * Math.Cos(rad));
     }
+    
     private static List<Point> CreateSectorPoints(Point center, Point start, Point end, int segments)
     {
-        var points = new List<Point>();
-        // Добавляем центр сектора (если нужен, например, для построения сектора как многоугольника)
-        points.Add(center);
+        List<Point> points = [center, start];
+        double startAngle = Math.Atan2(start.Y - center.Y, start.X - center.X);
+        double endAngle = Math.Atan2(end.Y - center.Y, end.X - center.X);
+        if (endAngle < startAngle) endAngle += 2 * Math.PI;
+        double step = (endAngle - startAngle) / segments;
 
-        // Определяем угол для начальной и конечной точек (в радианах)
-        double angleStart = Math.Atan2(start.Y - center.Y, start.X - center.X);
-        double angleEnd = Math.Atan2(end.Y - center.Y, end.X - center.X);
-
-        // Если разница углов отрицательная, можно скорректировать (в зависимости от того, в какую сторону строим дугу)
-        if (angleEnd < angleStart)
-        {
-            angleEnd += 2 * Math.PI;
-        }
-
-        // Добавляем первую точку дуги (начальную)
-        points.Add(start);
-
-        // Вычисляем длину шага по углу между точками
-        double step = (angleEnd - angleStart) / segments;
-
-        // В цикле генерируем промежуточные точки
-        // Начинаем с 1, чтобы не добавить повторно начальную точку
         for (int i = 1; i < segments; i++)
         {
-            double angle = angleStart + step * i;
-            // Предполагаем, что все точки лежат на окружности с радиусом, равным расстоянию от центра до начальной точки.
+            double angle = startAngle + step * i;
             double radius = Math.Sqrt(Math.Pow(start.X - center.X, 2) + Math.Pow(start.Y - center.Y, 2));
-            var pt = new Point(
-                center.X + radius * Math.Cos(angle),
-                center.Y + radius * Math.Sin(angle)
-            );
-            points.Add(pt);
+            points.Add(new Point(center.X + radius * Math.Cos(angle), center.Y + radius * Math.Sin(angle)));
         }
-
-        // Добавляем конечную точку дуги
         points.Add(end);
-
         return points;
-    }
-
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

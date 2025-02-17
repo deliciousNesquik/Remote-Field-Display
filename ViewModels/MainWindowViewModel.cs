@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
@@ -216,8 +217,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
         };
 
         //Использовать только эти два методы для создания сектора и его очистки
-        TargetSectionViewModel.SetSector(45, 135);
-        TargetSectionViewModel.ClearSector();
+        TargetSectionViewModel.SetSector(17.5, 37.5);
+        TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
+        //TargetSectionViewModel.ClearSector();
+        TargetSectionViewModel.SetPoint(0, 20);
+        TargetSectionViewModel.SetPoint(1, 25);
+        TargetSectionViewModel.SetPoint(2, 30);
+        TargetSectionViewModel.SetPoint(3, 35);
         
         
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
