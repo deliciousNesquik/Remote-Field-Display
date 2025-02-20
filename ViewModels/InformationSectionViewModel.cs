@@ -6,23 +6,17 @@ using RFD.Models;
 
 namespace RFD.ViewModels;
 
-public class InformationSectionViewModel : INotifyPropertyChanged
+public sealed class InformationSectionViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<InfoBox> InfoBlockList { get; set; } = new();
+    public ObservableCollection<InfoBox> InfoBlockList { get; set; } = [];
 
 
-    public void AddInfoBox(InfoBox infoBox)
-    {
-        InfoBlockList.Add(infoBox);
-    }
-    public void ClearInfoBox()
-    {
-        InfoBlockList.Clear();
-    }
-    
+    public void AddInfoBox(InfoBox infoBox) => InfoBlockList.Add(infoBox);
+    public void ClearInfoBox() => InfoBlockList.Clear();
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

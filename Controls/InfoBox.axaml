@@ -1,13 +1,11 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:controls="using:RFD.Controls">
-
-	<!--Блок для отображения шаблона в дизайнере-->
+	
 	<Design.PreviewWith>
-		<controls:InfoBox/>
+		<controls:InfoBox Title="Глубина" Content="23.5" Inscription="м."/>
 	</Design.PreviewWith>
-
-	<!--Самостоятельный элемент для отображения информации-->
+	
 	<Style Selector="controls|InfoBox">
 		<Setter Property="Template">
 			<ControlTemplate>

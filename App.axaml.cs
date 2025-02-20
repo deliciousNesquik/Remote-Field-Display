@@ -4,291 +4,325 @@ using Avalonia.Markup.Xaml;
 using RFD.ViewModels;
 using RFD.Views;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
-using Avalonia.Threading;
 using NPFGEO.LWD.Net;
 using RFD.Models;
+using DateTime = System.DateTime;
 
 namespace RFD;
 
 public partial class App : Application
 {
-    public static event Action? ConnectionUpdated;
-    public static event Action<ReceiveSettingsEventArgs> SettingsUpdated;
-
-    private Client _client;
-    private ServerListener _listener;
+    public static App? Instance => (App)Current!; // Получаем текущий экземпляр приложения
+    
+    /// <summary>Создание объекта класса главного окна, для открытия его и управления внутренними методами и объектами</summary>
+    private MainWindowViewModel _mainWindowViewModel = null!;
+    
+    /// <summary>Объект класса клиента который взаимодействует с подключением к серверу</summary>
+    private Client _client = null!;
+    /// <summary>Объект класса слушателя который прослушивает сообщения от сервера и обрабатывает их</summary>
+    private ServerListener _listener = null!;
+    /// <summary>Переменная отвечающая за автоматическое переподключение в случаях случайного отключения</summary>
     private bool _needAutoReconnect = true;
-    public bool Connected => _client.Connected;
+    
+    /// <summary>Статус подключения к серверу</summary>
+    public bool IsConnected => _client.Connected;
+    /// <summary>Ip-адрес к подключенному серверу</summary>
+    public string Address => _client.Address == null ? "Не найдено" : _client.Address.ToString();
 
+    /// <summary>Переменная отвечающая за ресурс который сделал отмену</summary>
     private CancellationTokenSource _cancelTokenSource;
+    /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
-
-    public string CurrentIpAddress
-    {
-        get
-        {
-            if (_client.Address == null)
-            return "Не найдено";
-            else
-            return _client.Address.ToString();
-        }
-    }
 
     public override void Initialize()
     {
-        //TODO
-        //Сделать обработку тут
+        try
+        {
+            //Инициализация view model главного окна
+            _mainWindowViewModel = new MainWindowViewModel();
+        }
+        catch (Exception e)
+        {
+            //В случае возникшей ошибки выдается такое сообщение и сама ошибка
+            Console.WriteLine($"[{DateTime.Now}] - [Ошибка создания view model главного окна] - [{e}]");
+            return;
+        }
+        try
+        {
+            //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
+            _client = new Client();
+            _client.ReceiveData += Client_ReceiveData;
+            _client.ReceiveSettings += Client_ReceiveSettings;
+            _client.Disconnected += Client_Disconnected;
+            _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
 
-        /*
-
-        Unhandled exception. System.Net.Sockets.SocketException (10048): ������ ����������� ������ ���� ������������� ������ ������ (��������/������� �����/����).
-        at System.Net.Sockets.Socket.UpdateStatusAfterSocketErrorAndThrowException(SocketError error, Boolean disconnectOnFailure, String callerName)
-        at System.Net.Sockets.Socket.DoBind(EndPoint endPointSnapshot, SocketAddress socketAddress)
-        at System.Net.Sockets.Socket.Bind(EndPoint localEP)
-        at NPFGEO.LWD.Net.ServerListener.InitializeUdpClient() in D:\Programming\Study\��������� ������\NPFGEO\LWD\NPFGEO.LWD.Net\ServerListener.cs:line 78
-        at NPFGEO.LWD.Net.ServerListener.Start() in D:\Programming\Study\��������� ������\NPFGEO\LWD\NPFGEO.LWD.Net\ServerListener.cs:line 71
-        at RFD.App.Initialize() in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\App.axaml.cs:line 56
-        at Avalonia.AppBuilder.SetupUnsafe()
-        at Avalonia.AppBuilder.Setup()
-        at Avalonia.AppBuilder.SetupWithLifetime(IApplicationLifetime lifetime)
-        at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
-        at RFD.Program.Main(String[] args) in D:\Programming\Study\��������� ������\NPFGEO\LWD\RFD\Program.cs:line 13
-         */
-
-        _client = new Client();
-        _client.ReceiveData += Client_ReceiveData;
-        _client.ReceiveSettings += Client_ReceiveSettings;
-        _client.Disconnected += Client_Disconnected;
-        _client.ConnectedStatusChanged += _client_ConnectedStatusChanged;
-
-        _listener = new ServerListener();
-        _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
-        _listener.Start();
-
+            _listener = new ServerListener();
+            _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
+            _listener.Start();
+        }
+        catch (Exception e)
+        {
+            //TODO
+            //Создать уведомление пользователю о ошибке
+            //создания вещательного канала между программой RFD и LWD
+            
+            _client = null!;
+            _listener = null!;
+            
+            //В случае возникшей ошибки выдается такое сообщение и сама ошибка
+            Console.WriteLine($"[{DateTime.Now}] - [Ошибка создания _client и _listener] - [{e}]");
+        }
         AvaloniaXamlLoader.Load(this);
     }
-    MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+    
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        switch (ApplicationLifetime)
         {
-            MainWindow mainWindow = new MainWindow()
+            //Условие для desktop приложений, которые поддерживают оконную систему отображения приложений
+            case IClassicDesktopStyleApplicationLifetime desktop:
             {
-                DataContext = mainWindowViewModel,
-            };
-
-            desktop.MainWindow = mainWindow;
-
-            mainWindowViewModel.OpenAutomaticConnecting();
+                MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
+                desktop.MainWindow = mainWindow;
+                
+                //Вызывается окно автоматического подключения для соединения
+                _mainWindowViewModel.OpenAutomaticConnecting();
+                
+                break;
+            }
         }
-
         base.OnFrameworkInitializationCompleted();
     }
 
+    
+    /// <summary>
+    /// Слушатель получает широковещательную передачу
+    /// </summary>
+    /// <param name="sender">Отправитель</param>
+    /// <param name="e">Аргументы события</param>
     void Listener_ReceiveBroadcast(object sender, ReceiveBroadcastEventArgs e)
     {
-        if (_client != null && _client.Connected) return;
+        //Проверка состояния соединения
+        if (_client.Connected) return;
 
+        //Остановка прослушивания
         _listener.Stop();
 
+        //Переподключение
         _client.Address = e.Server.Address;
         _client.Connect();
-        ConnectionUpdated?.Invoke();
-        Console.WriteLine("Connected to " + _client.Address.ToString());
+        
+        //Обновление интерфейса для отображения подключения
+        _mainWindowViewModel.UpdateConnecting(this);
+        Console.WriteLine($"[{DateTime.Now}] - [Успешное подключение] - [ip-адрес: {_client.Address}]");
     }
 
+    /// <summary>
+    /// Прием клиентом настроек
+    /// </summary>
+    /// <param name="sender">Отправитель</param>
+    /// <param name="e">Аргументы события</param>
     private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
     {
-        Console.WriteLine("SettingsUpdated");
-        mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
-        mainWindowViewModel.TargetSectionViewModel.SetSector((e.Settings.Target.SectorDirection - e.Settings.Target.SectorWidth / 2), 
-            (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2));
-        mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
-        /*foreach (var i in e.Settings.Parameters)
+        //Установка Магнитное склонение и Смещение поверхности инструмента
+        _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
+        _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
+        
+        //Установка мишени
+        _mainWindowViewModel.TargetSectionViewModel.SetSector(
+            (e.Settings.Target.SectorDirection - e.Settings.Target.SectorWidth / 2), 
+            (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2)
+            );
+        
+        //Очистка старых блоков
+        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
+        
+        //Установка информационных блоков
+        foreach (var i in e.Settings.Parameters)
         {
-            mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Float.ToString(), i.Units));
-        }*/
-        //mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(e.Settings.Parameters.GetEnumerator().));
-        Action action = () =>
-        {
-            Console.WriteLine("SettingsUpdatedAction");
-            SettingsUpdated?.Invoke(e);
-        };
-        action();
-        //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, action);
-        Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
+            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Float.ToString(), i.Units));
+        }
     }
     
-           private readonly object _settingsLock = new object();
+    /// <summary>
+    /// Прием клиентом данных
+    /// </summary>
+    /// <param name="sender">Отправитель</param>
+    /// <param name="e">Аргументы события</param>
+   private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
+   {
+       //Установка точек на мишени
+       foreach (var i in e.Data.TargetPoints)
+       {
+           _mainWindowViewModel.TargetSectionViewModel.SetPoint((int)i.Order, i.Angle);
+           //TODO
+           //Добавить в TargetSection следующие компоненты:
+           //время (TimeStamp),
+           //Угод бурения (Angle),
+           //Тип поверхности (Toolfacetype)
+       }
+       
+       
+       /*foreach (var i in e.Data.Parameters)
+       {
+           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
+       }
+       foreach (var i in e.Data.Flags)
+       {
+           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
+       }*/
+       
+   }
 
-           /*private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
-           {
-               Console.WriteLine("SettingsUpdated");
-               Action action = () =>
-               {
-                   Console.WriteLine("SettingsUpdatedAction");
-                   lock (_settingsLock)
-                   {
-                       SettingsUpdated?.Invoke(e);
-                   }
-               };
-               action();
-               Dispatcher.UIThread.Post(action, Avalonia.Threading.DispatcherPriority.Background);
-           }*/
+    /// <summary>
+    /// Клиент отключился
+    /// </summary>
+    /// <param name="sender">Отправитель</param>
+    /// <param name="e">Аргументы события</param>
+    private void Client_Disconnected(object sender, EventArgs e)
+    {
+        Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Address}]");
+        _mainWindowViewModel.UpdateConnecting(this);
 
-           private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
-           {
-               foreach (var i in e.Data.Parameters)
-               {
-                   mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
-               }
-               foreach (var i in e.Data.Flags)
-               {
-                   mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
-               }
-               foreach (var i in e.Data.TargetPoints)
-               {
-                   mainWindowViewModel.TargetSectionViewModel.SetPoint((int)i.Order, i.Angle);
-                   //TODO
-                   /*
-                    * timestamp
-                    * value == angle
-                    * toolfacetype
-                    * 6 points 
-                    */
-                   Console.WriteLine(i.Angle.ToString());
-               }
-               //mainWindowViewModel.TargetSectionViewModel.SetPoint((int)e.Data.TargetPoints.GetEnumerator().Current.Order, e.Data.TargetPoints.GetEnumerator().Current.Angle);
-           }
-
-           private void Client_Disconnected(object sender, EventArgs e)
+        //Проверка на автоматическое переподключение
+        if (!_needAutoReconnect) return;
+        
+        _cancelTokenSource = new CancellationTokenSource();
+        _token = _cancelTokenSource.Token;
+        Action action = new(() =>
         {
-            Console.WriteLine("Disconnected");
-            ConnectionUpdated?.Invoke();
-            //ConnectionControlViewModel.Current.Update();
-            if (_needAutoReconnect)
+            var address = _client.Address;
+            while (!_token.IsCancellationRequested && !_client.Connected)
             {
-                _cancelTokenSource = new CancellationTokenSource();
-                _token = _cancelTokenSource.Token;
-                Action action = new Action(() =>
-                {
-                    var address = _client.Address;
-                    while (!_token.IsCancellationRequested && !_client.Connected)
-                    {
-                        Reconnect(address);
-                        ConnectionUpdated?.Invoke();
-                        //ConnectionControlViewModel.Current.Update();
-                    }
-                });
-                Task.Factory.StartNew(action, _token);
+                Reconnect(address);
+                _mainWindowViewModel.UpdateConnecting(this);
             }
-        }
+        });
+        Task.Factory.StartNew(action, _token);
+    }
 
-        private void _client_ConnectedStatusChanged(object sender, EventArgs e)
+    /// <summary>
+    /// Смена статуса подключения у клиента
+    /// </summary>
+    /// <param name="sender">Отправитель</param>
+    /// <param name="e">Аргументы события</param>
+    private void Client_ConnectedStatusChanged(object sender, EventArgs e)
+    {
+        _mainWindowViewModel.UpdateConnecting(this);
+    }
+
+    /// <summary>
+    /// Выполняет автоматическое переподключение.
+    /// </summary>
+    /// <returns>Значение <c>true</c>, если подключение успешно, иначе <c>false</c>.</returns>
+    private async Task<bool> AutoConnectAsync()
+    {
+        try
         {
-            ConnectionUpdated?.Invoke();
-            //ConnectionControlViewModel.Current.Update();
+            // Останавливаем слушатель входящих соединений (если он существует)
+            _listener?.Stop();
+
+            // Отменяем текущий токен (если он существует)
+            _cancelTokenSource?.Cancel();
+
+            // Задержка перед повторным подключением
+            await Task.Delay(2500, _token);
+
+            // Если клиент всё ещё подключен, разрываем соединение
+            if (_client?.Connected == true)
+                _client.Disconnect();
+
+            // Запускаем слушатель снова
+            _listener?.Start();
+
+            return true; // Успешное выполнение
         }
-
-        private Task AutoConnectAsync()
+        catch (Exception ex)
         {
-            var task = Task.Factory.StartNew(() =>
-            {
-                _listener.Stop();
-                _cancelTokenSource?.Cancel();
-
-                System.Threading.Thread.Sleep(2500);
-
-                if (_client != null && _client.Connected)
-                    _client.Disconnect();
-
-                _listener.Start();
-            });
-            return task;
+            Console.WriteLine($"[{DateTime.Now}] - [Ошибка при авто-подключении] [{ex.Message}]");
+            return false; // Ошибка при выполнении
         }
+    }
 
-        public async void AutoConnect()
+    /// <summary>
+    /// Инициирует процесс автоматического переподключения.
+    /// </summary>
+    /// <returns>Значение <c>true</c>, если подключение успешно, иначе <c>false</c>.</returns>
+    public async Task<bool> AutoConnect()
+    {
+        _needAutoReconnect = false; // Отключаем авто-переподключение перед началом процесса
+
+        bool result = await AutoConnectAsync(); // Запускаем процесс переподключения
+
+        _needAutoReconnect = true; // После завершения снова включаем авто-переподключение
+
+        return result; // Возвращаем результат переподключения
+    }
+
+
+
+    public bool Connect(string address)
+    {
+        if (_client == null || _listener == null) { return false; }
+        
+        _needAutoReconnect = false; 
+        try 
         {
-            _needAutoReconnect = false;
-            var autoConnect = AutoConnectAsync();
-            await autoConnect;
-            _needAutoReconnect = true;
-        }
-
-        public bool Connect(string address)
-        {
-            _needAutoReconnect = false; 
-            try 
-            {
-                _listener.Stop();
-
-                _cancelTokenSource?.Cancel();
-                System.Threading.Thread.Sleep(1000);
-
-                if (_client != null && _client.Connected)
-                    _client.Disconnect();
-
-                _client.Address = System.Net.IPAddress.Parse(address);
-                _client.Connect();
-                Console.WriteLine("Connected to " + _client.Address.ToString());
-                return true; 
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine(exc);
-                Console.WriteLine("Подключение не удалось");
-                return false;
-            }
-            _needAutoReconnect = true;
-        }
-
-        private void Reconnect(IPAddress address)
-        {
-            _needAutoReconnect = false;
-            try
-            {
-                _listener.Stop();
-
-                if (_client != null && _client.Connected)
-                    _client.Disconnect();
-
-                _client.Address = address;
-                _client.Connect();
-                //Logger.Info("Connected to " + _client.Address.ToString());
-            }
-            catch (Exception exc)
-            {
-            } //Logger.Error(exc); }
-
-            _needAutoReconnect = true;
-        }
-    
-        public void Disconnect()
-        {
-            //TODO
-            //Реализовать нормальное отключение пользователя от ip-адреса
-            //чтобы при повторном подключении не вылетала ошибка что порт уже занят
-
-            _needAutoReconnect = false;
             _listener.Stop();
 
-            if (_client != null && _client.Connected)
-            {
-                Console.WriteLine("Application disconnect to server " + "{_client.Connected: " + _client.Connected + "}");
-                _client.Disconnect();
-            }
+            _cancelTokenSource?.Cancel();
+            Thread.Sleep(1000);
 
+            if (_client.Connected)
+                _client.Disconnect();
+
+            _client.Address = IPAddress.Parse(address);
+            _client.Connect();
+            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу] - [{_client.Address}]");
+            _needAutoReconnect = true;
+            return true; 
         }
+        catch (Exception exc)
+        {
+            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу не удалось] - [{exc}]");
+            return false;
+        }
+        
+    }
+
+    private void Reconnect(IPAddress address)
+    {
+        _needAutoReconnect = false;
+        try
+        {
+            _listener.Stop();
+
+            if (_client.Connected)
+                _client.Disconnect();
+
+            _client.Address = address;
+            _client.Connect();
+            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу] - [{_client.Address}]");
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу не удалось] - [{exc}]");
+        }
+
+        _needAutoReconnect = true;
+    }
+
+    public void Disconnect()
+    {
+        _needAutoReconnect = false;
+        _listener?.Stop();
+
+        if (_client?.Connected != true) return;
+        Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Connected}]");
+        _client.Disconnect();
+    }
 
 }

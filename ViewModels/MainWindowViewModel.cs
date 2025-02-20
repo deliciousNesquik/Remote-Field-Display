@@ -9,9 +9,11 @@ using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
+using Splat.ModeDetection;
 
 namespace RFD.ViewModels;
 
@@ -191,12 +193,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     }
 
     #endregion
-
-    #region Переменные: Для связи между App.xaml.cs и текущим файлом
-    private static App? Model => Application.Current as App;
     
-    #endregion
-        
     public MainWindowViewModel()
     {
         
@@ -252,9 +249,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         IsSecondCellVisible = true;
         IsThirdCellVisible = true;
         IsFourCellVisible = true;
-    
-        App.ConnectionUpdated += UpdateConnecting;
-        //App.SettingsUpdated += SetSettings;
             
         //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
@@ -283,9 +277,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         });
     }
 
-    #region Методы: Методы для открытия окон соединения с сервером
-
-    /*Метод для открытия ручного окна соединения*/
+    #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
     private void OpenManualConnecting()
     {
         ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
@@ -297,20 +289,18 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         ManualConnectionDialogViewModel.ConnectionAttempt += ip =>
         {
-            //TODO
-            //Добавить метод для передачи, проверки IP-адреса и подключение по нему
-            Console.WriteLine("Попытка подключения к адресу: " + ip);
-            ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
+            if (App.Instance != null)
+            {
+                ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(App.Instance.Connect(ip));
+            }
+            
         };
         ManualConnectionDialogViewModel.CloseDialog += () =>
         {
             IsManualConnectingOpen = false;
-            UpdateConnecting();
             CurrentUserControl = null;
         };
     }
-        
-    /*Метод для открытия автоматического окна соединения*/
     public void OpenAutomaticConnecting()
     {
         var cancellationTokenSource = new CancellationTokenSource();
@@ -325,53 +315,85 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             cancellationTokenSource.Cancel();
             IsAutomaticConnectingOpen = false;
-            UpdateConnecting();
             CurrentUserControl = null;
         };
 
         AutomaticConnectionDialogViewModel.CloseDialog += () =>
         {
             IsAutomaticConnectingOpen = false;
-            UpdateConnecting();
             CurrentUserControl = null;
         };
             
-        // Имитация подключения с использованием Task.Run
         Task.Run(async () =>
         {
             try
             {
-                // Имитация ожидания 2 секунды
-                await Task.Delay(3000, cancellationTokenSource.Token);
+                if (App.Instance != null)
+                {
+                    bool isConnected = await App.Instance.AutoConnect();
 
-                // Если задача не была отменена, сообщаем об успешном подключении
-                AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
-                Console.WriteLine("Connection was succsess");
+                    // Если подключение успешно
+                    if (isConnected)
+                    {
+                        AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
+                        Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу успешно]");
+                    }
+                    else
+                    {
+                        AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(false);
+                        Console.WriteLine($"[{DateTime.Now}] - [Не удалось подключиться к серверу]");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"[{DateTime.Now}] - [Ошибка: App.Instance == null]");
+                }
             }
             catch (TaskCanceledException)
             {
-                // Обрабатываем отмену задачи (ничего делать не нужно)
-                Console.WriteLine("Connection was canceled.");
+                Console.WriteLine($"[{DateTime.Now}] - [Подключение отменено]");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[{DateTime.Now}] - [Ошибка при подключении: {e.Message}]");
+            }
+            finally
+            {
+                // В любом случае закрываем окно подключения
+                Dispatcher.UIThread.Invoke(AutomaticConnectionDialogViewModel.CloseDialog);
             }
         }, cancellationTokenSource.Token);
     }
-    #endregion
-
-    #region Методы: Методы для соединения с сервером
-
+    
     private void Disconnect()
     {
-        /*if (Model != null)
+        if (App.Instance != null)
         {
-            Model.Disconnect();
-        }*/
+            App.Instance.Disconnect();
+        }
     }
-
-    private void UpdateConnecting()
+    
+    public void UpdateConnecting(App? model)
     {
-        Console.WriteLine("Connection has updated: " + "{Model.CurrentIpAddress: " + Model.CurrentIpAddress +", Model.Connected: " + true + "}");
-        IpAddress = Model.CurrentIpAddress;
-        ConnectionStatus = true;
+        switch (model)
+        {
+            //Проверка соединения с сервером
+            case { IsConnected: true }:
+                IpAddress = model.Address;
+                ConnectionStatus = model.IsConnected;
+                break;
+            case { IsConnected: false }:
+                IpAddress = model.Address;
+                ConnectionStatus = model.IsConnected;
+            
+                //Очистка от данных все секции
+                //Мишень - установка в начальное положение
+                //Информационный блок - удаление всех данных
+                //Статусный блок - удаление всех статусов
+                TargetSectionViewModel.SetSector(-45, 45);
+                InformationSectionViewModel.ClearInfoBox();
+                break;
+        }
     }
     #endregion
         
