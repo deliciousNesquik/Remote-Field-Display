@@ -141,10 +141,10 @@ public partial class App : Application
         _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         
         //Установка информационных блоков
-        foreach (var i in e.Settings.Parameters)
+        /*foreach (var i in e.Settings.Parameters)
         {
             _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Float.ToString(), i.Units));
-        }
+        }*/
     }
     
     /// <summary>
@@ -166,13 +166,13 @@ public partial class App : Application
        }
        
        
-       /*foreach (var i in e.Data.Parameters)
+       foreach (var i in e.Data.Parameters)
        {
            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
        }
-       foreach (var i in e.Data.Flags)
+       /*foreach (var i in e.Data.Flags)
        {
-           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
+           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "flags"));
        }*/
        
    }
