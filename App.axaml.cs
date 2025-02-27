@@ -4,6 +4,9 @@ using Avalonia.Markup.Xaml;
 using RFD.ViewModels;
 using RFD.Views;
 using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,9 +16,9 @@ using DateTime = System.DateTime;
 
 namespace RFD;
 
-public partial class App : Application
+public class App : Application
 {
-    public static App? Instance => (App)Current!; // Получаем текущий экземпляр приложения
+    public static App Instance => (App)Current!; // Получаем текущий экземпляр приложения
     
     /// <summary>Создание объекта класса главного окна, для открытия его и управления внутренними методами и объектами</summary>
     private MainWindowViewModel _mainWindowViewModel = null!;
@@ -33,7 +36,7 @@ public partial class App : Application
     public string Address => _client.Address == null ? "Не найдено" : _client.Address.ToString();
 
     /// <summary>Переменная отвечающая за ресурс который сделал отмену</summary>
-    private CancellationTokenSource _cancelTokenSource;
+    private CancellationTokenSource _cancelTokenSource = null!;
     /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
 
@@ -103,7 +106,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="sender">Отправитель</param>
     /// <param name="e">Аргументы события</param>
-    void Listener_ReceiveBroadcast(object sender, ReceiveBroadcastEventArgs e)
+    void Listener_ReceiveBroadcast(object? sender, ReceiveBroadcastEventArgs e)
     {
         //Проверка состояния соединения
         if (_client.Connected) return;
@@ -125,7 +128,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="sender">Отправитель</param>
     /// <param name="e">Аргументы события</param>
-    private void Client_ReceiveSettings(object sender, ReceiveSettingsEventArgs e)
+    private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
         //Установка Магнитное склонение и Смещение поверхности инструмента
         _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
@@ -138,13 +141,19 @@ public partial class App : Application
             );
         
         //Очистка старых блоков
-        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
+        //_mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         
         //Установка информационных блоков
-        /*foreach (var i in e.Settings.Parameters)
+        foreach (var parameter in e.Settings.Parameters)
         {
-            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Float.ToString(), i.Units));
-        }*/
+            foreach (var infoBox in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
+            {
+                if (infoBox.Title == parameter.Name)
+                {
+                    infoBox.Inscription = parameter.Units;
+                }
+            }
+        }
     }
     
     /// <summary>
@@ -152,7 +161,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="sender">Отправитель</param>
     /// <param name="e">Аргументы события</param>
-   private void Client_ReceiveData(object sender, ReceiveDataEventArgs e)
+   private void Client_ReceiveData(object? sender, ReceiveDataEventArgs e)
    {
        //Установка точек на мишени
        foreach (var i in e.Data.TargetPoints)
@@ -165,16 +174,16 @@ public partial class App : Application
            //Тип поверхности (Toolfacetype)
        }
        
-       
-       foreach (var i in e.Data.Parameters)
+       _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
+       foreach (var parameter in e.Data.Parameters)
        {
-           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "data"));
-       }
+           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(parameter.Name, parameter.Value));
+       } 
        /*foreach (var i in e.Data.Flags)
        {
            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "flags"));
        }*/
-       
+
    }
 
     /// <summary>
@@ -182,7 +191,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="sender">Отправитель</param>
     /// <param name="e">Аргументы события</param>
-    private void Client_Disconnected(object sender, EventArgs e)
+    private void Client_Disconnected(object? sender, EventArgs e)
     {
         Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Address}]");
         _mainWindowViewModel.UpdateConnecting(this);
@@ -192,7 +201,7 @@ public partial class App : Application
         
         _cancelTokenSource = new CancellationTokenSource();
         _token = _cancelTokenSource.Token;
-        Action action = new(() =>
+        Action action = () =>
         {
             var address = _client.Address;
             while (!_token.IsCancellationRequested && !_client.Connected)
@@ -200,7 +209,7 @@ public partial class App : Application
                 Reconnect(address);
                 _mainWindowViewModel.UpdateConnecting(this);
             }
-        });
+        };
         Task.Factory.StartNew(action, _token);
     }
 
@@ -209,7 +218,7 @@ public partial class App : Application
     /// </summary>
     /// <param name="sender">Отправитель</param>
     /// <param name="e">Аргументы события</param>
-    private void Client_ConnectedStatusChanged(object sender, EventArgs e)
+    private void Client_ConnectedStatusChanged(object? sender, EventArgs e)
     {
         _mainWindowViewModel.UpdateConnecting(this);
     }
@@ -223,20 +232,20 @@ public partial class App : Application
         try
         {
             // Останавливаем слушатель входящих соединений (если он существует)
-            _listener?.Stop();
+            _listener.Stop();
 
             // Отменяем текущий токен (если он существует)
-            _cancelTokenSource?.Cancel();
+            await _cancelTokenSource.CancelAsync();
 
             // Задержка перед повторным подключением
             await Task.Delay(2500, _token);
 
             // Если клиент всё ещё подключен, разрываем соединение
-            if (_client?.Connected == true)
+            if (_client.Connected)
                 _client.Disconnect();
 
             // Запускаем слушатель снова
-            _listener?.Start();
+            _listener.Start();
 
             return true; // Успешное выполнение
         }
@@ -266,14 +275,12 @@ public partial class App : Application
 
     public bool Connect(string address)
     {
-        if (_client == null || _listener == null) { return false; }
-        
         _needAutoReconnect = false; 
         try 
         {
             _listener.Stop();
 
-            _cancelTokenSource?.Cancel();
+            _cancelTokenSource.Cancel();
             Thread.Sleep(1000);
 
             if (_client.Connected)
@@ -318,9 +325,9 @@ public partial class App : Application
     public void Disconnect()
     {
         _needAutoReconnect = false;
-        _listener?.Stop();
+        _listener.Stop();
 
-        if (_client?.Connected != true) return;
+        if (_client.Connected != true) return;
         Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Connected}]");
         _client.Disconnect();
     }

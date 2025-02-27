@@ -108,9 +108,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
     /// <summary> Принимает любой UserControl и отобразит его в правом нижнем углу </summary>
     public ContentControl FourCell { get; set; }
     
-    private bool _isFirstCellVisible;
+    private bool _isFirstCellVisible = true;
     
-    private bool IsFirstCellVisible
+    public bool IsFirstCellVisible
     {
         get => _isFirstCellVisible;
         set
@@ -119,7 +119,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    private bool _isSecondCellVisible;
+    private bool _isSecondCellVisible = true;
     public bool IsSecondCellVisible
     {
         get => _isSecondCellVisible;
@@ -129,7 +129,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    private bool _isThirdCellVisible;
+    private bool _isThirdCellVisible = true;
     public bool IsThirdCellVisible
     {
         get => _isThirdCellVisible;
@@ -139,7 +139,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    private bool _isFourCellVisible;
+    private bool _isFourCellVisible = true;
     public bool IsFourCellVisible
     {
         get => _isFourCellVisible;
@@ -196,7 +196,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
     
     public MainWindowViewModel()
     {
-        
+        IsFirstCellVisible = true;
+        IsSecondCellVisible = true;
+        IsThirdCellVisible = true;
+        IsFourCellVisible = true;
         TargetSectionViewModel = new TargetSectionViewModel();
         ParametersSectionViewModel = new ParametersSectionViewModel();
         InformationSectionViewModel = new InformationSectionViewModel();
@@ -245,10 +248,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         //    new ("Забой", false),
         //];
 
-        IsFirstCellVisible = true;
-        IsSecondCellVisible = true;
-        IsThirdCellVisible = true;
-        IsFourCellVisible = true;
+        
             
         //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
@@ -293,7 +293,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
             {
                 ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(App.Instance.Connect(ip));
             }
-            
         };
         ManualConnectionDialogViewModel.CloseDialog += () =>
         {
