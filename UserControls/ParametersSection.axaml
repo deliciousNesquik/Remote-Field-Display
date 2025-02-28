@@ -3,14 +3,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:RFD.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="150"
+             mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="200"
              x:Class="RFD.UserControls.ParametersSection"
              x:DataType="vm:ParametersSectionViewModel">
 	
-	<Grid RowDefinitions="Auto, Auto, Auto" Margin="5">
+	<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto" Margin="5">
 		<Border Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gray" BorderThickness="0"></Border>
-		<!--Магнитное склонение и смещение поверхности инструмента-->
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Grid.Row="0" Orientation="Horizontal">
 				<Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="13" Margin="0 0 5 0"/>
 				<TextBlock Text="Параметры бурения" FontWeight="Bold" Classes="section" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 			</StackPanel>
@@ -18,7 +17,29 @@
 			<Button Grid.Row="0" Width="20" Padding="0" Background="Transparent" HorizontalAlignment="Right"
 			        Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"/>
 			
-			<Label Grid.Row="1" Content="{Binding MagneticDeclination, StringFormat={}Магнитное склонение: {0:f2}}" />
-			<Label Grid.Row="2" Content="{Binding ToolfaceOffset, StringFormat={}Смещение поверхности инструмента: {0:f2}}" />
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5 20 5 5">
+			<TextBlock Text="Магнитное склонение: " FontWeight="Bold"/>
+			<TextBlock Text="{Binding MagneticDeclination, StringFormat={}{0:f2}}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+			<TextBlock Text="Смещение инструмента: " FontWeight="Bold"/>
+			<TextBlock Text="{Binding ToolfaceOffset, StringFormat={}{0:f2}}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="3" Orientation="Horizontal" Margin="5">
+			<TextBlock Text="Временная метка: " FontWeight="Bold"/>
+			<TextBlock Text="{Binding TimeStamp}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="4" Orientation="Horizontal" Margin="5">
+			<TextBlock Text="Угол бурения: " FontWeight="Bold"/>
+			<TextBlock Text="{Binding Angle}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="5" Orientation="Horizontal" Margin="5">
+			<TextBlock Text="Тип поверхности: " FontWeight="Bold"/>
+			<TextBlock Text="{Binding ToolfaceType}"/>
+		</StackPanel>
 	</Grid>
 </UserControl>

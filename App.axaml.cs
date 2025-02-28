@@ -25,9 +25,9 @@ public class App : Application
     private MainWindowViewModel _mainWindowViewModel = null!;
     
     /// <summary>Объект класса клиента который взаимодействует с подключением к серверу</summary>
-    private Client _client = new();
+    private Client _client = null!;
     /// <summary>Объект класса слушателя который прослушивает сообщения от сервера и обрабатывает их</summary>
-    private ServerListener _listener = new();
+    private ServerListener _listener = null!;
     /// <summary>Переменная отвечающая за автоматическое переподключение в случаях случайного отключения</summary>
     private bool _needAutoReconnect = true;
     
@@ -53,11 +53,13 @@ public class App : Application
         try
         {
             //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
+            _client = new();
             _client.ReceiveData += Client_ReceiveData;
             _client.ReceiveSettings += Client_ReceiveSettings;
             _client.Disconnected += Client_Disconnected;
             _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
-            
+
+            _listener = new();
             _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
             _listener.Start();
         }
@@ -136,6 +138,7 @@ public class App : Application
             (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2)
             );
 
+        //e.Settings.Statuses = empty data
         Console.WriteLine("ReceiveSettingsEventArgs---------STATUS BLOCKS-----------");
         foreach (var flag in e.Settings.Statuses)
         {
@@ -185,44 +188,25 @@ public class App : Application
        foreach (var i in e.Data.TargetPoints)
        {
            _mainWindowViewModel.TargetSectionViewModel.SetPoint((int)i.Order, i.Angle);
-           //TODO
-           //Добавить в TargetSection следующие компоненты:
-           //время (TimeStamp),
-           //Угод бурения (Angle),
-           //Тип поверхности (Toolfacetype)
+           _mainWindowViewModel.ParametersSectionViewModel.TimeStamp = i.TimeStamp;
+           _mainWindowViewModel.ParametersSectionViewModel.Angle = i.Angle;
+           _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = i.ToolfaceType.ToString();
        }
        
-       Console.WriteLine("ReceiveDataEventArgs---------PARAMETRS BLOCKS-----------");
-       foreach (var parameter in e.Data.Parameters)
-       {
-           Console.WriteLine($"NAME[{parameter.Name}] VALUE[{parameter.Value}]");
-       }
-       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
-       
-       Console.WriteLine("ReceiveDataEventArgs---------STATUSES BLOCKS-----------");
-       foreach (var status in e.Data.Statuses)
-       {
-           Console.WriteLine($"NAME[{status.Name}] VALUE[{status.Value}]");
-       }
-       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+       //e.Data.Statuses = empty
        
        Console.WriteLine("ReceiveDataEventArgs---------FLAGS BLOCKS-----------");
        foreach (var flag in e.Data.Flags)
        {
            Console.WriteLine($"NAME[{flag.Name}] VALUE[{flag.Value}]");
        }
-       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+       Console.WriteLine("ReceiveDataEventArgs-------------------------------");
        
        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
        foreach (var parameter in e.Data.Parameters)
        {
            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(parameter.Name, parameter.Value));
-       } 
-       /*foreach (var i in e.Data.Flags)
-       {
-           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(i.Name, i.Value.ToString(), "flags"));
-       }*/
-
+       }
    }
 
     /// <summary>

@@ -1,33 +1,27 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
-using Splat.ModeDetection;
+using RFD.Services;
 
 namespace RFD.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
+    private WindowService _windowService = new WindowService();
     
-    
-    
-    #region Переменные: Геофизические параметры
-    public TargetSectionViewModel TargetSectionViewModel { get; set; }
-    public ParametersSectionViewModel ParametersSectionViewModel { get; set; }
-    public InformationSectionViewModel InformationSectionViewModel { get; set; }
-    public double MagneticDeclination { get; private set; } 
-    public double ToolfaceOffset { get; private set; } 
+    #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
+    public TargetSectionViewModel TargetSectionViewModel { get; }
+    public ParametersSectionViewModel ParametersSectionViewModel { get; }
+    public InformationSectionViewModel InformationSectionViewModel { get; }
     #endregion
 
     #region Переменные: Параметры отвечающие за работу модальных окон поверх главного окна
@@ -206,9 +200,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
         IsSecondCellVisible = true;
         IsThirdCellVisible = true;
         IsFourCellVisible = true;
-        TargetSectionViewModel = new TargetSectionViewModel();
-        ParametersSectionViewModel = new ParametersSectionViewModel();
-        InformationSectionViewModel = new InformationSectionViewModel();
+        TargetSectionViewModel = new TargetSectionViewModel(_windowService);
+        ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
+        InformationSectionViewModel = new InformationSectionViewModel(_windowService);
         
         FirstCell = new TargetSection
         {
