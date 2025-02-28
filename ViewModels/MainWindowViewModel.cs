@@ -335,26 +335,26 @@ public class MainWindowViewModel : INotifyPropertyChanged
                     if (isConnected)
                     {
                         AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
-                        Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу успешно]");
+                        Console.WriteLine($"[{DateTime.Now}] - [Connection to the server is successful]");
                     }
                     else
                     {
                         AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(false);
-                        Console.WriteLine($"[{DateTime.Now}] - [Не удалось подключиться к серверу]");
+                        Console.WriteLine($"[{DateTime.Now}] - [Couldn't connect to the server]");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"[{DateTime.Now}] - [Ошибка: App.Instance == null]");
+                    Console.WriteLine($"[{DateTime.Now}] - [Error: App.Instance == null]");
                 }
             }
             catch (TaskCanceledException)
             {
-                Console.WriteLine($"[{DateTime.Now}] - [Подключение отменено]");
+                Console.WriteLine($"[{DateTime.Now}] - [Connection canceled]");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[{DateTime.Now}] - [Ошибка при подключении: {e.Message}]");
+                Console.WriteLine($"[{DateTime.Now}] - [Connection error: {e.Message}]");
             }
             finally
             {

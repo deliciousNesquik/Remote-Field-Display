@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using NPFGEO.LWD.Net;
 using RFD.Models;
 using DateTime = System.DateTime;
@@ -42,15 +43,11 @@ public class App : Application
 
     public override void Initialize()
     {
-        try
+        
+        AvaloniaXamlLoader.Load(this);
+        // Проверяем, не работает ли приложение в режиме дизайнера
+        if (Design.IsDesignMode)
         {
-            //Инициализация view model главного окна
-            _mainWindowViewModel = new MainWindowViewModel();
-        }
-        catch (Exception e)
-        {
-            //В случае возникшей ошибки выдается такое сообщение и сама ошибка
-            Console.WriteLine($"[{DateTime.Now}] - [Ошибка создания view model главного окна] - [{e}]");
             return;
         }
         try
@@ -62,6 +59,8 @@ public class App : Application
             _client.Disconnected += Client_Disconnected;
             _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
 
+            _cancelTokenSource = new CancellationTokenSource();
+            
             _listener = new ServerListener();
             _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
             _listener.Start();
@@ -76,9 +75,9 @@ public class App : Application
             _listener = null!;
             
             //В случае возникшей ошибки выдается такое сообщение и сама ошибка
-            Console.WriteLine($"[{DateTime.Now}] - [Ошибка создания _client и _listener] - [{e}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Error creating _client and _listener] - [{e}]");
         }
-        AvaloniaXamlLoader.Load(this);
+        
     }
     
     public override void OnFrameworkInitializationCompleted()
@@ -88,6 +87,7 @@ public class App : Application
             //Условие для desktop приложений, которые поддерживают оконную систему отображения приложений
             case IClassicDesktopStyleApplicationLifetime desktop:
             {
+                _mainWindowViewModel = new MainWindowViewModel();
                 MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
                 desktop.MainWindow = mainWindow;
                 
@@ -120,7 +120,7 @@ public class App : Application
         
         //Обновление интерфейса для отображения подключения
         _mainWindowViewModel.UpdateConnecting(this);
-        Console.WriteLine($"[{DateTime.Now}] - [Успешное подключение] - [ip-адрес: {_client.Address}]");
+        Console.WriteLine($"[{DateTime.Now}] - [Successful connection] - [ip address: {_client.Address}]");
     }
 
     /// <summary>
@@ -193,7 +193,7 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_Disconnected(object? sender, EventArgs e)
     {
-        Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Address}]");
+        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{_client.Address}]");
         _mainWindowViewModel.UpdateConnecting(this);
 
         //Проверка на автоматическое переподключение
@@ -251,7 +251,7 @@ public class App : Application
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Ошибка при авто-подключении] [{ex.Message}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Error during auto-activation] [{ex.Message}]");
             return false; // Ошибка при выполнении
         }
     }
@@ -288,13 +288,13 @@ public class App : Application
 
             _client.Address = IPAddress.Parse(address);
             _client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу] - [{_client.Address}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{_client.Address}]");
             _needAutoReconnect = true;
             return true; 
         }
         catch (Exception exc)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу не удалось] - [{exc}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Connection to the server failed] - [{exc}]");
             return false;
         }
         
@@ -312,11 +312,11 @@ public class App : Application
 
             _client.Address = address;
             _client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу] - [{_client.Address}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{_client.Address}]");
         }
         catch (Exception exc)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Подключение к серверу не удалось] - [{exc}]");
+            Console.WriteLine($"[{DateTime.Now}] - [Connection to the server failed] - [{exc}]");
         }
 
         _needAutoReconnect = true;
@@ -328,7 +328,7 @@ public class App : Application
         _listener.Stop();
 
         if (_client.Connected != true) return;
-        Console.WriteLine($"[{DateTime.Now}] - [Отключение от сервера] - [{_client.Connected}]");
+        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{_client.Connected}]");
         _client.Disconnect();
     }
 
