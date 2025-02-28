@@ -27,7 +27,7 @@ namespace RFD.ViewModels
 
             ConnectionStatus += statusConnection =>
             {
-                if (statusConnection) CloseDialog();
+                if (statusConnection) CloseDialog?.Invoke();
             };
             
             ConfirmCommand = new RelayCommand(() => this.Confirm(), () => !IsActionInProgress);

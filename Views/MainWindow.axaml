@@ -130,13 +130,13 @@
 						
 						
 						<Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" RowDefinitions="*, *">
-							<ContentControl Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsThirdCellVisible}"
+							<ContentControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" IsVisible="{Binding IsThirdCellVisible}"
 							                VerticalAlignment="Stretch"
 							                Content="{Binding ThirdCell}"/>
 						
-							<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsFourCellVisible}"
+							<!--<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsFourCellVisible}"
 							                VerticalAlignment="Stretch"
-							                Content="{Binding FourCell}"/>
+							                Content="{Binding FourCell}"/>-->
 						</Grid>
 						
 					</Grid>

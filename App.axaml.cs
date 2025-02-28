@@ -25,9 +25,9 @@ public class App : Application
     private MainWindowViewModel _mainWindowViewModel = null!;
     
     /// <summary>Объект класса клиента который взаимодействует с подключением к серверу</summary>
-    private Client _client = null!;
+    private Client _client = new();
     /// <summary>Объект класса слушателя который прослушивает сообщения от сервера и обрабатывает их</summary>
-    private ServerListener _listener = null!;
+    private ServerListener _listener = new();
     /// <summary>Переменная отвечающая за автоматическое переподключение в случаях случайного отключения</summary>
     private bool _needAutoReconnect = true;
     
@@ -37,7 +37,7 @@ public class App : Application
     public string Address => _client.Address == null ? "Не найдено" : _client.Address.ToString();
 
     /// <summary>Переменная отвечающая за ресурс который сделал отмену</summary>
-    private CancellationTokenSource _cancelTokenSource = null!;
+    private CancellationTokenSource _cancelTokenSource = new();
     /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
 
@@ -53,15 +53,11 @@ public class App : Application
         try
         {
             //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
-            _client = new Client();
             _client.ReceiveData += Client_ReceiveData;
             _client.ReceiveSettings += Client_ReceiveSettings;
             _client.Disconnected += Client_Disconnected;
             _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
-
-            _cancelTokenSource = new CancellationTokenSource();
             
-            _listener = new ServerListener();
             _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
             _listener.Start();
         }
@@ -139,6 +135,28 @@ public class App : Application
             (e.Settings.Target.SectorDirection - e.Settings.Target.SectorWidth / 2), 
             (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2)
             );
+
+        Console.WriteLine("ReceiveSettingsEventArgs---------STATUS BLOCKS-----------");
+        foreach (var flag in e.Settings.Statuses)
+        {
+            Console.WriteLine($"NAME[{flag.Name}] STATUS[{flag.Palette}]");
+        }
+        Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+        
+        
+        Console.WriteLine("ReceiveSettingsEventArgs---------PARAMETERS BLOCKS-----------");
+        foreach (var parameter in e.Settings.Parameters)
+        {
+            Console.WriteLine($"NAME[{parameter.Name}] FLOAT[{parameter.Float}] UNITS[{parameter.Units}]");
+        }
+        Console.WriteLine("ReceiveSettingsEventArgs--------------------------------------");
+        
+        Console.WriteLine("ReceiveSettingsEventArgs---------PARAMETERS BLOCKS-----------");
+        foreach (var param in e.Settings.DateTimeParameters)
+        {
+            Console.WriteLine($"NAME[{param.Name}] ALIAS[{param.Alias}]");
+        }
+        Console.WriteLine("ReceiveSettingsEventArgs--------------------------------------");
         
         //Очистка старых блоков
         //_mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
@@ -173,6 +191,27 @@ public class App : Application
            //Угод бурения (Angle),
            //Тип поверхности (Toolfacetype)
        }
+       
+       Console.WriteLine("ReceiveDataEventArgs---------PARAMETRS BLOCKS-----------");
+       foreach (var parameter in e.Data.Parameters)
+       {
+           Console.WriteLine($"NAME[{parameter.Name}] VALUE[{parameter.Value}]");
+       }
+       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+       
+       Console.WriteLine("ReceiveDataEventArgs---------STATUSES BLOCKS-----------");
+       foreach (var status in e.Data.Statuses)
+       {
+           Console.WriteLine($"NAME[{status.Name}] VALUE[{status.Value}]");
+       }
+       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+       
+       Console.WriteLine("ReceiveDataEventArgs---------FLAGS BLOCKS-----------");
+       foreach (var flag in e.Data.Flags)
+       {
+           Console.WriteLine($"NAME[{flag.Name}] VALUE[{flag.Value}]");
+       }
+       Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
        
        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
        foreach (var parameter in e.Data.Parameters)

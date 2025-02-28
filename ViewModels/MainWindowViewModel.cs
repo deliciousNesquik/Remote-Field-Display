@@ -196,6 +196,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
     
     public MainWindowViewModel()
     {
+        _currentUserControl = new();
+        ManualConnectionDialogViewModel = new();
+        AutomaticConnectionDialogViewModel = new();
+        _ipAddress = "-";
+        
+        
         IsFirstCellVisible = true;
         IsSecondCellVisible = true;
         IsThirdCellVisible = true;
@@ -289,15 +295,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         ManualConnectionDialogViewModel.ConnectionAttempt += ip =>
         {
-            if (App.Instance != null)
-            {
-                ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(App.Instance.Connect(ip));
-            }
+            ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(App.Instance.Connect(ip));
         };
         ManualConnectionDialogViewModel.CloseDialog += () =>
         {
             IsManualConnectingOpen = false;
-            CurrentUserControl = null;
+            CurrentUserControl = new UserControl();
         };
     }
     public void OpenAutomaticConnecting()
@@ -314,38 +317,31 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             cancellationTokenSource.Cancel();
             IsAutomaticConnectingOpen = false;
-            CurrentUserControl = null;
+            CurrentUserControl = new UserControl();
         };
 
         AutomaticConnectionDialogViewModel.CloseDialog += () =>
         {
             IsAutomaticConnectingOpen = false;
-            CurrentUserControl = null;
+            CurrentUserControl = new UserControl();
         };
             
         Task.Run(async () =>
         {
             try
             {
-                if (App.Instance != null)
-                {
-                    bool isConnected = await App.Instance.AutoConnect();
+                bool isConnected = await App.Instance.AutoConnect();
 
-                    // Если подключение успешно
-                    if (isConnected)
-                    {
-                        AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
-                        Console.WriteLine($"[{DateTime.Now}] - [Connection to the server is successful]");
-                    }
-                    else
-                    {
-                        AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(false);
-                        Console.WriteLine($"[{DateTime.Now}] - [Couldn't connect to the server]");
-                    }
+                // Если подключение успешно
+                if (isConnected)
+                {
+                    AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
+                    Console.WriteLine($"[{DateTime.Now}] - [Connection to the server is successful]");
                 }
                 else
                 {
-                    Console.WriteLine($"[{DateTime.Now}] - [Error: App.Instance == null]");
+                    AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(false);
+                    Console.WriteLine($"[{DateTime.Now}] - [Couldn't connect to the server]");
                 }
             }
             catch (TaskCanceledException)
@@ -452,7 +448,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     #region Доп. методы
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
