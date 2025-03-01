@@ -28,21 +28,21 @@
 	        BorderBrush="{DynamicResource BorderColor}">
 		
 		<Grid RowDefinitions="Auto, *">
-			
-			<!--Картинка приложения по центру на заднем фоне-->
-			<Image IsVisible="True" Grid.Row="0" Grid.RowSpan="2" Source="{SvgImage ../Assets/app-icon.svg}">
-				<Image.Effect>
-					<BlurEffect Radius="20"/>
-				</Image.Effect>
-			</Image>
-			
 			<!--Кастомная верхняя панель-->
-			<Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="30" Background="{DynamicResource FocusingColor}" >
+			
+			
+			<Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28">
+				<Grid.Background>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+						<GradientStop Color="#3E66AD" Offset="0"/>
+						<GradientStop Color="#34589C" Offset="1"/>
+					</LinearGradientBrush>
+				</Grid.Background>
 				
 				<!--Заголовок приложения и картинка-->
 				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
 					<Image Source="{SvgImage ../Assets/app-icon.svg}" Margin="5 2 0 2"></Image>
-					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">RFD "Монитор бурильщика"</Label>
+					<Label VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0">Remote Field Display</Label>
 				</StackPanel>
 				
 				<!--Кнопки для управления приложением-->
@@ -83,7 +83,7 @@
 				
 				<!--Основное содержимое главного окна-->
 				<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
-					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 1"/>
+					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0 0 0 0.5"/>
 					
 					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
 					<Grid.Effect>
@@ -91,30 +91,53 @@
 					</Grid.Effect>
 					
 					<!--Блок меню-->
-					<DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
-						<Menu DockPanel.Dock="Left">
-							<MenuItem Header="Подключение" Classes="main">
+					<DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Height="28">
+						<Menu DockPanel.Dock="Left" Height="27">
+							<MenuItem Classes="main">
+								<MenuItem.Header>
+									<StackPanel Orientation="Horizontal">
+										<Image Source="{SvgImage ../Assets/internet-connection.svg}" Width="15" Margin="0 0 5 0"/>
+										<TextBlock Text="Подключение"></TextBlock>
+									</StackPanel>
+								</MenuItem.Header>
+								
 								<MenuItem Header="Автоматическое подключение" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}"/>
 								<MenuItem Header="Ручное подключение" Classes="sub" Command="{Binding OpenManualConnectingCommand}"/>
 								<MenuItem Header="Отключиться" Classes="sub" Command="{Binding DisconnectCommand}"/>
 							</MenuItem>
-							<MenuItem Header="Настройки" Classes="main" Command="{Binding SettingsCommand}"/>
-							
-							<MenuItem Header="Окна" Classes="main">
-								<MenuItem Header="Показать/Скрыть: Левая верхняя" Classes="sub" Command="{Binding TargetVisibleCommand}"/>
-								<MenuItem Header="Показать/Скрыть: Правая верхняя" Classes="sub" Command="{Binding InformationVisibleCommand}"/>
-								<MenuItem Header="Показать/Скрыть: Левая нижняя" Classes="sub" Command="{Binding ParametersVisibleCommand}"/>
-								<MenuItem Header="Показать/Скрыть: Правая нижняя" Classes="sub" Command="{Binding StatusesVisibleCommand}"/>
+							<MenuItem Classes="main" Command="{Binding SettingsCommand}">
+								<MenuItem.Header>
+									<StackPanel Orientation="Horizontal">
+										<Image Source="{SvgImage ../Assets/settings.svg}" Width="17" Margin="0 0 5 0"/>
+										<TextBlock Text="Настройки"/>
+									</StackPanel>
+								</MenuItem.Header>
 							</MenuItem>
-							<MenuItem Header="Помощь" Classes="main">
-								<MenuItem Header="Руководство пользователя" Classes="sub"/>
+							<MenuItem Classes="main">
+								<MenuItem.Header>
+									<StackPanel Orientation="Horizontal">
+										<Image Source="{SvgImage ../Assets/help.svg}" Width="16" Margin="0 0 5 0"/>
+										<TextBlock Text="Помощь"></TextBlock>
+									</StackPanel>
+								</MenuItem.Header>
+								
+								<MenuItem Header="Руководство пользователя" Classes="sub">
+								</MenuItem>
 								<MenuItem Header="О приложении" Classes="sub"/>
 							</MenuItem>
 						</Menu>
 						
 						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-							<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged, StringFormat={}IP-Адрес: {0}}" Foreground="{DynamicResource ForegroundColor02}" FontWeight="650" VerticalAlignment="Center"/>
-							<Ellipse Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Margin="0 0 10 0" Width="12" Height="12" VerticalAlignment="Center"/>
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0 0 15 0">
+								<Grid Margin="0 0 0 0">
+									<Ellipse ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу" Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Width="6" Height="6" VerticalAlignment="Center"/>
+									<Image Source="{SvgImage ../Assets/connection-status.svg}" Width="20" Height="20" VerticalAlignment="Center" ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу"/>
+								</Grid>
+								<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}" 
+								       Foreground="{DynamicResource ForegroundColor02}" 
+								       ToolTip.Tip="Данное поле отвечает за отображение IP-адреса сервера от которого принимаются данные"
+								       FontWeight="650" VerticalAlignment="Center"/>
+							</StackPanel>
 						</StackPanel>
 					</DockPanel>
 					

@@ -193,7 +193,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _currentUserControl = new();
         ManualConnectionDialogViewModel = new();
         AutomaticConnectionDialogViewModel = new();
-        _ipAddress = "-";
+        _ipAddress = "127.0.0.1";
         
         
         IsFirstCellVisible = true;
