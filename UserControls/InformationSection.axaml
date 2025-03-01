@@ -8,30 +8,42 @@
              x:Class="RFD.UserControls.InformationSection"
              x:DataType="vm:InformationSectionViewModel">
     
-    <Grid RowDefinitions="Auto, *" Margin="5" x:Name="MainGrid">
-        <Border Grid.Row="0" Grid.RowSpan="2" BorderBrush="Gray" BorderThickness="0"></Border>
+    <Border BorderBrush="Gray" BorderThickness="0.5"
+            CornerRadius="10" Padding="10">
+        
+        <Grid RowDefinitions="Auto, *" x:Name="MainGrid">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
+                        HorizontalAlignment="Left" VerticalAlignment="Top">
+                
+                <Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="12"/>
+                <TextBlock Text="Информация бурения" FontWeight="Bold" Classes="section"/>
+            </StackPanel>
+            
+            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
+                    Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"
+                    ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне"/>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 5">
-            <Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="13" Margin="0 0 5 0"/>
-            <TextBlock Text="Информация о бурении" FontWeight="Bold" Classes="section" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        </StackPanel>
 
-        <Grid Grid.Row="1">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding InfoBlockList}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <!-- Привязка ActualWidth к ViewModel -->
-                            <WrapPanel Width="{Binding Width,  ElementName=MainGrid}" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <controls:InfoBox Margin="5" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+            <Grid Grid.Row="1">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding InfoBlockList}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <!-- Привязка ActualWidth к ViewModel -->
+                                <WrapPanel Width="{Binding Width,  ElementName=MainGrid}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:InfoBox Margin="5" Title="{Binding Title}" Content="{Binding Content}" Inscription="{Binding Inscription}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
         </Grid>
-    </Grid>
+        
+    </Border>
+    
+    
 </UserControl>

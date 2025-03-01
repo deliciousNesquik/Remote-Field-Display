@@ -194,13 +194,9 @@ public class App : Application
        }
        
        //e.Data.Statuses = empty
-       
-       Console.WriteLine("ReceiveDataEventArgs---------FLAGS BLOCKS-----------");
        foreach (var flag in e.Data.Flags)
        {
-           Console.WriteLine($"NAME[{flag.Name}] VALUE[{flag.Value}]");
-       }
-       Console.WriteLine("ReceiveDataEventArgs-------------------------------");
+           _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, flag.Value)); }
        
        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
        foreach (var parameter in e.Data.Parameters)

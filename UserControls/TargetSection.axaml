@@ -7,52 +7,64 @@
              x:Class="RFD.UserControls.TargetSection"
              x:DataType="vm:TargetSectionViewModel">
     
-    <Grid RowDefinitions="Auto, *" Margin="5">
-        <Border Grid.Row="0" Grid.RowSpan="2" BorderBrush="Gray" BorderThickness="0"></Border>
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="13" Margin="0 0 5 0"/>
-            <TextBlock Text="Мишень" FontWeight="Bold" Classes="section" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        </StackPanel>
-        <Button Grid.Row="0" Width="20" Padding="0" Background="Transparent" HorizontalAlignment="Right"
-                Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"/>
-       
-        <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20">
-            <Grid>
-                <Ellipse Width="200" Height="200" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
-                <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="#67808080" StrokeThickness="10"/>
+    <Border BorderBrush="Gray" BorderThickness="0.5"
+            CornerRadius="10" Padding="10">
+        
+        <Grid RowDefinitions="Auto, *">
+            
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
+                        HorizontalAlignment="Left" VerticalAlignment="Top">
                 
-                <Ellipse Width="180" Height="180" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
-                <Ellipse Width="144" Height="144" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
-                <Ellipse Width="108" Height="108" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
-                <Ellipse Width="72" Height="72" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
-                <Ellipse Width="36" Height="36" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                <Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="12"/>
+                <TextBlock Text="Мишень бурения" FontWeight="Bold" Classes="section"/>
+            </StackPanel>
+            
+            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
+                    Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"
+                    ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне"/>
+           
+            
+            
+            <Viewbox Grid.Row="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5">
+                <Grid>
+                    <Ellipse Width="200" Height="200" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                    <Ellipse Width="200" Height="200" Fill="Transparent" Stroke="#67808080" StrokeThickness="10"/>
+                    
+                    <Ellipse Width="180" Height="180" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                    <Ellipse Width="144" Height="144" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                    <Ellipse Width="108" Height="108" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                    <Ellipse Width="72" Height="72" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
+                    <Ellipse Width="36" Height="36" Stroke="#81000000" StrokeThickness="0.5" Fill="Transparent"/>
 
-                <Line StartPoint="100,10" EndPoint="100,190" Stroke="#81000000" StrokeThickness="1"/>
-                <Line StartPoint="10,100" EndPoint="190,100" Stroke="#81000000" StrokeThickness="1"/>
+                    <Line StartPoint="100,10" EndPoint="100,190" Stroke="#81000000" StrokeThickness="1"/>
+                    <Line StartPoint="10,100" EndPoint="190,100" Stroke="#81000000" StrokeThickness="1"/>
+        
+                    <Line StartPoint="36.5,36.5" EndPoint="163,163" Stroke="#4B000000" StrokeThickness="0.5"/>
+                    <Line StartPoint="163,36.5" EndPoint="36.5,163" Stroke="#4B000000" StrokeThickness="0.5"/>
+                    
+                    <TextBlock Text="0°" FontSize="4" Margin="98 3 0 0" Padding="0"></TextBlock>
+                    <TextBlock Text="45°" FontSize="4" Margin="163 30 0 0"></TextBlock>
+                    <TextBlock Text=" 90°" FontSize="4" Margin="190 97 0 0"></TextBlock>
+                    <TextBlock Text="135°" FontSize="4" Margin="164 164 0 0"></TextBlock>
+                    <TextBlock Text="180°" FontSize="4" Margin="96 192 0 0"></TextBlock>
+                    
+                    <TextBlock Text="-135°" FontSize="4" Margin="27 164 0 0"></TextBlock>
+                    <TextBlock Text=" -90°" FontSize="4" Margin="0 97 0 0"></TextBlock>
+                    <TextBlock Text="-45°" FontSize="4" Margin="30 30 0 0"></TextBlock>
+                    
+                    <Polygon Points="{Binding Sector}" Fill="{Binding SectorColor}"></Polygon>
+                    
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="0"></Ellipse>
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point1}"></Ellipse>
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point2}"></Ellipse>
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point3}"></Ellipse>
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point4}"></Ellipse>
+                    <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point5}"></Ellipse>
+
+                </Grid>
+            </Viewbox>
+        </Grid>
+    </Border>
     
-                <Line StartPoint="36.5,36.5" EndPoint="163,163" Stroke="#4B000000" StrokeThickness="0.5"/>
-                <Line StartPoint="163,36.5" EndPoint="36.5,163" Stroke="#4B000000" StrokeThickness="0.5"/>
-                
-                <TextBlock Text="0°" FontSize="4" Margin="98 3 0 0" Padding="0"></TextBlock>
-                <TextBlock Text="45°" FontSize="4" Margin="163 30 0 0"></TextBlock>
-                <TextBlock Text=" 90°" FontSize="4" Margin="190 97 0 0"></TextBlock>
-                <TextBlock Text="135°" FontSize="4" Margin="164 164 0 0"></TextBlock>
-                <TextBlock Text="180°" FontSize="4" Margin="96 192 0 0"></TextBlock>
-                
-                <TextBlock Text="-135°" FontSize="4" Margin="27 164 0 0"></TextBlock>
-                <TextBlock Text=" -90°" FontSize="4" Margin="0 97 0 0"></TextBlock>
-                <TextBlock Text="-45°" FontSize="4" Margin="30 30 0 0"></TextBlock>
-                
-                <Polygon Points="{Binding Sector}" Fill="{Binding SectorColor}"></Polygon>
-                
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="0"></Ellipse>
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point1}"></Ellipse>
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point2}"></Ellipse>
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point3}"></Ellipse>
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point4}"></Ellipse>
-                <Ellipse Width="5" Height="5" Fill="#81000000" Margin="{Binding Point5}"></Ellipse>
-
-            </Grid>
-        </Viewbox>
-    </Grid>
+    
 </UserControl>

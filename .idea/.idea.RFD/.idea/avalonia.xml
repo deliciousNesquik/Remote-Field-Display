@@ -12,15 +12,19 @@
         <entry key="Controls/PolarChart.axaml" value="RFD.csproj" />
         <entry key="Controls/StatusBox.axaml" value="RFD.csproj" />
         <entry key="Converters/Converters.axaml" value="RFD.csproj" />
+        <entry key="UserControls/About.axaml" value="RFD.csproj" />
+        <entry key="UserControls/AboutDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ConnectionControl.axaml" value="RFD.csproj" />
         <entry key="UserControls/InformationSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />
         <entry key="UserControls/ManualConnectionDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ParametersSection.axaml" value="RFD.csproj" />
+        <entry key="UserControls/StatusSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/TargetSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/TitleBarWindows.axaml" value="RFD.csproj" />
         <entry key="Views/MainWindow.axaml" value="RFD.csproj" />
+        <entry key="Views/RemoteFieldDisplayWindow.axaml" value="RFD.csproj" />
       </map>
     </option>
   </component>

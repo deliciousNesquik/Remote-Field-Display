@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
@@ -16,12 +15,13 @@ namespace RFD.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private WindowService _windowService = new WindowService();
+    private readonly WindowService _windowService = new WindowService();
     
     #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
     public TargetSectionViewModel TargetSectionViewModel { get; }
     public ParametersSectionViewModel ParametersSectionViewModel { get; }
     public InformationSectionViewModel InformationSectionViewModel { get; }
+    public StatusSectionViewModel StatusSectionViewModel { get; }
     #endregion
 
     #region Переменные: Параметры отвечающие за работу модальных окон поверх главного окна
@@ -42,14 +42,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         get => _isModalWindowOpen;
         set {
             _isModalWindowOpen = value;
-            if (value)
-            {
-                BlurRadius = 10;
-            }
-            else
-            {
-                BlurRadius = 0;
-            }
+            BlurRadius = value ? 10 : 0;
             OnPropertyChanged();
         }
     }
@@ -144,11 +137,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     #endregion
-    
-    #region Переменные: View Models модальных окон
-    public ManualConnectionDialogViewModel ManualConnectionDialogViewModel { get; set; }
-    public AutomaticConnectionDialogViewModel AutomaticConnectionDialogViewModel { get; set; }
-    #endregion
 
     #region Переменные: Команды основного меню
 
@@ -156,10 +144,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand OpenManualConnectingCommand { get; }
     public ICommand DisconnectCommand { get; }
     public ICommand SettingsCommand { get; }
-    public ICommand TargetVisibleCommand { get; }
-    public ICommand InformationVisibleCommand { get; }
-    public ICommand ParametersVisibleCommand { get; }
-    public ICommand StatusesVisibleCommand { get; }
+    public ICommand AboutCommand { get; }
 
     #endregion
 
@@ -191,8 +176,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public MainWindowViewModel()
     {
         _currentUserControl = new();
-        ManualConnectionDialogViewModel = new();
-        AutomaticConnectionDialogViewModel = new();
         _ipAddress = "127.0.0.1";
         
         
@@ -203,6 +186,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         TargetSectionViewModel = new TargetSectionViewModel(_windowService);
         ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);
+        StatusSectionViewModel = new StatusSectionViewModel(_windowService);
         
         FirstCell = new TargetSection
         {
@@ -216,9 +200,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             DataContext = InformationSectionViewModel
         };
-        FourCell = new InformationSection
+        FourCell = new StatusSection
         {
-            DataContext = InformationSectionViewModel
+            DataContext = StatusSectionViewModel
         };
 
         //Использовать только эти два методы для создания сектора и его очистки
@@ -226,72 +210,59 @@ public class MainWindowViewModel : INotifyPropertyChanged
         TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
         //TargetSectionViewModel.ClearSector();
         
-        
-        
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
         InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.ClearInfoBox();
+        //InformationSectionViewModel.ClearInfoBox();
         
+        StatusSectionViewModel.AddStatusBox(new StatusBox("Насосы", true));
+        StatusSectionViewModel.AddStatusBox(new StatusBox("Забой", true));
+        StatusSectionViewModel.AddStatusBox(new StatusBox("Бурение", true));
         
         ParametersSectionViewModel.MagneticDeclination = 10.0;
         ParametersSectionViewModel.ToolfaceOffset = 12.0;
-        ParametersSectionViewModel.MagneticDeclination = 0;
-        ParametersSectionViewModel.ToolfaceOffset = 0;
+        ParametersSectionViewModel.Angle = 10.0;
+        ParametersSectionViewModel.TimeStamp = DateTime.Now;
+        ParametersSectionViewModel.ToolfaceType = "Нет данных";
         
-        
-        
-        //Геофизические параметры заполнены для примера
-        
-        //InfoStatusList = [
-        //    new ("Клинья", false),
-        //    new ("Насос", false),
-        //    new ("Забой", false),
-        //];
-
-        
-            
         //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
         OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
         DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
         SettingsCommand = new RelayCommand((() => Console.WriteLine("Open settings")), () => true);
-        TargetVisibleCommand = new RelayCommand(() =>
-        {
-            IsFirstCellVisible = !IsFirstCellVisible;
-            Console.WriteLine(IsFirstCellVisible);
-        });
-        InformationVisibleCommand = new RelayCommand(() =>
-        {
-            IsThirdCellVisible = !IsThirdCellVisible;
-            Console.WriteLine(IsThirdCellVisible);
-        });
-        ParametersVisibleCommand = new RelayCommand(() =>
-        {
-            IsSecondCellVisible = !IsSecondCellVisible;
-            Console.WriteLine(IsSecondCellVisible);
-        });
-        StatusesVisibleCommand = new RelayCommand(() =>
-        {
-            IsFourCellVisible = !IsFourCellVisible;
-            Console.WriteLine(IsFourCellVisible);
-        });
+        AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
 
+    private void OpenAbout()
+    {
+        AboutViewModel aboutViewModel = new();
+        CurrentUserControl = new AboutDialog()
+        {
+            DataContext = aboutViewModel
+        };
+        IsModalWindowOpen = true;
+
+        aboutViewModel.CloseDialog += () =>
+        {
+            IsModalWindowOpen = false;
+            CurrentUserControl = new UserControl();
+        };
+    }
+    
     #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
     private void OpenManualConnecting()
     {
-        ManualConnectionDialogViewModel = new ManualConnectionDialogViewModel();
+        ManualConnectionDialogViewModel manualConnectionDialogViewModel = new();
         CurrentUserControl = new ManualConnectionDialog()
         {
-            DataContext = ManualConnectionDialogViewModel
+            DataContext = manualConnectionDialogViewModel
         };
         IsManualConnectingOpen = true;
 
-        ManualConnectionDialogViewModel.ConnectionAttempt += ip =>
+        manualConnectionDialogViewModel.ConnectionAttempt += ip =>
         {
-            ManualConnectionDialogViewModel.ConnectionStatus?.Invoke(App.Instance.Connect(ip));
+            manualConnectionDialogViewModel.ConnectionStatus.Invoke(App.Instance.Connect(ip));
         };
-        ManualConnectionDialogViewModel.CloseDialog += () =>
+        manualConnectionDialogViewModel.CloseDialog += () =>
         {
             IsManualConnectingOpen = false;
             CurrentUserControl = new UserControl();
@@ -300,21 +271,22 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public void OpenAutomaticConnecting()
     {
         var cancellationTokenSource = new CancellationTokenSource();
-        AutomaticConnectionDialogViewModel = new AutomaticConnectionDialogViewModel();
+        AutomaticConnectionDialogViewModel automaticConnectionDialogViewModel = new();
         CurrentUserControl = new AutomaticConnectingDialog()
         {
-            DataContext = AutomaticConnectionDialogViewModel
+            DataContext = automaticConnectionDialogViewModel
         };
         IsAutomaticConnectingOpen = true;
 
-        AutomaticConnectionDialogViewModel.UserCloseDialog += () =>
+        automaticConnectionDialogViewModel.UserCloseDialog += () =>
         {
-            cancellationTokenSource.Cancel();
+            
             IsAutomaticConnectingOpen = false;
             CurrentUserControl = new UserControl();
+            cancellationTokenSource.Cancel();
         };
 
-        AutomaticConnectionDialogViewModel.CloseDialog += () =>
+        automaticConnectionDialogViewModel.CloseDialog += () =>
         {
             IsAutomaticConnectingOpen = false;
             CurrentUserControl = new UserControl();
@@ -329,12 +301,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
                 // Если подключение успешно
                 if (isConnected)
                 {
-                    AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(true);
+                    automaticConnectionDialogViewModel.ConnectionStatus.Invoke(true);
                     Console.WriteLine($"[{DateTime.Now}] - [Connection to the server is successful]");
                 }
                 else
                 {
-                    AutomaticConnectionDialogViewModel.ConnectionStatus?.Invoke(false);
+                    automaticConnectionDialogViewModel.ConnectionStatus.Invoke(false);
                     Console.WriteLine($"[{DateTime.Now}] - [Couldn't connect to the server]");
                 }
             }
@@ -349,17 +321,14 @@ public class MainWindowViewModel : INotifyPropertyChanged
             finally
             {
                 // В любом случае закрываем окно подключения
-                Dispatcher.UIThread.Invoke(AutomaticConnectionDialogViewModel.CloseDialog);
+                await cancellationTokenSource.CancelAsync();
             }
         }, cancellationTokenSource.Token);
     }
     
     private void Disconnect()
     {
-        if (App.Instance != null)
-        {
-            App.Instance.Disconnect();
-        }
+        App.Instance.Disconnect();
     }
     
     public void UpdateConnecting(App? model)
@@ -381,71 +350,21 @@ public class MainWindowViewModel : INotifyPropertyChanged
                 //Статусный блок - удаление всех статусов
                 TargetSectionViewModel.SetSector(-45, 45);
                 InformationSectionViewModel.ClearInfoBox();
+                ParametersSectionViewModel.MagneticDeclination = 0.0;
+                ParametersSectionViewModel.ToolfaceOffset = 0.0;
+                ParametersSectionViewModel.ToolfaceType = "Нет данных";
+                ParametersSectionViewModel.TimeStamp = DateTime.Now;
+                ParametersSectionViewModel.Angle = 0.0;
                 break;
         }
     }
     #endregion
-        
-    #region Методы для получения данных из Genesis LWD
-    /*public void SetSettings(ReceiveSettingsEventArgs e)
-    {
-        Console.WriteLine("SetSettings ZOV");
-        InfoBlockList.Clear();
-        InfoStatusList.Clear();
-        MagneticDeclination = 0.0;
-        ToolfaceOffset = 0.0;
-            
-        MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
-        ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
-        //add 
-        //booIndicators - красные индикаторы
-            
-        foreach (var flag in e.Settings.Statuses)
-        {
-            Console.WriteLine("statuses name" + flag.Name.ToString());
-            InfoStatusList.Add(Convert(flag));
-        }
-
-        /*foreach (var flag in e.Settings.ParameterInfo)
-        {
-            Console.WriteLine("parameterInfo name " + flag.Name.ToString());
-            Console.WriteLine("parameterInfo float " + flag.Float.ToString());
-            Console.WriteLine("parameterInfo units " + flag.Units.ToString());
-            InfoBlockList.Add(Convert(flag));
-        }*/
-
-        /*foreach (var param in e.Settings.Params)
-        {
-            Console.WriteLine("parameter Name " + param.Name.ToString());
-            Console.WriteLine("parameter Value " + param.Value.ToString());
-        }*/
-        /*
-    static StatusBox Convert(StatusInfo info)
-    {
-        return new StatusBox(info.Name.ToString(), false);
-    }
-
-    /*static Field Convert(FlagInfo info)
-    {
-        Parameter<bool> flag = new Parameter<bool>();
-        flag.Caption = info.Name;
-        flag.Value = false;
-        return flag;
-    }*/
-
-    /*static InfoBox Convert(ParameterInfo info)
-    {
-        return new InfoBox(info.Name.ToString(), "-999", info.Units.ToString());
-    }*/
-    #endregion
-
-    #region Доп. методы
+    
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-    #endregion
 }

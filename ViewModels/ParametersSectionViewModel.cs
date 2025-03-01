@@ -11,7 +11,7 @@ namespace RFD.ViewModels;
 public class ParametersSectionViewModel : INotifyPropertyChanged
 {
     
-    private readonly IWindowService _windowService;
+    private readonly IWindowService _windowService = null!;
 
     public double SelectedWidth { get; set; } = 800;
 
@@ -57,7 +57,7 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
         }
     }
     
-    private string _toolfacetype;
+    private string _toolfacetype = "";
     public string ToolfaceType {
         get => _toolfacetype;
         set
@@ -72,9 +72,14 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
     {
         MagneticDeclination = 0.0;
         ToolfaceOffset = 0.0;
+        TimeStamp = DateTime.Now;
+        Angle = 0.0;
+        ToolfaceType = "Нет данных";
+        
         _windowService = windowService;
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
     }
+
     private void OpenInNewWindow()
     {
         var newControl = new UserControls.ParametersSection() { DataContext = this };

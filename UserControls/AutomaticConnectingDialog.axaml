@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RFD.ViewModels"
              xmlns:li="using:LoadingIndicators.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="250"
+             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="270"
              x:Class="RFD.UserControls.AutomaticConnectingDialog"
              x:DataType="vm:AutomaticConnectionDialogViewModel">
     
@@ -34,7 +34,9 @@
             </StackPanel>
             
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                <Button Content="Отменить" Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}" />
+                <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
+                    <TextBlock Text="Отменить" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
             </StackPanel>
         </Grid>
     </Border>

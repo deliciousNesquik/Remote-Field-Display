@@ -89,11 +89,13 @@
         
         
         <!--Стили для модульных окон-->
-        <x:Double x:Key="FrameWidth">400</x:Double>
+        <x:Double x:Key="FrameWidth">420</x:Double>
         <x:Double x:Key="FrameHeight">270</x:Double>
         <x:Double x:Key="FrameIconSize">18</x:Double>
         <x:Double x:Key="FrameFontSizeBig">16</x:Double>
         <x:Double x:Key="FrameFontSizeSmall">12</x:Double>
+        
+        <x:String x:Key="Version">Версия 1.0.0</x:String>
         
         
         <!--Градиентный задний фон-->

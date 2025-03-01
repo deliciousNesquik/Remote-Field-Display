@@ -5,7 +5,7 @@
         xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
         xmlns:converters="using:RFD.Converters"
-        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="720"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="820"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Background="{DynamicResource GradientBackground}"
@@ -19,7 +19,7 @@
     </Design.DataContext>
 	
 	<Window.Resources>
-		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"></converters:BoolToBrushConverter>
+		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
 	</Window.Resources>
 	
 	
@@ -77,6 +77,10 @@
 							<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
 								<usercontrols:ManualConnectionDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 							</DataTemplate>
+							
+							<DataTemplate DataType="{x:Type usercontrols:AboutDialog}">
+								<usercontrols:AboutDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							</DataTemplate>
 						</ContentControl.DataTemplates>
 					</ContentControl>
 				</Border>
@@ -123,7 +127,7 @@
 								
 								<MenuItem Header="Руководство пользователя" Classes="sub">
 								</MenuItem>
-								<MenuItem Header="О приложении" Classes="sub"/>
+								<MenuItem Header="О приложении" Command="{Binding AboutCommand}" Classes="sub"/>
 							</MenuItem>
 						</Menu>
 						
@@ -142,45 +146,27 @@
 					</DockPanel>
 					
 					<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-					      ColumnDefinitions="0.5*,0.5*" RowDefinitions="0.8*,0.15*">
+					      ColumnDefinitions="0.5*,0.5*" RowDefinitions="0.8*,0.2*" Margin="10">
 						
 						<ContentControl Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsFirstCellVisible}"
-						                VerticalAlignment="Stretch"
+						                VerticalAlignment="Stretch" Margin="0 0 5 5"
 						                Content="{Binding FirstCell}"/>
 						<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsSecondCellVisible}"
-						                VerticalAlignment="Stretch"
+						                VerticalAlignment="Stretch" Margin="0 5 5 0"
 						                Content="{Binding SecondCell}"/>
 						
 						
-						<Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" RowDefinitions="*, *">
-							<ContentControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" IsVisible="{Binding IsThirdCellVisible}"
-							                VerticalAlignment="Stretch"
+						<Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" RowDefinitions="0.8*, 0.2*">
+							<ContentControl Grid.Row="0" Grid.Column="0" IsVisible="{Binding IsThirdCellVisible}"
+							                VerticalAlignment="Stretch" Margin="5 0 0 5"
 							                Content="{Binding ThirdCell}"/>
 						
-							<!--<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsFourCellVisible}"
-							                VerticalAlignment="Stretch"
-							                Content="{Binding FourCell}"/>-->
+							<ContentControl Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsFourCellVisible}"
+							                VerticalAlignment="Stretch" Margin="5 5 0 0"
+							                Content="{Binding FourCell}"/>
 						</Grid>
 						
 					</Grid>
-						<!--<Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, Auto">
-							<StackPanel Grid.Row="1" IsVisible="{Binding IsStatusesDisplayed}">
-								<Label Content="Статусы бурения:" Classes="section" />
-								~1~Блок со статусами элементов буровой@1@
-								<ItemsControl VerticalAlignment="Center" ItemsSource="{Binding InfoStatusList}">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<WrapPanel Orientation="Horizontal"/>
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate>
-											<controls:StatusBox Header="{Binding Header}" Status="{Binding Status}" Margin="1"/>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</StackPanel>
-						</Grid>-->
 				</Grid>
 			</Grid>
 		</Grid>
