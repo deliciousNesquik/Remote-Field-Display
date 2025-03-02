@@ -1,8 +1,9 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="RFD.App"
              xmlns:interfaces="clr-namespace:RFD.Interfaces"
-             RequestedThemeVariant="Default">
+             x:Class="RFD.App"
+             
+             RequestedThemeVariant="LightTheme">
 
     <Application.DataTemplates>
         <interfaces:ViewLocator/>
@@ -54,7 +55,7 @@
         </Style>
 
         
-        <FluentTheme/>
+        <!-- По умолчанию загружаем светлую тему -->
         <StyleInclude Source="avares://RFD/Controls/InfoBox.axaml"/>
         <StyleInclude Source="avares://RFD/Controls/StatusBox.axaml"/>
     </Application.Styles>
@@ -63,6 +64,9 @@
         
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://RFD/Themes/Light.axaml"/>
+                <ResourceInclude Source="avares://RFD/Themes/Dark.axaml"/>
+                
                 <ResourceInclude Source="avares://RFD/Controls/LoadingIndicators.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -96,13 +100,5 @@
         <x:Double x:Key="FrameFontSizeSmall">12</x:Double>
         
         <x:String x:Key="Version">Версия 1.0.0</x:String>
-        
-        
-        <!--Градиентный задний фон-->
-        <LinearGradientBrush x:Key="GradientBackground" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="{StaticResource BackgroundColor01}" Offset="0" />
-            <GradientStop Color="{StaticResource BackgroundColor02}" Offset="1" />
-            <GradientStop Color="{StaticResource BackgroundColor03}" Offset="2" />
-        </LinearGradientBrush>
     </Application.Resources>
 </Application>

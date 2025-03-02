@@ -8,7 +8,7 @@
         mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="820"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Background="{DynamicResource GradientBackground}"
+        Background="{DynamicResource Background}"
         
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"

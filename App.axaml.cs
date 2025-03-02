@@ -11,6 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml.Styling;
 using NPFGEO.LWD.Net;
 using RFD.Models;
 using DateTime = System.DateTime;
@@ -20,6 +21,10 @@ namespace RFD;
 public class App : Application
 {
     public static App Instance => (App)Current!; // Получаем текущий экземпляр приложения
+    private static readonly Uri LightThemeUri = new("avares://RFD/Themes/Light.axaml");
+    private static readonly Uri DarkThemeUri = new("avares://RFD/Themes/Dark.axaml");
+
+    
     
     /// <summary>Создание объекта класса главного окна, для открытия его и управления внутренними методами и объектами</summary>
     private MainWindowViewModel _mainWindowViewModel = null!;
@@ -76,6 +81,13 @@ public class App : Application
             Console.WriteLine($"[{DateTime.Now}] - [Error creating _client and _listener] - [{e}]");
         }
         
+    }
+    public void SetTheme(bool isDark)
+    {
+        Styles[0] = new StyleInclude(isDark ? DarkThemeUri : LightThemeUri)
+        {
+            Source = isDark ? DarkThemeUri : LightThemeUri
+        };
     }
     
     public override void OnFrameworkInitializationCompleted()

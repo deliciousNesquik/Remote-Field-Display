@@ -13,7 +13,7 @@
     </Design.DataContext>
     
     <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" 
-            Background="{DynamicResource GradientBackground}" Padding="15" 
+            Background="{DynamicResource Background}" Padding="15" 
             Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
         
         <Grid>
