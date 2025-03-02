@@ -46,7 +46,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
     private bool _isManualConnectingOpen;
     public bool IsManualConnectingOpen
     {
@@ -263,9 +262,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
             manualConnectionDialogViewModel.ConnectionStatus.Invoke(App.Instance.Connect(ip));
         };
         manualConnectionDialogViewModel.CloseDialog += () =>
-        {
-            IsManualConnectingOpen = false;
+        { 
             CurrentUserControl = new UserControl();
+            IsManualConnectingOpen = false;
         };
     }
     public void OpenAutomaticConnecting()
@@ -277,19 +276,18 @@ public class MainWindowViewModel : INotifyPropertyChanged
             DataContext = automaticConnectionDialogViewModel
         };
         IsAutomaticConnectingOpen = true;
-
+        
         automaticConnectionDialogViewModel.UserCloseDialog += () =>
         {
-            
-            IsAutomaticConnectingOpen = false;
             CurrentUserControl = new UserControl();
+            IsAutomaticConnectingOpen = false;
             cancellationTokenSource.Cancel();
         };
 
         automaticConnectionDialogViewModel.CloseDialog += () =>
-        {
-            IsAutomaticConnectingOpen = false;
+        { 
             CurrentUserControl = new UserControl();
+            IsAutomaticConnectingOpen = false;
         };
             
         Task.Run(async () =>

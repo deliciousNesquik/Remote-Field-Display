@@ -20,6 +20,7 @@
 	
 	<Window.Resources>
 		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+		<converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
 	</Window.Resources>
 	
 	
@@ -64,9 +65,17 @@
 				<Border Name="BlackoutWindow"
 				        IsVisible="{Binding IsModalWindowOpen}"
 				        Background="#80000000"
+				        Opacity="{Binding IsModalWindowOpen, Converter={StaticResource BoolToOpacityConverter}}"
 				        ZIndex="1000"
 				        HorizontalAlignment="Stretch"
 				        VerticalAlignment="Stretch">
+					
+					<!-- Плавная анимация Opacity -->
+					<Border.Transitions>
+						<Transitions>
+							<DoubleTransition Property="Opacity" Duration="0:0:0.35"/>
+						</Transitions>
+					</Border.Transitions>
 					
 					<!--DataTemplate для всех модальных окон-->
 					<ContentControl Content="{Binding CurrentUserControl}">
