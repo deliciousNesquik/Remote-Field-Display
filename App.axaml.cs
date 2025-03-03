@@ -5,6 +5,7 @@ using RFD.ViewModels;
 using RFD.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Styling;
 using NPFGEO.LWD.Net;
 using RFD.Models;
 using DateTime = System.DateTime;
@@ -45,16 +47,19 @@ public class App : Application
     private CancellationTokenSource _cancelTokenSource = new();
     /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
+    // Событие для подписчиков
+    public event Action<string>? ThemeChanged;
 
     public override void Initialize()
     {
-        
+
         AvaloniaXamlLoader.Load(this);
         // Проверяем, не работает ли приложение в режиме дизайнера
         if (Design.IsDesignMode)
         {
             return;
         }
+
         try
         {
             //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
@@ -73,23 +78,16 @@ public class App : Application
             //TODO
             //Создать уведомление пользователю о ошибке
             //создания вещательного канала между программой RFD и LWD
-            
+
             _client = null!;
             _listener = null!;
-            
+
             //В случае возникшей ошибки выдается такое сообщение и сама ошибка
             Console.WriteLine($"[{DateTime.Now}] - [Error creating _client and _listener] - [{e}]");
         }
-        
+
     }
-    public void SetTheme(bool isDark)
-    {
-        Styles[0] = new StyleInclude(isDark ? DarkThemeUri : LightThemeUri)
-        {
-            Source = isDark ? DarkThemeUri : LightThemeUri
-        };
-    }
-    
+
     public override void OnFrameworkInitializationCompleted()
     {
         switch (ApplicationLifetime)
@@ -97,6 +95,8 @@ public class App : Application
             //Условие для desktop приложений, которые поддерживают оконную систему отображения приложений
             case IClassicDesktopStyleApplicationLifetime desktop:
             {
+                this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);
+                
                 _mainWindowViewModel = new MainWindowViewModel();
                 MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
                 desktop.MainWindow = mainWindow;
@@ -109,6 +109,12 @@ public class App : Application
         }
         base.OnFrameworkInitializationCompleted();
     }
+
+    private void OnThemeChanged(ThemeVariant newTheme)
+    {
+        ThemeChanged?.Invoke(newTheme.Key.ToString());
+    }
+
 
     
     /// <summary>
@@ -206,6 +212,7 @@ public class App : Application
        }
        
        //e.Data.Statuses = empty
+       _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
        foreach (var flag in e.Data.Flags)
        {
            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, flag.Value)); }

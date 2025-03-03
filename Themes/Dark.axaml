@@ -1,6 +1,28 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
-    <Brush x:Key="Background">#D6000000</Brush>
-    
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            
+            <Brush x:Key="Background">#232323</Brush>
+            <Brush x:Key="Foreground">#ededed</Brush>
+            <Brush x:Key="BorderBrush">#ededed</Brush>
+            
+            <Brush x:Key="ForegroundButton">#ededed</Brush>
+            <Brush x:Key="BackgroundButton">#3e66ad</Brush>
+            
+            <Color x:Key="ForegroundColor02">#1B2046</Color>
+            
+            <Color x:Key="RedColor">#ff3333</Color>
+            <Color x:Key="GreenColor">#00b300</Color>
+            <Color x:Key="FocusingColor">#3e66ad</Color>
+            <Color x:Key="CoverFocusingColor">#2d4a7d</Color>
+            <Color x:Key="ButtonBackground">Transparent</Color>
+            
+            <LinearGradientBrush x:Key="TopBarGradientBrush" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#3E66AD" Offset="0"/>
+                <GradientStop Color="#34589C" Offset="1"/>
+            </LinearGradientBrush>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

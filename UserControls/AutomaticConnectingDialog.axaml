@@ -12,13 +12,13 @@
         <vm:AutomaticConnectionDialogViewModel/>
     </Design.DataContext>
     
-    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" 
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
             Background="{DynamicResource Background}" Padding="15" 
             Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
         
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Image Source="{SvgImage ../Assets/internet-connection.svg}" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"></Image>
+                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"/>
                 <TextBlock Text="Автоматическое подключение"  FontSize="{DynamicResource FrameFontSizeBig}"  FontWeight="Bold" TextAlignment="Center" />
             </StackPanel>
             

@@ -12,8 +12,11 @@
         <entry key="Controls/PolarChart.axaml" value="RFD.csproj" />
         <entry key="Controls/StatusBox.axaml" value="RFD.csproj" />
         <entry key="Converters/Converters.axaml" value="RFD.csproj" />
+        <entry key="Styles/Buttons.axaml" value="RFD.csproj" />
         <entry key="Theme/Dark.axaml" value="RFD.csproj" />
         <entry key="Theme/Light.axaml" value="RFD.csproj" />
+        <entry key="Themes/Dark.axaml" value="RFD.csproj" />
+        <entry key="Themes/Light.axaml" value="RFD.csproj" />
         <entry key="UserControls/About.axaml" value="RFD.csproj" />
         <entry key="UserControls/AboutDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />

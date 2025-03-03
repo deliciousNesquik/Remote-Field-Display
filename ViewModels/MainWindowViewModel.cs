@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Styling;
+using Avalonia.Themes.Fluent;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
@@ -187,35 +189,35 @@ public class MainWindowViewModel : INotifyPropertyChanged
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);
         StatusSectionViewModel = new StatusSectionViewModel(_windowService);
         
-        FirstCell = new TargetSection
+        FirstCell = new TargetSection()
         {
             DataContext = TargetSectionViewModel
         };
-        SecondCell = new ParametersSection
+        SecondCell = new ParametersSection()
         {
             DataContext = ParametersSectionViewModel
         };
-        ThirdCell = new InformationSection
+        ThirdCell = new InformationSection()
         {
             DataContext = InformationSectionViewModel
         };
-        FourCell = new StatusSection
+        FourCell = new StatusSection()
         {
             DataContext = StatusSectionViewModel
         };
 
         //Использовать только эти два методы для создания сектора и его очистки
-        TargetSectionViewModel.SetSector(17.5, 37.5);
-        TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
+        //TargetSectionViewModel.SetSector(17.5, 37.5);
+        //TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
         //TargetSectionViewModel.ClearSector();
         
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        //InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
+        //InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
         //InformationSectionViewModel.ClearInfoBox();
         
-        StatusSectionViewModel.AddStatusBox(new StatusBox("Насосы", true));
-        StatusSectionViewModel.AddStatusBox(new StatusBox("Забой", true));
-        StatusSectionViewModel.AddStatusBox(new StatusBox("Бурение", true));
+        //StatusSectionViewModel.AddStatusBox(new StatusBox("Насосы", true));
+        //StatusSectionViewModel.AddStatusBox(new StatusBox("Забой", true));
+        //StatusSectionViewModel.AddStatusBox(new StatusBox("Бурение", true));
         
         ParametersSectionViewModel.MagneticDeclination = 10.0;
         ParametersSectionViewModel.ToolfaceOffset = 12.0;
@@ -227,8 +229,26 @@ public class MainWindowViewModel : INotifyPropertyChanged
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
         OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
         DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
-        SettingsCommand = new RelayCommand((() => Console.WriteLine("Open settings")), () => true);
+        SettingsCommand = new RelayCommand(SwitchTheme, () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
+    }
+
+    private void SwitchTheme()
+    {
+        switch (App.Instance.ActualThemeVariant.Key.ToString())
+        {
+            case "Dark":
+                App.Instance.Styles.Clear();
+                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
+                App.Instance.RequestedThemeVariant = ThemeVariant.Light;
+                break;
+            case "Light":
+                
+                App.Instance.Styles.Clear();
+                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
+                App.Instance.RequestedThemeVariant = ThemeVariant.Dark;
+                break;
+        }
     }
 
     private void OpenAbout()

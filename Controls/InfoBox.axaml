@@ -9,7 +9,7 @@
 	<Style Selector="controls|InfoBox">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Background="Transparent" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Width="160" Height="115" CornerRadius="5">
+				<Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Width="160" Height="115" CornerRadius="5">
 					<Grid>
 						<TextBlock Text="{TemplateBinding Title}" Padding="0 5 0 0" FontWeight="Medium" FontSize="18" TextWrapping="Wrap" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 						<Label Content="{TemplateBinding Content}" Padding="0 0 0 15" FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>

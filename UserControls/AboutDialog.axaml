@@ -7,13 +7,13 @@
              x:Class="RFD.UserControls.AboutDialog"
              x:DataType="vm:AboutViewModel">
     
-    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" 
-                                                                              Background="{DynamicResource GradientBackground}" Padding="15" 
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                                                                              Background="{DynamicResource Background}" Padding="15" 
                                                                               Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
         
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Image Source="{SvgImage ../Assets/help.svg}" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"></Image>
+                <Svg Name="HelpImage" Path="../Assets/help-Light.svg" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"/>
                 <TextBlock Text="О приложении"  FontSize="{DynamicResource FrameFontSizeBig}"  FontWeight="Bold" TextAlignment="Center" />
             </StackPanel>
             

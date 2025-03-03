@@ -7,20 +7,22 @@
              x:Class="RFD.UserControls.ParametersSection"
              x:DataType="vm:ParametersSectionViewModel">
 	
-	<Border BorderBrush="Gray" BorderThickness="0.5"
+	<Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
 	        CornerRadius="10" Padding="10">
 		
 		<Grid RowDefinitions="Auto, *">
 			<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
 			            HorizontalAlignment="Left" VerticalAlignment="Top">
                 
-				<Image Source="{SvgImage ../Assets/frame_expand.svg}" Width="12"/>
+				<Svg Name="FrameExpandImage" Path="../Assets/frame-expand-Light.svg" Width="12"/>
 				<TextBlock Text="Параметры бурения" FontWeight="Bold" Classes="section"/>
 			</StackPanel>
             
 			<Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
-			        Command="{Binding OpenInNewWindowCommand}" Content="{SvgImage ../Assets/external.svg}"
-			        ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне"/>
+			        Command="{Binding OpenInNewWindowCommand}"
+			        ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне">
+				<Svg Name="ExternalImage" Path="../Assets/external-Light.svg" Width="17"/>
+			</Button>
 
 			<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 				<Grid VerticalAlignment="Center">

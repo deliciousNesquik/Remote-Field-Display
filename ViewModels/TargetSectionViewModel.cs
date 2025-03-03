@@ -35,7 +35,7 @@ public class TargetSectionViewModel : ReactiveObject
     private void OpenInNewWindow()
     {
         _windowService.OpenWindow(
-            new UserControls.TargetSection { DataContext = this }, 
+            new UserControls.TargetSection() { DataContext = this }, 
             "Мишень");
     }
     #endregion

@@ -4,8 +4,10 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using ReactiveUI;
 using RFD.ViewModels;
+using SkiaSharp;
 using static System.Environment;
 
 namespace RFD.Views
@@ -32,7 +34,8 @@ namespace RFD.Views
 
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent(attachDevTools: true);
+            
             DataContext = new MainWindowViewModel();
             
             _dragRegionHeight = TopBar.Height;
@@ -40,6 +43,9 @@ namespace RFD.Views
             
             // Подписываемся на событие изменения состояния окна
             this.GetObservable(WindowStateProperty).Subscribe(state => { MainBorder.Margin = GetMargin(this.WindowState); });
+            
+            ChangeImageTheme(App.Instance.ActualThemeVariant.Key.ToString());
+            App.Instance.ThemeChanged += ChangeImageTheme;
         }
 
         
@@ -51,8 +57,6 @@ namespace RFD.Views
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             MainBorder.Margin = GetMargin(WindowState);
         }
-
-        
 
         private void MainBorder_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
@@ -92,5 +96,14 @@ namespace RFD.Views
                 BeginMoveDrag(e);
             }
         }
+
+        private void ChangeImageTheme(string? theme)
+        {
+            InternetConnectionImage.Path = $"../Assets/internet-connection-{theme}.svg";
+            SettingsImage.Path = $"../Assets/settings-{theme}.svg";
+            HelpImage.Path = $"../Assets/help-{theme}.svg";
+            ConnectionStatusImage.Path = $"../Assets/connection-status-{theme}.svg";
+        }
+        
     }
 }
