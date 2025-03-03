@@ -4,16 +4,20 @@ using Avalonia.Markup.Xaml;
 using RFD.ViewModels;
 using RFD.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using ExCSS;
 using NPFGEO.LWD.Net;
 using RFD.Models;
 using DateTime = System.DateTime;
@@ -48,6 +52,9 @@ public class App : Application
     /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
     // Событие для подписчиков
+    
+    
+    NPFGEO.LWD.Net.DataObject _dataObj = new NPFGEO.LWD.Net.DataObject();
     public event Action<string>? ThemeChanged;
 
     public override void Initialize()
@@ -59,32 +66,17 @@ public class App : Application
         {
             return;
         }
+        
+        //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
+        _client = new();
+        _client.ReceiveData += Client_ReceiveData;
+        _client.ReceiveSettings += Client_ReceiveSettings;
+        _client.Disconnected += Client_Disconnected;
+        _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
 
-        try
-        {
-            //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
-            _client = new();
-            _client.ReceiveData += Client_ReceiveData;
-            _client.ReceiveSettings += Client_ReceiveSettings;
-            _client.Disconnected += Client_Disconnected;
-            _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
-
-            _listener = new();
-            _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
-            _listener.Start();
-        }
-        catch (Exception e)
-        {
-            //TODO
-            //Создать уведомление пользователю о ошибке
-            //создания вещательного канала между программой RFD и LWD
-
-            _client = null!;
-            _listener = null!;
-
-            //В случае возникшей ошибки выдается такое сообщение и сама ошибка
-            Console.WriteLine($"[{DateTime.Now}] - [Error creating _client and _listener] - [{e}]");
-        }
+        _listener = new();
+        _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
+        _listener.Start();
 
     }
 
@@ -95,6 +87,7 @@ public class App : Application
             //Условие для desktop приложений, которые поддерживают оконную систему отображения приложений
             case IClassicDesktopStyleApplicationLifetime desktop:
             {
+                desktop.Exit += OnExit;
                 this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);
                 
                 _mainWindowViewModel = new MainWindowViewModel();
@@ -110,12 +103,29 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
+    protected void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        _needAutoReconnect = false;
+        _listener.Stop();
+        if (_client != null)
+        {
+            _client.ReceiveData -= Client_ReceiveData;
+            _client.ReceiveSettings -= Client_ReceiveSettings;
+            _client.Disconnected -= Client_Disconnected;
+            _client.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
+            _client.Dispose();
+        }
+    }
+    
     private void OnThemeChanged(ThemeVariant newTheme)
     {
         ThemeChanged?.Invoke(newTheme.Key.ToString());
     }
 
-
+    public void ClearBufferedData()
+    {
+        _dataObj = new NPFGEO.LWD.Net.DataObject();
+    }
     
     /// <summary>
     /// Слушатель получает широковещательную передачу
@@ -146,53 +156,13 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
-        //Установка Магнитное склонение и Смещение поверхности инструмента
-        _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = e.Settings.InfoParameters.MagneticDeclination;
-        _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = e.Settings.InfoParameters.ToolfaceOffset;
-        
-        //Установка мишени
-        _mainWindowViewModel.TargetSectionViewModel.SetSector(
-            (e.Settings.Target.SectorDirection - e.Settings.Target.SectorWidth / 2), 
-            (e.Settings.Target.SectorDirection + e.Settings.Target.SectorWidth / 2)
-            );
+        Action action = () =>
+        {
+            SetSettings(e.Settings);
+        };
 
-        //e.Settings.Statuses = empty data
-        Console.WriteLine("ReceiveSettingsEventArgs---------STATUS BLOCKS-----------");
-        foreach (var flag in e.Settings.Statuses)
-        {
-            Console.WriteLine($"NAME[{flag.Name}] STATUS[{flag.Palette}]");
-        }
-        Console.WriteLine("ReceiveSettingsEventArgs-------------------------------");
+        Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
         
-        
-        Console.WriteLine("ReceiveSettingsEventArgs---------PARAMETERS BLOCKS-----------");
-        foreach (var parameter in e.Settings.Parameters)
-        {
-            Console.WriteLine($"NAME[{parameter.Name}] FLOAT[{parameter.Float}] UNITS[{parameter.Units}]");
-        }
-        Console.WriteLine("ReceiveSettingsEventArgs--------------------------------------");
-        
-        Console.WriteLine("ReceiveSettingsEventArgs---------PARAMETERS BLOCKS-----------");
-        foreach (var param in e.Settings.DateTimeParameters)
-        {
-            Console.WriteLine($"NAME[{param.Name}] ALIAS[{param.Alias}]");
-        }
-        Console.WriteLine("ReceiveSettingsEventArgs--------------------------------------");
-        
-        //Очистка старых блоков
-        //_mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
-        
-        //Установка информационных блоков
-        foreach (var parameter in e.Settings.Parameters)
-        {
-            foreach (var infoBox in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
-            {
-                if (infoBox.Title == parameter.Name)
-                {
-                    infoBox.Inscription = parameter.Units;
-                }
-            }
-        }
     }
     
     /// <summary>
@@ -202,26 +172,10 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
    private void Client_ReceiveData(object? sender, ReceiveDataEventArgs e)
    {
-       //Установка точек на мишени
-       foreach (var i in e.Data.TargetPoints)
+       Dispatcher.UIThread.InvokeAsync(() =>
        {
-           _mainWindowViewModel.TargetSectionViewModel.SetPoint((int)i.Order, i.Angle);
-           _mainWindowViewModel.ParametersSectionViewModel.TimeStamp = i.TimeStamp;
-           _mainWindowViewModel.ParametersSectionViewModel.Angle = i.Angle;
-           _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = i.ToolfaceType.ToString();
-       }
-       
-       //e.Data.Statuses = empty
-       _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
-       foreach (var flag in e.Data.Flags)
-       {
-           _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, flag.Value)); }
-       
-       _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
-       foreach (var parameter in e.Data.Parameters)
-       {
-           _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(parameter.Name, parameter.Value));
-       }
+           SetData(e.Data);
+       });
    }
 
     /// <summary>
@@ -370,4 +324,105 @@ public class App : Application
         _client.Disconnect();
     }
 
+
+    private void SetSettings(NPFGEO.LWD.Net.Settings settings)
+    {
+        /*this.Capacity = settings.Target.Capacity;
+        this.GridFrequency = settings.Target.GridFrequency;
+        this.IsHalfMode = settings.Target.IsHalfMode;
+        this.DefaultRadius = settings.Target.DefaultRadius;
+        this.ReductionFactor = settings.Target.ReductionFactor;
+        this.SectorDirection = settings.Target.SectorDirection;
+        this.SectorWidth = settings.Target.SectorWidth;
+        this.FontSize = settings.Target.FontSize;
+        this.RingWidth = settings.Target.RingWidth;
+        this.FromCenterToBorder = settings.Target.FromCenterToBorder;*/
+        
+        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
+        _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
+        
+        foreach (var flag in settings.Flags)
+        { _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); }
+
+        foreach (var flag in settings.Statuses)
+        { _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); }
+
+        foreach (var param in settings.Parameters)
+        { _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, -999.25, param.Units)); }
+        
+        if (settings.InfoParameters != null)
+        { 
+            _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
+            _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
+        }
+
+        _mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder = settings.Target.FromCenterToBorder;
+        _mainWindowViewModel.TargetSectionViewModel.Capacity = settings.Target.Capacity;
+        _mainWindowViewModel.TargetSectionViewModel.IsHalfMode = settings.Target.IsHalfMode;
+        if (settings.Target != null)
+        {
+            _mainWindowViewModel.TargetSectionViewModel.SetSector(
+                startAngle: settings.Target.SectorDirection - (settings.Target.SectorWidth / 2), 
+                endAngle: settings.Target.SectorDirection + (settings.Target.SectorWidth / 2)
+                );
+        }
+        
+        SetData(_dataObj);
+    }
+
+    private void SetData(NPFGEO.LWD.Net.DataObject data)
+    {
+        _dataObj = NPFGEO.LWD.Net.DataObject.Union(_dataObj, data);
+
+        if (data.TargetPoints != null)
+        {
+            IList<TargetPoint> targetPoints = data.TargetPoints.ToList();
+            for (int i = 0; i < targetPoints.Count; i++)
+            {
+                _mainWindowViewModel.ParametersSectionViewModel.Angle = targetPoints[i].Angle;
+                _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString();
+                
+                if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
+                {
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
+                        angle: targetPoints[i].Value);
+                }
+                else
+                {
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
+                        angle: targetPoints[i].Value);
+                }
+            }
+            
+        }
+
+        foreach (var t in data.Flags)
+        { foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
+            { if (t2.Header == t.Name)
+                { t2.Status = t.Value;
+                }
+            }
+        }
+
+        foreach (var t in data.Statuses)
+        { foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
+            { if (t2.Header == t.Name)
+                { t2.Status = Convert.ToBoolean(t.Value);
+                }
+            }
+        }
+
+        foreach (var t in data.Parameters)
+        { foreach (var t2 in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
+            { if (t2.Title == t.Name)
+                { t2.Content = t.Value.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
+           
+        _mainWindowViewModel.ParametersSectionViewModel.SetTime(data);
+    }
+    
 }

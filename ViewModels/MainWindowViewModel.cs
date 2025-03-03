@@ -205,25 +205,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             DataContext = StatusSectionViewModel
         };
-
-        //Использовать только эти два методы для создания сектора и его очистки
-        //TargetSectionViewModel.SetSector(17.5, 37.5);
-        //TargetSectionViewModel.SetSectorColor(Brush.Parse("#2B0068FF"));
-        //TargetSectionViewModel.ClearSector();
-        
-        //InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        //InformationSectionViewModel.AddInfoBox(new InfoBox("Высота блока", "-", "м"));
-        //InformationSectionViewModel.ClearInfoBox();
-        
-        //StatusSectionViewModel.AddStatusBox(new StatusBox("Насосы", true));
-        //StatusSectionViewModel.AddStatusBox(new StatusBox("Забой", true));
-        //StatusSectionViewModel.AddStatusBox(new StatusBox("Бурение", true));
-        
-        ParametersSectionViewModel.MagneticDeclination = 10.0;
-        ParametersSectionViewModel.ToolfaceOffset = 12.0;
-        ParametersSectionViewModel.Angle = 10.0;
-        ParametersSectionViewModel.TimeStamp = DateTime.Now;
-        ParametersSectionViewModel.ToolfaceType = "Нет данных";
         
         //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
@@ -361,18 +342,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
             case { IsConnected: false }:
                 IpAddress = model.Address;
                 ConnectionStatus = model.IsConnected;
-            
-                //Очистка от данных все секции
-                //Мишень - установка в начальное положение
-                //Информационный блок - удаление всех данных
-                //Статусный блок - удаление всех статусов
-                TargetSectionViewModel.SetSector(-45, 45);
-                InformationSectionViewModel.ClearInfoBox();
-                ParametersSectionViewModel.MagneticDeclination = 0.0;
-                ParametersSectionViewModel.ToolfaceOffset = 0.0;
-                ParametersSectionViewModel.ToolfaceType = "Нет данных";
-                ParametersSectionViewModel.TimeStamp = DateTime.Now;
-                ParametersSectionViewModel.Angle = 0.0;
                 break;
         }
     }

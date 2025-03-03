@@ -37,8 +37,8 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    private DateTime _timeStamp;
-    public DateTime TimeStamp {
+    private TimeSpan _timeStamp;
+    public TimeSpan TimeStamp {
         get => _timeStamp;
         set
         {
@@ -72,12 +72,17 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
     {
         MagneticDeclination = 0.0;
         ToolfaceOffset = 0.0;
-        TimeStamp = DateTime.Now;
+        TimeStamp = TimeSpan.Zero;
         Angle = 0.0;
         ToolfaceType = "Нет данных";
         
         _windowService = windowService;
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
+    }
+    
+    public void SetTime(NPFGEO.LWD.Net.DataObject data)
+    {
+        TimeStamp = data.TimeStamp == TimeSpan.MaxValue ? TimeSpan.FromSeconds(0) : data.TimeStamp;
     }
 
     private void OpenInNewWindow()
