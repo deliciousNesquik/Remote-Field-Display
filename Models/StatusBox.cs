@@ -1,35 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace RFD.Models
 {
-    public class StatusBox
+    public partial class StatusBox : ObservableObject
     {
-        public string Header { get; set; }
-        
-        private bool _status;
-        public bool Status 
-        {
-            get => _status;
-            set
-            {
-                if (_status != value)
-                {
-                    _status = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty] public string header;
+        [ObservableProperty] public bool status;
         public StatusBox(string header, bool status)
         {
-            Header = header;
-            Status = status;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.header = header;
+            this.status = status;
         }
     }
 }

@@ -19,4 +19,6 @@ public partial class TargetSection : UserControl
         ExternalImage.Path = $"../Assets/external-{theme}.svg";
     }
     
+    
+    
 }

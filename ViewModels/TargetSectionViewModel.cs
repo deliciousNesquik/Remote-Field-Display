@@ -1,46 +1,229 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveUI;
 using RFD.Interfaces;
+using RFD.Models;
 
 namespace RFD.ViewModels;
 
-public class TargetSectionViewModel : ReactiveObject
+public class TargetSectionViewModel: INotifyPropertyChanged
 {
+    /// <summary>Сервис для создания окна для данного элемента</summary>
     private readonly IWindowService _windowService;
-    private static readonly Point CenterTarget = new(100, 100);
-    private const int SectorSmooth = 100;
-
-    private static int WindowWidth => 500;
-    private static int WindowHeight => 400;
-    private static string WindowTitle => "Мишень";
-
-    public bool FromCenterToBorder { get; set; }
-    public int Capacity { get; set; }
-    public bool IsHalfMode { get; set; }
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
+    
+    public Point Center { get; set; }
+    
+    #region Настройки сетки мишени (Вместимость ; Угл.сетка ; Ширина ; Шрифт ; (-180 -> 180))
 
+    public ObservableCollection<InnerRingsTarget> InnerLine { get; set; }
+    public ObservableCollection<GridLineFrequency> GridLine { get; set; }
+    
+    private Point _startPointVertical;
+    public Point StartPointVertical
+    {
+        get => _startPointVertical;
+        set
+        {
+            _startPointVertical = value;
+            OnPropertyChanged();
+        }
+    }
+    private Point _endPointVertical;
+    public Point EndPointVertical
+    {
+        get => _endPointVertical;
+        set
+        {
+            _endPointVertical = value;
+            OnPropertyChanged();
+        }
+    }
+    private Point _startPointHorizontal;
+    public Point StartPointHorizontal
+    {
+        get => _startPointHorizontal;
+        set
+        {
+            _startPointHorizontal = value;
+            OnPropertyChanged();
+        }
+    }
+    private Point _endPointHorizontal;
+    public Point EndPointHorizontal
+    {
+        get => _endPointHorizontal;
+        set
+        {
+            _endPointHorizontal = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    private double _strokeThickness = 0.5;
+    public double StrokeThickness
+    {
+        get => _strokeThickness;
+        set
+        {
+            _strokeThickness = value;
+            UpdateTarget();
+            
+            OnPropertyChanged();
+        }
+    }
+    
+    private int _capacity;
+    public int Capacity
+    {
+        get => _capacity;
+        set
+        {
+            //При изменении вместимости, изменяется количество точек отображаемых на мишени
+            _points = new Thickness[_capacity];
+            
+            //При передаче вместимости, Genesis LWD считает что внутренняя точка является тоже окружностью 
+            _capacity = value;
+            UpdateTarget();
+
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsHalfMode { get; set; }
+    private int _gridFrequency = 45;
+    public int GridFrequency
+    {
+        get => _gridFrequency;
+        set
+        {
+            _gridFrequency = value;
+            OnPropertyChanged();
+            UpdateTarget();
+        }
+    }
+    private int _fontSize;
+
+    public int FontSize
+    {
+        get => _fontSize;
+        set
+        {
+            _fontSize = value / 2;
+            UpdateTarget();
+            OnPropertyChanged();
+        }
+    }
+    private double _ringWidth;
+    public double RingWidth
+    {
+        get => _ringWidth;
+        set
+        {
+            _ringWidth = 2.0 * value + 180;
+            UpdateTarget();
+            OnPropertyChanged();
+        }
+    }
+    private double _ringThickness;
+    public double RingThickness
+    {
+        get => _ringThickness;
+        set
+        {
+            _ringThickness = value;
+            UpdateTarget();
+            OnPropertyChanged();
+        }
+    }
+    
+
+    #endregion
+
+    #region Настройки точек мишени (Радиус точки ; Коэффицент уменьшения радиуса в зависимости от удаленности от края ; От центра к краю)
+    public double DefaultRadius { get; set; }
+    public double ReductionFactor { get; set; }
+    public bool FromCenterToBorder { get; set; }
+    
+    private Thickness[] _points = new Thickness[5];
+    #endregion
+
+    #region Настройки сектора мишени (Путь ; Сглаженность ; Цвет)
+    private List<Point> _sector = new List<Point>([new Point(100, 100)]);
+    public List<Point> Sector
+    {
+        get => _sector;
+        set
+        {
+            _sector = value;
+            OnPropertyChanged();
+        }
+    }
     private IBrush _sectorColor = Brush.Parse("#2B0068FF");
     public IBrush SectorColor
     {
         get => _sectorColor;
-        set => this.RaiseAndSetIfChanged(ref _sectorColor, value);
+        set => _sectorColor = value;
     }
+    
+    private const int SectorSmooth = 100;
+    #endregion
+    
 
-    private List<Point> _sector = [CenterTarget];
-    public List<Point> Sector
+    private void UpdateTarget()
     {
-        get => _sector;
-        set => this.RaiseAndSetIfChanged(ref _sector, value);
-    }
+        Center = new Point(100 + (RingThickness - 10), 100 + (RingThickness - 10));
+        
+        StartPointVertical = new Point(100 + (RingThickness - 10), 10 + (RingThickness - 10));
+        EndPointVertical = new Point(100 + (RingThickness - 10), 190 + (RingThickness - 10));
+        
+        StartPointHorizontal = new Point(10 + (RingThickness - 10), 100 + (RingThickness - 10));
+        EndPointHorizontal = new Point(190 + (RingThickness - 10), 100 + (RingThickness - 10));
+        
+        GridLine.Clear();
+        for (int angle = 0; angle <= 360; angle += GridFrequency)
+        {
+            if (angle is 0 or 90 or 180 or 270 or 360)
+            {
+                continue;
+            }
+            Console.WriteLine($"Angle: ({angle}) ; PointOfAngle: ({GetPointForAngle(angle, Center, 90)}) ; CenterPoint: ({Center})");
+            GridLine.Add(new GridLineFrequency(angle, GetPointForAngle(angle, Center, 90), Center));
+        }
 
-    private readonly Thickness[] _points = new Thickness[5];
+        //Console.WriteLine($"start point vertical line - ({StartPointVertical.X} | {StartPointVertical.Y})");
+        //Console.WriteLine($"start point horizontal line - ({StartPointHorizontal.X} | {StartPointHorizontal.Y})");
+        
+        InnerLine.Clear();
+        var distance = 180.0 / (Capacity - 1);
+        Console.WriteLine($"Capacity: {Capacity}");
+        Console.WriteLine($"Distance inner line: {distance}");
+
+        for (int i = 1; i <= Capacity - 1; i++) {
+            InnerLine.Add(new InnerRingsTarget(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
+        }
+
+
+        foreach (var ringsTarget in InnerLine)
+        {
+            Console.WriteLine($"index ring:{ringsTarget.Order} - (radius {ringsTarget.Radius}) - (width:{ringsTarget.Width}; height:{ringsTarget.Height})");
+        }
+    }
+    
+
+    
+
+    
     public Thickness Point1 => _points[0];
     public Thickness Point2 => _points[1];
     public Thickness Point3 => _points[2];
@@ -49,6 +232,15 @@ public class TargetSectionViewModel : ReactiveObject
     
     public TargetSectionViewModel(IWindowService windowService)
     {
+        Center = new Point(100, 100);
+        InnerLine = new ObservableCollection<InnerRingsTarget>();
+        GridLine = new ObservableCollection<GridLineFrequency>();
+        Capacity = 6;
+        GridFrequency = 45;
+        RingThickness = RingWidth = 10;
+        FontSize = 10;
+        UpdateTarget();
+        
         _windowService = windowService;
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
     }
@@ -56,13 +248,13 @@ public class TargetSectionViewModel : ReactiveObject
     public void SetSector(double startAngle, double endAngle)
     {
         Sector = CreateSectorPoints(
-            CenterTarget,
-            GetPointForAngle(startAngle, CenterTarget, 90),
-            GetPointForAngle(endAngle, CenterTarget, 90),
+            Center,
+            GetPointForAngle(startAngle, Center, 90),
+            GetPointForAngle(endAngle, Center, 90),
             SectorSmooth
         );
     }
-    public void ClearSector() => Sector = [CenterTarget];
+    public void ClearSector() => Sector = [Center];
     public void SetSectorColor(IBrush color) => SectorColor = color;
     
     public void SetPoint(int index, double angle)
@@ -71,7 +263,7 @@ public class TargetSectionViewModel : ReactiveObject
         double radius = (index + 1) * 36;
         var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
         _points[index] = new Thickness(newPoint.X, newPoint.Y, 0, 0);
-        this.RaisePropertyChanged($"Point{index + 1}");
+        OnPropertyChanged($"Point{index + 1}");
     }
     
     private void OpenInNewWindow()
@@ -102,5 +294,12 @@ public class TargetSectionViewModel : ReactiveObject
         }
         points.Add(end);
         return points;
+    }
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

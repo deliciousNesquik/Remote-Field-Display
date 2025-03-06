@@ -94,9 +94,6 @@ public class App : Application
                 MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
                 desktop.MainWindow = mainWindow;
                 
-                //Вызывается окно автоматического подключения для соединения
-                _mainWindowViewModel.OpenAutomaticConnecting();
-                
                 break;
             }
         }
@@ -327,17 +324,6 @@ public class App : Application
 
     private void SetSettings(NPFGEO.LWD.Net.Settings settings)
     {
-        /*this.Capacity = settings.Target.Capacity;
-        this.GridFrequency = settings.Target.GridFrequency;
-        this.IsHalfMode = settings.Target.IsHalfMode;
-        this.DefaultRadius = settings.Target.DefaultRadius;
-        this.ReductionFactor = settings.Target.ReductionFactor;
-        this.SectorDirection = settings.Target.SectorDirection;
-        this.SectorWidth = settings.Target.SectorWidth;
-        this.FontSize = settings.Target.FontSize;
-        this.RingWidth = settings.Target.RingWidth;
-        this.FromCenterToBorder = settings.Target.FromCenterToBorder;*/
-        
         _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
         
@@ -348,7 +334,7 @@ public class App : Application
         { _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); }
 
         foreach (var param in settings.Parameters)
-        { _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, -999.25, param.Units)); }
+        { _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units)); }
         
         if (settings.InfoParameters != null)
         { 
@@ -359,8 +345,13 @@ public class App : Application
         _mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder = settings.Target.FromCenterToBorder;
         _mainWindowViewModel.TargetSectionViewModel.Capacity = settings.Target.Capacity;
         _mainWindowViewModel.TargetSectionViewModel.IsHalfMode = settings.Target.IsHalfMode;
-        if (settings.Target != null)
-        {
+        _mainWindowViewModel.TargetSectionViewModel.GridFrequency = settings.Target.GridFrequency;
+        _mainWindowViewModel.TargetSectionViewModel.FontSize = settings.Target.FontSize;
+        (_mainWindowViewModel.TargetSectionViewModel.RingWidth, _mainWindowViewModel.TargetSectionViewModel.RingThickness) = (settings.Target.RingWidth, settings.Target.RingWidth);
+        _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
+        _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
+        
+        if (settings.Target != null) {
             _mainWindowViewModel.TargetSectionViewModel.SetSector(
                 startAngle: settings.Target.SectorDirection - (settings.Target.SectorWidth / 2), 
                 endAngle: settings.Target.SectorDirection + (settings.Target.SectorWidth / 2)
@@ -417,8 +408,7 @@ public class App : Application
         foreach (var t in data.Parameters)
         { foreach (var t2 in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
             { if (t2.Title == t.Name)
-                { t2.Content = t.Value.ToString(CultureInfo.InvariantCulture);
-                }
+                { t2.Content = double.Round(t.Value, 2).ToString(CultureInfo.CurrentCulture); }
             }
         }
            
