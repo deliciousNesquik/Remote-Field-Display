@@ -14,8 +14,7 @@ namespace RFD.Models
         /// <summary>
         /// Название компонента буровой установки.
         /// </summary>
-        public string Header
-        {
+        public string Header {
             get => _header;
             set => this.RaiseAndSetIfChanged(ref _header, value);
         }
@@ -27,8 +26,7 @@ namespace RFD.Models
         /// <para>true — компонент работает нормально.</para>
         /// <para>false — есть проблемы или неисправность.</para>
         /// </remarks>
-        public bool Status
-        {
+        public bool Status {
             get => _status;
             set => this.RaiseAndSetIfChanged(ref _status, value);
         }
@@ -38,8 +36,7 @@ namespace RFD.Models
         /// </summary>
         /// <param name="header">Название компонента буровой установки.</param>
         /// <param name="status">Состояние компонента (по умолчанию false — неисправность).</param>
-        public StatusBox(string header = "", bool status = false)
-        {
+        public StatusBox(string header = "", bool status = false) {
             _header = header;
             _status = status;
         }

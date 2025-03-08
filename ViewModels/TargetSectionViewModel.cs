@@ -26,8 +26,8 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     
     #region Настройки сетки мишени (Вместимость ; Угл.сетка ; Ширина ; Шрифт ; (-180 -> 180))
 
-    public ObservableCollection<InnerRingsTarget> InnerLine { get; set; }
-    public ObservableCollection<GridLineFrequency> GridLine { get; set; }
+    public ObservableCollection<Ring> InnerLine { get; set; }
+    public ObservableCollection<GridLine> GridLine { get; set; }
     
     private Point _startPointVertical;
     public Point StartPointVertical
@@ -198,7 +198,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
                 continue;
             }
             Console.WriteLine($"Angle: ({angle}) ; PointOfAngle: ({GetPointForAngle(angle, Center, 90)}) ; CenterPoint: ({Center})");
-            GridLine.Add(new GridLineFrequency(angle, GetPointForAngle(angle, Center, 90), Center));
+            GridLine.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
         }
 
         //Console.WriteLine($"start point vertical line - ({StartPointVertical.X} | {StartPointVertical.Y})");
@@ -210,7 +210,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         Console.WriteLine($"Distance inner line: {distance}");
 
         for (int i = 1; i <= Capacity - 1; i++) {
-            InnerLine.Add(new InnerRingsTarget(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
+            InnerLine.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
         }
 
 
@@ -233,8 +233,8 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     public TargetSectionViewModel(IWindowService windowService)
     {
         Center = new Point(100, 100);
-        InnerLine = new ObservableCollection<InnerRingsTarget>();
-        GridLine = new ObservableCollection<GridLineFrequency>();
+        InnerLine = new ObservableCollection<Ring>();
+        GridLine = new ObservableCollection<GridLine>();
         Capacity = 6;
         GridFrequency = 45;
         RingThickness = RingWidth = 10;
