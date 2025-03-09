@@ -13,6 +13,7 @@
     
     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
             Background="{DynamicResource Background}" Padding="15" 
+            CornerRadius="10"
             Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
         
         <Grid>

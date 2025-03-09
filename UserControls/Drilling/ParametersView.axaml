@@ -15,7 +15,7 @@
 			            HorizontalAlignment="Left" VerticalAlignment="Top">
                 
 				<Svg Name="FrameExpandImage" Path="avares://RFD/Assets/frame-expand-Light.svg" Width="12"/>
-				<TextBlock Text="Параметры бурения" FontWeight="Bold" Classes="section"/>
+				<TextBlock Text="Параметры" FontWeight="Bold" Classes="section"/>
 			</StackPanel>
             
 			<Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
