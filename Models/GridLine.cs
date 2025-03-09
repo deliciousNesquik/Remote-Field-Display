@@ -30,8 +30,7 @@ public class GridLine: ViewModelBase
 
     }
 
-    public GridLine(int angle, Point pointOfAngle, Point pointCenter)
-    {
+    public GridLine(int angle, Point pointOfAngle, Point pointCenter) {
         _angle = $"{angle}°";
         _pointOfAngle = pointOfAngle;
         _pointCenter = pointCenter;

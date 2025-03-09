@@ -11,7 +11,7 @@ namespace RFD.Converters
         {
             return value switch
             {
-                bool isConnected => isConnected ? Brushes.Green : Brushes.Brown,
+                bool isConnected => isConnected ? new SolidColorBrush(Color.FromRgb(52, 199, 89))  : new SolidColorBrush(Color.FromRgb(255, 59, 48)),
                 _ => null
             };
         }

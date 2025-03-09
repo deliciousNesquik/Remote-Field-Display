@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using ExCSS;
@@ -91,6 +92,10 @@ public class App : Application
                 this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);
                 
                 _mainWindowViewModel = new MainWindowViewModel();
+                /*foreach (var font in FontManager.Current.SystemFonts)
+                {
+                    Console.WriteLine(font.Name);
+                }*/
                 MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
                 desktop.MainWindow = mainWindow;
                 

@@ -15,14 +15,14 @@
 			<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
 			            HorizontalAlignment="Left" VerticalAlignment="Top">
                 
-				<Svg Name="FrameExpandImage" Path="../Assets/frame-expand-Light.svg" Width="12"/>
+				<Svg Name="FrameExpandImage" Path="avares://RFD/Assets/frame-expand-Light.svg" Width="12"/>
 				<TextBlock Text="Статусы бурения" FontWeight="Bold" Classes="section"/>
 			</StackPanel>
             
 			<Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
 			        Command="{Binding OpenInNewWindowCommand}"
 			        ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне">
-				<Svg Name="ExternalImage" Path="../Assets/external-Light.svg" Width="17"/>
+				<Svg Name="ExternalImage" Path="avares://RFD/Assets/external-Light.svg" Width="17"/>
 			</Button>
 			
 			<Grid Grid.Row="1">

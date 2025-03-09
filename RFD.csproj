@@ -61,4 +61,23 @@
       <HintPath>Libraries\NPFGEO.LWD.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UserControls\Drilling\InfoView.axaml.cs">
+      <DependentUpon>InfoView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UserControls\Drilling\ParametersView.axaml.cs">
+      <DependentUpon>ParametersView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UserControls\Drilling\TargetView.axaml.cs">
+      <DependentUpon>TargetView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UserControls\Drilling\ComponentStatusView.axaml.cs">
+      <DependentUpon>ComponentStatusView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

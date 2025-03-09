@@ -5,9 +5,9 @@ using Avalonia.Markup.Xaml;
 
 namespace RFD.UserControls;
 
-public partial class InformationSection : UserControl
+public partial class ParametersSection : UserControl
 {
-    public InformationSection()
+    public ParametersSection()
     {
         InitializeComponent();
         ChangeImageTheme(App.Instance.ActualThemeVariant.Key.ToString());
@@ -15,7 +15,7 @@ public partial class InformationSection : UserControl
     }
     private void ChangeImageTheme(string? theme)
     {
-        FrameExpandImage.Path = $"../Assets/frame-expand-{theme}.svg";
-        ExternalImage.Path = $"../Assets/external-{theme}.svg";
+        FrameExpandImage.Path = $"avares://RFD/Assets/frame-expand-{theme}.svg";
+        ExternalImage.Path = $"avares://RFD/Assets/external-{theme}.svg";
     }
 }
