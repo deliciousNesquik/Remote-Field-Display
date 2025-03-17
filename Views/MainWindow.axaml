@@ -12,7 +12,10 @@
         
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1">
+        ExtendClientAreaTitleBarHeightHint="-1"
+        
+        MinHeight="19"
+        MinWidth="530">
 	
 	<Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -135,10 +138,10 @@
 						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
 							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0 0 15 0">
 								<Grid Margin="0 0 0 0">
-									<Ellipse ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу" Fill="{Binding ConnectionStatus, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Width="6" Height="6" VerticalAlignment="Center"/>
+									<Ellipse ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу" Fill="{Binding DisplayIsConnected, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Width="6" Height="6" VerticalAlignment="Center"/>
 									<Svg Name="ConnectionStatusImage" Path="../Assets/connection-status-Dark.svg" Width="20" Height="20" VerticalAlignment="Center" ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу"/>
 								</Grid>
-								<Label Content="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}" 
+								<Label Content="{Binding DisplayAddress, UpdateSourceTrigger=PropertyChanged}" 
 								       Foreground="{DynamicResource Foreground}" 
 								       ToolTip.Tip="Данное поле отвечает за отображение IP-адреса сервера от которого принимаются данные"
 								       FontWeight="650" VerticalAlignment="Center"/>

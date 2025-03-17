@@ -197,7 +197,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             {
                 continue;
             }
-            Console.WriteLine($"Angle: ({angle}) ; PointOfAngle: ({GetPointForAngle(angle, Center, 90)}) ; CenterPoint: ({Center})");
+            //Console.WriteLine($"Angle: ({angle}) ; PointOfAngle: ({GetPointForAngle(angle, Center, 90)}) ; CenterPoint: ({Center})");
             GridLine.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
         }
 
@@ -206,18 +206,18 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         
         InnerLine.Clear();
         var distance = 180.0 / (Capacity - 1);
-        Console.WriteLine($"Capacity: {Capacity}");
-        Console.WriteLine($"Distance inner line: {distance}");
+        //Console.WriteLine($"Capacity: {Capacity}");
+        //Console.WriteLine($"Distance inner line: {distance}");
 
         for (int i = 1; i <= Capacity - 1; i++) {
             InnerLine.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
         }
 
 
-        foreach (var ringsTarget in InnerLine)
-        {
-            Console.WriteLine($"index ring:{ringsTarget.Order} - (radius {ringsTarget.Radius}) - (width:{ringsTarget.Width}; height:{ringsTarget.Height})");
-        }
+        //foreach (var ringsTarget in InnerLine)
+        //{
+            //Console.WriteLine($"index ring:{ringsTarget.Order} - (radius {ringsTarget.Radius}) - (width:{ringsTarget.Width}; height:{ringsTarget.Height})");
+        //}
     }
     
 

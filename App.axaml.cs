@@ -33,16 +33,16 @@ public class App : Application
     private MainWindowViewModel _mainWindowViewModel = null!;
     
     /// <summary>Объект класса клиента который взаимодействует с подключением к серверу</summary>
-    private Client _client = null!;
+    public Client Client = null!;
     /// <summary>Объект класса слушателя который прослушивает сообщения от сервера и обрабатывает их</summary>
     private ServerListener _listener = null!;
     /// <summary>Переменная отвечающая за автоматическое переподключение в случаях случайного отключения</summary>
     private bool _needAutoReconnect = true;
     
     /// <summary>Статус подключения к серверу</summary>
-    public bool IsConnected => _client.Connected;
+    public bool IsConnected => Client.Connected;
     /// <summary>Ip-адрес к подключенному серверу</summary>
-    public string Address => _client.Address == null ? "Не найдено" : _client.Address.ToString();
+    public string Address => Client.Connected ? Client.Address.ToString() : "Нет подключения";
 
     /// <summary>Переменная отвечающая за ресурс который сделал отмену</summary>
     private CancellationTokenSource _cancelTokenSource = new();
@@ -65,11 +65,11 @@ public class App : Application
         }
         
         //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
-        _client = new();
-        _client.ReceiveData += Client_ReceiveData;
-        _client.ReceiveSettings += Client_ReceiveSettings;
-        _client.Disconnected += Client_Disconnected;
-        _client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
+        Client = new();
+        Client.ReceiveData += Client_ReceiveData;
+        Client.ReceiveSettings += Client_ReceiveSettings;
+        Client.Disconnected += Client_Disconnected;
+        Client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
 
         _listener = new();
         _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
@@ -105,13 +105,13 @@ public class App : Application
     {
         _needAutoReconnect = false;
         _listener.Stop();
-        if (_client != null)
+        if (Client != null)
         {
-            _client.ReceiveData -= Client_ReceiveData;
-            _client.ReceiveSettings -= Client_ReceiveSettings;
-            _client.Disconnected -= Client_Disconnected;
-            _client.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
-            _client.Dispose();
+            Client.ReceiveData -= Client_ReceiveData;
+            Client.ReceiveSettings -= Client_ReceiveSettings;
+            Client.Disconnected -= Client_Disconnected;
+            Client.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
+            Client.Dispose();
         }
     }
     
@@ -133,18 +133,18 @@ public class App : Application
     void Listener_ReceiveBroadcast(object? sender, ReceiveBroadcastEventArgs e)
     {
         //Проверка состояния соединения
-        if (_client.Connected) return;
+        if (Client.Connected) return;
 
         //Остановка прослушивания
         _listener.Stop();
 
         //Переподключение
-        _client.Address = e.Server.Address;
-        _client.Connect();
+        Client.Address = e.Server.Address;
+        Client.Connect();
         
         //Обновление интерфейса для отображения подключения
-        _mainWindowViewModel.UpdateConnecting(this);
-        Console.WriteLine($"[{DateTime.Now}] - [Successful connection] - [ip address: {_client.Address}]");
+        _mainWindowViewModel.OnConnectionStateChanged();
+        Console.WriteLine($"[{DateTime.Now}] - [Successful connection] - [ip address: {Client.Address}]");
     }
 
     /// <summary>
@@ -183,8 +183,8 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_Disconnected(object? sender, EventArgs e)
     {
-        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{_client.Address}]");
-        _mainWindowViewModel.UpdateConnecting(this);
+        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{Client.Address}]");
+        _mainWindowViewModel.OnConnectionStateChanged();
 
         //Проверка на автоматическое переподключение
         if (!_needAutoReconnect) return;
@@ -193,11 +193,11 @@ public class App : Application
         _token = _cancelTokenSource.Token;
         Action action = () =>
         {
-            var address = _client.Address;
-            while (!_token.IsCancellationRequested && !_client.Connected)
+            var address = Client.Address;
+            while (!_token.IsCancellationRequested && !Client.Connected)
             {
                 Reconnect(address);
-                _mainWindowViewModel.UpdateConnecting(this);
+                _mainWindowViewModel.OnConnectionStateChanged();
             }
         };
         Task.Factory.StartNew(action, _token);
@@ -210,7 +210,10 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_ConnectedStatusChanged(object? sender, EventArgs e)
     {
-        _mainWindowViewModel.UpdateConnecting(this);
+        if (Client != null)
+        {
+            _mainWindowViewModel.OnConnectionStateChanged();
+        }
     }
 
     /// <summary>
@@ -231,8 +234,8 @@ public class App : Application
             await Task.Delay(2500, _token);
 
             // Если клиент всё ещё подключен, разрываем соединение
-            if (_client.Connected)
-                _client.Disconnect();
+            if (Client.Connected)
+                Client.Disconnect();
 
             // Запускаем слушатель снова
             _listener.Start();
@@ -273,12 +276,12 @@ public class App : Application
             _cancelTokenSource.Cancel();
             Thread.Sleep(1000);
 
-            if (_client.Connected)
-                _client.Disconnect();
+            if (Client.Connected)
+                Client.Disconnect();
 
-            _client.Address = IPAddress.Parse(address);
-            _client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{_client.Address}]");
+            Client.Address = IPAddress.Parse(address);
+            Client.Connect();
+            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{Client.Address}]");
             _needAutoReconnect = true;
             return true; 
         }
@@ -297,12 +300,12 @@ public class App : Application
         {
             _listener.Stop();
 
-            if (_client.Connected)
-                _client.Disconnect();
+            if (Client.Connected)
+                Client.Disconnect();
 
-            _client.Address = address;
-            _client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{_client.Address}]");
+            Client.Address = address;
+            Client.Connect();
+            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{Client.Address}]");
         }
         catch (Exception exc)
         {
@@ -317,9 +320,9 @@ public class App : Application
         _needAutoReconnect = false;
         _listener.Stop();
 
-        if (_client.Connected != true) return;
-        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{_client.Connected}]");
-        _client.Disconnect();
+        if (Client.Connected != true) return;
+        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{Client.Connected}]");
+        Client.Disconnect();
     }
 
 

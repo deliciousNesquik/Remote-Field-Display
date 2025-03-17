@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Themes.Fluent;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using RFD.Models;
 using RFD.UserControls;
@@ -108,34 +109,45 @@ public class MainWindowViewModel : INotifyPropertyChanged
     #endregion
 
     #region Переменные: Параметры соединения с сервером
-    private string _ipAddress;
-    public string IpAddress
+    private string _displayAddress;
+    public string DisplayAddress
     {
-        get => _ipAddress;
+        get => _displayAddress;
         set
         {
-            _ipAddress = value;
-            OnPropertyChanged();
+            if (_displayAddress != value)
+            {
+                _displayAddress = value;
+                OnPropertyChanged();
+            }
         }
     }
 
-    private bool _connectionStatus;
-    public bool ConnectionStatus
+    private bool _displayIsConnected;
+    public bool DisplayIsConnected
     {
-        get => _connectionStatus;
+        get => _displayIsConnected;
         set
         {
-            _connectionStatus = value;
-            OnPropertyChanged();
+            if (_displayIsConnected != value)
+            {
+                _displayIsConnected = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayAddress));
+            }
         }
     }
+    private DispatcherTimer _disconnectTimer;
 
     #endregion
     
     public MainWindowViewModel()
     {
         _currentUserControl = new UserControl();
-        _ipAddress = "127.0.0.1";
+        DisplayAddress = "Определение...";
+        _disconnectTimer = new DispatcherTimer();
+        _disconnectTimer.Interval = TimeSpan.FromSeconds(2);
+        _disconnectTimer.Tick += OnDisconnectTimerTick;
         TargetSectionViewModel = new TargetSectionViewModel(_windowService);
         ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);
@@ -146,15 +158,15 @@ public class MainWindowViewModel : INotifyPropertyChanged
         ThirdCell = new InformationSection() { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection() { DataContext = StatusSectionViewModel };
         
-        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
-        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
-        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        DisconnectCommand = new RelayCommand(Disconnect, () => DisplayIsConnected);
         
         // Для переключения темы без параметра
         SettingsCommand = new RelayCommand(() => SwitchTheme(), () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
-    public void SwitchTheme(string theme = null)
+    public void SwitchTheme(string? theme = null)
     {
         ThemeVariant newTheme;
     
@@ -280,20 +292,38 @@ public class MainWindowViewModel : INotifyPropertyChanged
         App.Instance.Disconnect();
     }
     
-    public void UpdateConnecting(App? model)
+    private void UpdateConnectionStatus()
     {
-        switch (model)
+        var isActuallyConnected = App.Instance.Client.Connected;
+    
+        if (isActuallyConnected)
         {
-            //Проверка соединения с сервером
-            case { IsConnected: true }:
-                IpAddress = model.Address;
-                ConnectionStatus = model.IsConnected;
-                break;
-            case { IsConnected: false }:
-                IpAddress = model.Address;
-                ConnectionStatus = model.IsConnected;
-                break;
+            // Если восстановили соединение - сразу обновляем
+            _disconnectTimer.Stop();
+            DisplayIsConnected = true;
+            DisplayAddress = App.Instance.Client.Address.ToString();
         }
+        else if (DisplayIsConnected)
+        {
+            // Если было подключение и потеряли - запускаем таймер
+            if (!_disconnectTimer.IsEnabled)
+            {
+                _disconnectTimer.Start();
+            }
+        }
+    }
+
+    private void OnDisconnectTimerTick(object sender, EventArgs e)
+    {
+        _disconnectTimer.Stop();
+        DisplayIsConnected = false;
+        DisplayAddress = "Нет подключения";
+    }
+
+// Вызывайте этот метод при любых изменениях подключения
+    public void OnConnectionStateChanged()
+    {
+        UpdateConnectionStatus();
     }
     #endregion
     
