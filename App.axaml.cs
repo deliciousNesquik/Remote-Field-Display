@@ -28,10 +28,6 @@ namespace RFD;
 public class App : Application
 {
     public static App Instance => (App)Current!; // Получаем текущий экземпляр приложения
-    private static readonly Uri LightThemeUri = new("avares://RFD/Themes/Light.axaml");
-    private static readonly Uri DarkThemeUri = new("avares://RFD/Themes/Dark.axaml");
-
-    
     
     /// <summary>Создание объекта класса главного окна, для открытия его и управления внутренними методами и объектами</summary>
     private MainWindowViewModel _mainWindowViewModel = null!;
@@ -55,7 +51,7 @@ public class App : Application
     // Событие для подписчиков
     
     
-    NPFGEO.LWD.Net.DataObject _dataObj = new NPFGEO.LWD.Net.DataObject();
+    DataObject _dataObj = new DataObject();
     public event Action<string>? ThemeChanged;
 
     public override void Initialize()
@@ -126,7 +122,7 @@ public class App : Application
 
     public void ClearBufferedData()
     {
-        _dataObj = new NPFGEO.LWD.Net.DataObject();
+        _dataObj = new DataObject();
     }
     
     /// <summary>
@@ -355,6 +351,9 @@ public class App : Application
         (_mainWindowViewModel.TargetSectionViewModel.RingWidth, _mainWindowViewModel.TargetSectionViewModel.RingThickness) = (settings.Target.RingWidth, settings.Target.RingWidth);
         _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
+        
+        // Для установки конкретной темы
+        _mainWindowViewModel.SwitchTheme(settings.ThemeStyle.ToString().Substring(0, settings.ThemeStyle.ToString().Length - 5));
         
         if (settings.Target != null) {
             _mainWindowViewModel.TargetSectionViewModel.SetSector(

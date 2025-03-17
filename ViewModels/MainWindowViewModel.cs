@@ -95,48 +95,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ContentControl ThirdCell { get; set; }
     /// <summary> Принимает любой UserControl и отобразит его в правом нижнем углу </summary>
     public ContentControl FourCell { get; set; }
-    
-    private bool _isFirstCellVisible = true;
-    
-    public bool IsFirstCellVisible
-    {
-        get => _isFirstCellVisible;
-        set
-        {
-            _isFirstCellVisible = value;
-            OnPropertyChanged();
-        }
-    }
-    private bool _isSecondCellVisible = true;
-    public bool IsSecondCellVisible
-    {
-        get => _isSecondCellVisible;
-        set
-        {
-            _isSecondCellVisible = value;
-            OnPropertyChanged();
-        }
-    }
-    private bool _isThirdCellVisible = true;
-    public bool IsThirdCellVisible
-    {
-        get => _isThirdCellVisible;
-        set
-        {
-            _isThirdCellVisible = value;
-            OnPropertyChanged();
-        }
-    }
-    private bool _isFourCellVisible = true;
-    public bool IsFourCellVisible
-    {
-        get => _isFourCellVisible;
-        set
-        {
-            _isFourCellVisible = value;
-            OnPropertyChanged();
-        }
-    }
     #endregion
 
     #region Переменные: Команды основного меню
@@ -178,55 +136,49 @@ public class MainWindowViewModel : INotifyPropertyChanged
     {
         _currentUserControl = new UserControl();
         _ipAddress = "127.0.0.1";
-        
-        
-        IsFirstCellVisible = true;
-        IsSecondCellVisible = true;
-        IsThirdCellVisible = true;
-        IsFourCellVisible = true;
         TargetSectionViewModel = new TargetSectionViewModel(_windowService);
         ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);
         StatusSectionViewModel = new StatusSectionViewModel(_windowService);
         
-        FirstCell = new TargetSection()
-        {
-            DataContext = TargetSectionViewModel
-        };
-        SecondCell = new ParametersSection()
-        {
-            DataContext = ParametersSectionViewModel
-        };
-        ThirdCell = new InformationSection()
-        {
-            DataContext = InformationSectionViewModel
-        };
-        FourCell = new StatusSection()
-        {
-            DataContext = StatusSectionViewModel
-        };
+        FirstCell = new TargetSection() { DataContext = TargetSectionViewModel };
+        SecondCell = new ParametersSection() { DataContext = ParametersSectionViewModel };
+        ThirdCell = new InformationSection() { DataContext = InformationSectionViewModel };
+        FourCell = new StatusSection() { DataContext = StatusSectionViewModel };
         
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
         OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
         DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
         
-        SettingsCommand = new RelayCommand(SwitchTheme, () => true);
+        // Для переключения темы без параметра
+        SettingsCommand = new RelayCommand(() => SwitchTheme(), () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
-
-    private void SwitchTheme()
+    public void SwitchTheme(string theme = null)
     {
-        switch (App.Instance.ActualThemeVariant.Key.ToString())
+        ThemeVariant newTheme;
+    
+        // Если тема указана явно
+        if (!string.IsNullOrEmpty(theme))
         {
-            case "Dark":
-                App.Instance.RequestedThemeVariant = ThemeVariant.Light;
-                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
-               
-                break;
-            case "Light":
-                App.Instance.RequestedThemeVariant = ThemeVariant.Dark;
-                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
-                break;
+            newTheme = theme.Equals("Dark", StringComparison.OrdinalIgnoreCase) 
+                ? ThemeVariant.Dark 
+                : ThemeVariant.Light;
+        }
+        // Если нужно переключить на противоположную (вызов без параметра)
+        else
+        {
+            newTheme = App.Instance.ActualThemeVariant == ThemeVariant.Dark 
+                ? ThemeVariant.Light 
+                : ThemeVariant.Dark;
+        }
+
+        App.Instance.RequestedThemeVariant = newTheme;
+    
+        // Принудительное обновление ресурсов (если требуется)
+        if (App.Instance.Styles[0] is FluentTheme fluentTheme)
+        {
+            App.Instance.Styles[0] = new FluentTheme();
         }
     }
 
