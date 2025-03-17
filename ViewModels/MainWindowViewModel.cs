@@ -176,7 +176,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     
     public MainWindowViewModel()
     {
-        _currentUserControl = new();
+        _currentUserControl = new UserControl();
         _ipAddress = "127.0.0.1";
         
         
@@ -206,10 +206,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
             DataContext = StatusSectionViewModel
         };
         
-        //Команды основного меню
         OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen);
         OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen);
         DisconnectCommand = new RelayCommand(Disconnect, () => ConnectionStatus);
+        
         SettingsCommand = new RelayCommand(SwitchTheme, () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
@@ -219,15 +219,13 @@ public class MainWindowViewModel : INotifyPropertyChanged
         switch (App.Instance.ActualThemeVariant.Key.ToString())
         {
             case "Dark":
-                App.Instance.Styles.Clear();
-                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
                 App.Instance.RequestedThemeVariant = ThemeVariant.Light;
+                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
+               
                 break;
             case "Light":
-                
-                App.Instance.Styles.Clear();
-                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
                 App.Instance.RequestedThemeVariant = ThemeVariant.Dark;
+                App.Instance.Styles.Add(new FluentTheme());  // Принудительное обновление темы
                 break;
         }
     }
