@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia;
@@ -10,9 +11,11 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using DynamicData;
 using ReactiveUI;
 using RFD.Interfaces;
 using RFD.Models;
+using Point = Avalonia.Point;
 
 namespace RFD.ViewModels;
 
@@ -21,7 +24,6 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     /// <summary>Сервис для создания окна для данного элемента</summary>
     private readonly IWindowService _windowService;
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
-    
     public Point Center { get; set; }
     
     #region Настройки сетки мишени (Вместимость ; Угл.сетка ; Ширина ; Шрифт ; (-180 -> 180))
@@ -89,10 +91,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         get => _capacity;
         set
         {
-            //При изменении вместимости, изменяется количество точек отображаемых на мишени
             _points = new Thickness[_capacity];
-            
-            //При передаче вместимости, Genesis LWD считает что внутренняя точка является тоже окружностью 
             _capacity = value;
             UpdateTarget();
 
@@ -100,7 +99,16 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         }
     }
 
-    public bool IsHalfMode { get; set; }
+    private bool _isHalfMode;
+    public bool IsHalfMode
+    {
+        get => _isHalfMode;
+        set
+        {
+            _isHalfMode = value;
+            OnPropertyChanged();
+        }
+    }
     private int _gridFrequency = 45;
     public int GridFrequency
     {
@@ -146,8 +154,8 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
 
+    public ObservableCollection<AnglePoint> ListOfAngle { get; set; }
     #endregion
 
     #region Настройки точек мишени (Радиус точки ; Коэффицент уменьшения радиуса в зависимости от удаленности от края ; От центра к краю)
@@ -178,18 +186,18 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     
     private const int SectorSmooth = 100;
     #endregion
-    
+
 
     private void UpdateTarget()
     {
         Center = new Point(100 + (RingThickness - 10), 100 + (RingThickness - 10));
-        
+
         StartPointVertical = new Point(100 + (RingThickness - 10), 10 + (RingThickness - 10));
         EndPointVertical = new Point(100 + (RingThickness - 10), 190 + (RingThickness - 10));
-        
+
         StartPointHorizontal = new Point(10 + (RingThickness - 10), 100 + (RingThickness - 10));
         EndPointHorizontal = new Point(190 + (RingThickness - 10), 100 + (RingThickness - 10));
-        
+
         GridLine.Clear();
         for (int angle = 0; angle <= 360; angle += GridFrequency)
         {
@@ -197,48 +205,41 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             {
                 continue;
             }
-            //Console.WriteLine($"Angle: ({angle}) ; PointOfAngle: ({GetPointForAngle(angle, Center, 90)}) ; CenterPoint: ({Center})");
+
             GridLine.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
         }
 
-        //Console.WriteLine($"start point vertical line - ({StartPointVertical.X} | {StartPointVertical.Y})");
-        //Console.WriteLine($"start point horizontal line - ({StartPointHorizontal.X} | {StartPointHorizontal.Y})");
-        
         InnerLine.Clear();
         var distance = 180.0 / (Capacity - 1);
-        //Console.WriteLine($"Capacity: {Capacity}");
-        //Console.WriteLine($"Distance inner line: {distance}");
 
-        for (int i = 1; i <= Capacity - 1; i++) {
+        for (int i = 1; i <= Capacity - 1; i++)
+        {
             InnerLine.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
         }
-
-
-        //foreach (var ringsTarget in InnerLine)
-        //{
-            //Console.WriteLine($"index ring:{ringsTarget.Order} - (radius {ringsTarget.Radius}) - (width:{ringsTarget.Width}; height:{ringsTarget.Height})");
-        //}
+        ListOfAngle.Clear();
+        for (int angle = 0; angle < 360; angle += GridFrequency)
+        {
+            ListOfAngle.Add(new AnglePoint($"{angle}°", new Thickness(
+                GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X, 
+                GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y, 
+                0, 0), FontSize));
+        }
+        
     }
-    
 
-    
-
-    
-    public Thickness Point1 => _points[0];
-    public Thickness Point2 => _points[1];
-    public Thickness Point3 => _points[2];
-    public Thickness Point4 => _points[3];
-    public Thickness Point5 => _points[4];
-    
     public TargetSectionViewModel(IWindowService windowService)
     {
         Center = new Point(100, 100);
         InnerLine = new ObservableCollection<Ring>();
         GridLine = new ObservableCollection<GridLine>();
+        ListOfAngle = new ObservableCollection<AnglePoint>();
+        
         Capacity = 6;
         GridFrequency = 45;
+        IsHalfMode = true;
         RingThickness = RingWidth = 10;
         FontSize = 10;
+        
         UpdateTarget();
         
         _windowService = windowService;
@@ -272,6 +273,23 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         _windowService.OpenWindow(newControl, "Мишень");
     }
 
+    public static Point GetMidPoint(Point innerPoint, double distance, double angleDegrees)
+    {
+        // Переводим угол из градусов в радианы
+        double angleRadians = angleDegrees * Math.PI / 180.0;
+        
+        // Вычисляем компоненты направления
+        double directionX = Math.Sin(angleRadians);
+        double directionY = -Math.Cos(angleRadians); // Инвертируем Y из-за системы координат
+        
+        // Рассчитываем смещение
+        double offset = distance / 2.0;
+        double newX = innerPoint.X + (double)(directionX * offset);
+        double newY = innerPoint.Y + (double)(directionY * offset);
+        
+        return new Point(newX, newY);
+    }
+    
     private static Point GetPointForAngle(double angle, Point center, double radius)
     {
         double rad = Math.PI * angle / 180.0;
