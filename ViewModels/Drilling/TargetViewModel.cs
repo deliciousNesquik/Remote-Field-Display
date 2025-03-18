@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Reactive;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Media;
+using DynamicData;
 using ReactiveUI;
 using RFD.Interfaces;
 using RFD.Models;
@@ -11,7 +14,7 @@ using Point = Avalonia.Point;
 
 namespace RFD.ViewModels;
 
-public class TargetSectionViewModel : ViewModelBase
+public class TargetSectionViewModel : INotifyPropertyChanged
 {
     private readonly object _updateLock = new(); // Объект для блокировки
     private readonly IWindowService _windowService;
@@ -28,28 +31,44 @@ public class TargetSectionViewModel : ViewModelBase
     public Point StartPointVertical
     {
         get => _startPointVertical;
-        set => this.RaiseAndSetIfChanged(ref _startPointVertical, value);
+        set
+        {
+            _startPointVertical = value;
+            OnPropertyChanged();
+        }
     }
 
     private Point _endPointVertical;
     public Point EndPointVertical
     {
         get => _endPointVertical;
-        set => this.RaiseAndSetIfChanged(ref _endPointVertical, value);
+        set
+        {
+            _endPointVertical = value;
+            OnPropertyChanged();
+        }
     }
 
     private Point _startPointHorizontal;
     public Point StartPointHorizontal
     {
         get => _startPointHorizontal;
-        set => this.RaiseAndSetIfChanged(ref _startPointHorizontal, value);
+        set
+        {
+            _startPointHorizontal = value;
+            OnPropertyChanged();
+        }
     }
 
     private Point _endPointHorizontal;
     public Point EndPointHorizontal
     {
         get => _endPointHorizontal;
-        set => this.RaiseAndSetIfChanged(ref _endPointHorizontal, value);
+        set
+        {
+            _endPointHorizontal = value;
+            OnPropertyChanged();
+        }
     }
 
     private double _strokeThickness = 0.5;
@@ -58,8 +77,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _strokeThickness;
         set
         {
-            this.RaiseAndSetIfChanged(ref _strokeThickness, value);
+            _strokeThickness = value;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -69,8 +89,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _capacity;
         set
         {
-            this.RaiseAndSetIfChanged(ref _capacity, value);
+            _capacity = value;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -78,7 +99,11 @@ public class TargetSectionViewModel : ViewModelBase
     public bool IsHalfMode
     {
         get => _isHalfMode;
-        set => this.RaiseAndSetIfChanged(ref _isHalfMode, value);
+        set
+        {
+            _isHalfMode = value;
+            OnPropertyChanged();
+        }
     }
 
     private int _gridFrequency = 45;
@@ -87,8 +112,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _gridFrequency;
         set
         {
-            this.RaiseAndSetIfChanged(ref _gridFrequency, value);
+            _gridFrequency = value;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -98,8 +124,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _fontSize;
         set
         {
-            this.RaiseAndSetIfChanged(ref _fontSize, value);
+            _fontSize = value / 2;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -109,8 +136,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _ringWidth;
         set
         {
-            this.RaiseAndSetIfChanged(ref _ringWidth, value);
+            _ringWidth = 2.0 * value + 180;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -120,8 +148,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _ringThickness;
         set
         {
-            this.RaiseAndSetIfChanged(ref _ringThickness, value);
+            _ringThickness = value;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -136,8 +165,9 @@ public class TargetSectionViewModel : ViewModelBase
         get => _defaultRadius;
         set
         {
-            this.RaiseAndSetIfChanged(ref _defaultRadius, value);
+            _defaultRadius = value;
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
 
@@ -152,14 +182,18 @@ public class TargetSectionViewModel : ViewModelBase
     public List<Point> Sector
     {
         get => _sector;
-        set => this.RaiseAndSetIfChanged(ref _sector, value);
+        set
+        {
+            _sector = value;
+            OnPropertyChanged();
+        }
     }
 
     private IBrush _sectorColor = Brush.Parse("#2B0068FF");
     public IBrush SectorColor
     {
         get => _sectorColor;
-        set => this.RaiseAndSetIfChanged(ref _sectorColor, value);
+        set => _sectorColor = value;
     }
 
     private const int SectorSmooth = 100;
@@ -221,12 +255,12 @@ public class TargetSectionViewModel : ViewModelBase
 
     private void UpdatePoints()
     {
-        while (DrillingPointsList.Count < Capacity - 1)
+        while (DrillingPointsList.Count < Capacity)
         {
             DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
         }
 
-        while (DrillingPointsList.Count > Capacity - 1)
+        while (DrillingPointsList.Count > Capacity)
         {
             DrillingPointsList.RemoveAt(DrillingPointsList.Count - 1);
         }
@@ -323,5 +357,12 @@ public class TargetSectionViewModel : ViewModelBase
         }
         points.Add(end);
         return points;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
