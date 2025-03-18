@@ -14,18 +14,19 @@ using Point = Avalonia.Point;
 
 namespace RFD.ViewModels;
 
-public class TargetSectionViewModel: INotifyPropertyChanged
+public class TargetSectionViewModel : INotifyPropertyChanged
 {
-    /// <summary>Сервис для создания окна для данного элемента</summary>
+    private readonly object _updateLock = new(); // Объект для блокировки
     private readonly IWindowService _windowService;
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
+
     public Point Center { get; set; }
-    
+
     #region Настройки сетки мишени (Вместимость ; Угл.сетка ; Ширина ; Шрифт ; (-180 -> 180))
 
     public ObservableCollection<Ring> DrillingRingsList { get; set; }
     public ObservableCollection<GridLine> RadialLinesList { get; set; }
-    
+
     private Point _startPointVertical;
     public Point StartPointVertical
     {
@@ -36,6 +37,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private Point _endPointVertical;
     public Point EndPointVertical
     {
@@ -46,6 +48,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private Point _startPointHorizontal;
     public Point StartPointHorizontal
     {
@@ -56,6 +59,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private Point _endPointHorizontal;
     public Point EndPointHorizontal
     {
@@ -66,7 +70,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
+
     private double _strokeThickness = 0.5;
     public double StrokeThickness
     {
@@ -75,11 +79,10 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         {
             _strokeThickness = value;
             UpdateTarget();
-            
             OnPropertyChanged();
         }
     }
-    
+
     private int _capacity;
     public int Capacity
     {
@@ -88,7 +91,6 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         {
             _capacity = value;
             UpdateTarget();
-
             OnPropertyChanged();
         }
     }
@@ -103,6 +105,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private int _gridFrequency = 45;
     public int GridFrequency
     {
@@ -110,12 +113,12 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         set
         {
             _gridFrequency = value;
-            OnPropertyChanged();
             UpdateTarget();
+            OnPropertyChanged();
         }
     }
-    private int _fontSize;
 
+    private int _fontSize;
     public int FontSize
     {
         get => _fontSize;
@@ -126,6 +129,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private double _ringWidth;
     public double RingWidth
     {
@@ -137,6 +141,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private double _ringThickness;
     public double RingThickness
     {
@@ -155,7 +160,6 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     #region Настройки точек мишени (Радиус точки ; Коэффицент уменьшения радиуса в зависимости от удаленности от края ; От центра к краю)
 
     private double _defaultRadius;
-
     public double DefaultRadius
     {
         get => _defaultRadius;
@@ -166,6 +170,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     public double ReductionFactor { get; set; }
     public bool FromCenterToBorder { get; set; }
 
@@ -183,46 +188,58 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
     private IBrush _sectorColor = Brush.Parse("#2B0068FF");
     public IBrush SectorColor
     {
         get => _sectorColor;
         set => _sectorColor = value;
     }
-    
+
     private const int SectorSmooth = 100;
     #endregion
 
-
     private void UpdateTarget()
     {
-        Center = new Point(100 + (RingThickness - 10), 100 + (RingThickness - 10));
+        lock (_updateLock) // Блокируем обновление
+        {
+            Center = new Point(100 + (RingThickness - 10), 100 + (RingThickness - 10));
 
-        StartPointVertical = new Point(100 + (RingThickness - 10), 10 + (RingThickness - 10));
-        EndPointVertical = new Point(100 + (RingThickness - 10), 190 + (RingThickness - 10));
+            StartPointVertical = new Point(100 + (RingThickness - 10), 10 + (RingThickness - 10));
+            EndPointVertical = new Point(100 + (RingThickness - 10), 190 + (RingThickness - 10));
 
-        StartPointHorizontal = new Point(10 + (RingThickness - 10), 100 + (RingThickness - 10));
-        EndPointHorizontal = new Point(190 + (RingThickness - 10), 100 + (RingThickness - 10));
+            StartPointHorizontal = new Point(10 + (RingThickness - 10), 100 + (RingThickness - 10));
+            EndPointHorizontal = new Point(190 + (RingThickness - 10), 100 + (RingThickness - 10));
 
+            UpdateRadialLines();
+            UpdateRings();
+            UpdateAngleLabels();
+            UpdatePoints();
+        }
+    }
+
+    private void UpdateRadialLines()
+    {
         RadialLinesList.Clear();
         for (var angle = 0; angle <= 360; angle += GridFrequency)
         {
-            if (angle is 0 or 90 or 180 or 270 or 360)
-            {
-                continue;
-            }
-
+            if (angle is 0 or 90 or 180 or 270 or 360) continue;
             RadialLinesList.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
         }
+    }
 
+    private void UpdateRings()
+    {
         DrillingRingsList.Clear();
         var distance = 180.0 / (Capacity - 1);
         for (var i = 1; i <= Capacity - 1; i++)
         {
             DrillingRingsList.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
         }
-        
-        
+    }
+
+    private void UpdateAngleLabels()
+    {
         AngleLabelsList.Clear();
         for (var angle = 0; angle < 360; angle += GridFrequency)
         {
@@ -231,24 +248,19 @@ public class TargetSectionViewModel: INotifyPropertyChanged
 
             var leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
             var topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
-            
-            AngleLabelsList.Add(
-                new AnglePoint(
-                    $"{angle}°", 
-                    new Thickness(leftMargin, topMargin, 0, 0), 
-                    FontSize));
-        }
 
-        // Если Capacity увеличилось, добавляем новые точки
-        while (DrillingPointsList.Count < Capacity)
+            AngleLabelsList.Add(new AnglePoint($"{angle}°", new Thickness(leftMargin, topMargin, 0, 0), FontSize));
+        }
+    }
+
+    private void UpdatePoints()
+    {
+        while (DrillingPointsList.Count < Capacity - 1)
         {
-            DrillingPointsList.Add(new DrillingPoints(
-                new Thickness(0, 0, 0, 0),
-                DefaultRadius));
+            DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
         }
 
-        // Если Capacity уменьшилось, удаляем лишние точки
-        while (DrillingPointsList.Count > Capacity)
+        while (DrillingPointsList.Count > Capacity - 1)
         {
             DrillingPointsList.RemoveAt(DrillingPointsList.Count - 1);
         }
@@ -257,7 +269,6 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         {
             point.Size = DefaultRadius / 2;
         }
-        
     }
 
     public TargetSectionViewModel(IWindowService windowService)
@@ -267,28 +278,19 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         RadialLinesList = new ObservableCollection<GridLine>();
         AngleLabelsList = new ObservableCollection<AnglePoint>();
         DrillingPointsList = new ObservableCollection<DrillingPoints>();
-        // Очищаем список, если он уже был заполнен
-        DrillingPointsList.Clear();
 
-        // Создаем точки в зависимости от Capacity
-        DrillingPointsList.Add(new DrillingPoints(new Thickness(0), DefaultRadius));
-        for (var i = 1; i < Capacity - 1; i++)
-        {
-            DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
-        }
-        
         Capacity = 6;
         GridFrequency = 45;
         IsHalfMode = false;
         RingThickness = RingWidth = 10;
         FontSize = 10;
-        
+
         UpdateTarget();
-        
+
         _windowService = windowService;
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
     }
-    
+
     public void SetSector(double startAngle, double endAngle)
     {
         Sector = CreateSectorPoints(
@@ -298,25 +300,24 @@ public class TargetSectionViewModel: INotifyPropertyChanged
             SectorSmooth
         );
     }
+
     public void ClearSector() => Sector = [Center];
     public void SetSectorColor(IBrush color) => SectorColor = color;
-    
+
     public void SetPoint(int index, double angle)
     {
-        if (index < 0 || index >= DrillingPointsList.Count - 1)
+        if (index < 0 || index >= DrillingPointsList.Count)
         {
             throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
         }
 
-        // Вычисляем радиус и новые координаты
         var radius = (index + 1) * (180.0 / (Capacity - 1));
         var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
 
-        // Обновляем координаты точки
         DrillingPointsList[index].Margin = new Thickness(newPoint.X, newPoint.Y, 0, 0);
         Console.WriteLine($"point [{index}] - radius - [{radius}] - margin - [{DrillingPointsList[index].Margin}]");
     }
-    
+
     private void OpenInNewWindow()
     {
         var newControl = new UserControls.TargetSection() { DataContext = this };
@@ -325,27 +326,21 @@ public class TargetSectionViewModel: INotifyPropertyChanged
 
     private static Point GetMidPoint(Point innerPoint, double distance, double angleDegrees)
     {
-        // Переводим угол из градусов в радианы
         var angleRadians = angleDegrees * Math.PI / 180.0;
-        
-        // Вычисляем компоненты направления
         var directionX = Math.Sin(angleRadians);
-        var directionY = -Math.Cos(angleRadians); // Инвертируем Y из-за системы координат
-        
-        // Рассчитываем смещение
+        var directionY = -Math.Cos(angleRadians);
         var offset = distance / 2.0;
         var newX = innerPoint.X + (directionX * offset);
         var newY = innerPoint.Y + (directionY * offset);
-        
         return new Point(newX, newY);
     }
-    
+
     private static Point GetPointForAngle(double angle, Point center, double radius)
     {
         var rad = Math.PI * angle / 180.0;
         return new Point(center.X + radius * Math.Sin(rad), center.Y - radius * Math.Cos(rad));
     }
-    
+
     private static List<Point> CreateSectorPoints(Point center, Point start, Point end, int segments)
     {
         List<Point> points = [center, start];
@@ -363,7 +358,7 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         points.Add(end);
         return points;
     }
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
