@@ -326,7 +326,7 @@ public class App : Application
     }
 
 
-    private void SetSettings(NPFGEO.LWD.Net.Settings settings)
+    private void SetSettings(Settings settings)
     {
         _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
@@ -340,11 +340,8 @@ public class App : Application
         foreach (var param in settings.Parameters)
         { _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units)); }
         
-        if (settings.InfoParameters != null)
-        { 
-            _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
-            _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
-        }
+        _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
+        _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
 
         _mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder = settings.Target.FromCenterToBorder;
         _mainWindowViewModel.TargetSectionViewModel.Capacity = settings.Target.Capacity;
@@ -356,44 +353,38 @@ public class App : Application
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
         
         // Для установки конкретной темы
-        _mainWindowViewModel.SwitchTheme(settings.ThemeStyle.ToString().Substring(0, settings.ThemeStyle.ToString().Length - 5));
+        _mainWindowViewModel.SwitchTheme(settings.ThemeStyle.ToString()[..(settings.ThemeStyle.ToString().Length - 5)]);
         
-        if (settings.Target != null) {
-            _mainWindowViewModel.TargetSectionViewModel.SetSector(
-                startAngle: settings.Target.SectorDirection - (settings.Target.SectorWidth / 2), 
-                endAngle: settings.Target.SectorDirection + (settings.Target.SectorWidth / 2)
-                );
-        }
+        _mainWindowViewModel.TargetSectionViewModel.SetSector(
+            startAngle: settings.Target.SectorDirection - (settings.Target.SectorWidth / 2), 
+            endAngle: settings.Target.SectorDirection + (settings.Target.SectorWidth / 2)
+            );
         
         SetData(_dataObj);
     }
 
-    private void SetData(NPFGEO.LWD.Net.DataObject data)
+    private void SetData(DataObject data)
     {
-        _dataObj = NPFGEO.LWD.Net.DataObject.Union(_dataObj, data);
+        _dataObj = DataObject.Union(_dataObj, data);
 
-        if (data.TargetPoints != null)
+        var targetPoints = data.TargetPoints.ToList();
+        for (var i = 0; i < targetPoints.Count; i++)
         {
-            IList<TargetPoint> targetPoints = data.TargetPoints.ToList();
-            for (int i = 0; i < targetPoints.Count; i++)
-            {
-                _mainWindowViewModel.ParametersSectionViewModel.Angle = targetPoints[i].Angle;
-                _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString();
-                
-                if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
-                {
-                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
-                        angle: targetPoints[i].Value);
-                }
-                else
-                {
-                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
-                        angle: targetPoints[i].Value);
-                }
-            }
+            _mainWindowViewModel.ParametersSectionViewModel.Angle = targetPoints[i].Angle;
+            _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString();
             
+            if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
+            {
+                _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                    index: _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
+                    angle: targetPoints[i].Value);
+            }
+            else
+            {
+                _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                    index: _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
+                    angle: targetPoints[i].Value);
+            }
         }
 
         foreach (var t in data.Flags)
@@ -421,5 +412,4 @@ public class App : Application
            
         _mainWindowViewModel.ParametersSectionViewModel.SetTime(data);
     }
-    
 }

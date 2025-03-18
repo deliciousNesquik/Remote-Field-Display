@@ -42,6 +42,7 @@
     <UpToDateCheckInput Remove="UserControls\Themes\Ring.axaml" />
     <UpToDateCheckInput Remove="UserControls\Themes\ThreeDots.axaml" />
     <UpToDateCheckInput Remove="UserControls\Themes\Wave.axaml" />
+    <UpToDateCheckInput Remove="Styles\Buttons.axaml" />
   </ItemGroup>
 
   <ItemGroup>

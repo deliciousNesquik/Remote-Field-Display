@@ -2,15 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData;
 using ReactiveUI;
 using RFD.Interfaces;
@@ -28,8 +23,8 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     
     #region Настройки сетки мишени (Вместимость ; Угл.сетка ; Ширина ; Шрифт ; (-180 -> 180))
 
-    public ObservableCollection<Ring> InnerLine { get; set; }
-    public ObservableCollection<GridLine> GridLine { get; set; }
+    public ObservableCollection<Ring> DrillingRingsList { get; set; }
+    public ObservableCollection<GridLine> RadialLinesList { get; set; }
     
     private Point _startPointVertical;
     public Point StartPointVertical
@@ -91,7 +86,6 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         get => _capacity;
         set
         {
-            _points = new Thickness[_capacity];
             _capacity = value;
             UpdateTarget();
 
@@ -155,15 +149,27 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<AnglePoint> ListOfAngle { get; set; }
+    public ObservableCollection<AnglePoint> AngleLabelsList { get; set; }
     #endregion
 
     #region Настройки точек мишени (Радиус точки ; Коэффицент уменьшения радиуса в зависимости от удаленности от края ; От центра к краю)
-    public double DefaultRadius { get; set; }
+
+    private double _defaultRadius;
+
+    public double DefaultRadius
+    {
+        get => _defaultRadius;
+        set
+        {
+            _defaultRadius = value;
+            UpdateTarget();
+            OnPropertyChanged();
+        }
+    }
     public double ReductionFactor { get; set; }
     public bool FromCenterToBorder { get; set; }
-    
-    private Thickness[] _points = new Thickness[5];
+
+    public ObservableCollection<DrillingPoints> DrillingPointsList { get; set; }
     #endregion
 
     #region Настройки сектора мишени (Путь ; Сглаженность ; Цвет)
@@ -198,38 +204,58 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         StartPointHorizontal = new Point(10 + (RingThickness - 10), 100 + (RingThickness - 10));
         EndPointHorizontal = new Point(190 + (RingThickness - 10), 100 + (RingThickness - 10));
 
-        GridLine.Clear();
-        for (int angle = 0; angle <= 360; angle += GridFrequency)
+        RadialLinesList.Clear();
+        for (var angle = 0; angle <= 360; angle += GridFrequency)
         {
             if (angle is 0 or 90 or 180 or 270 or 360)
             {
                 continue;
             }
 
-            GridLine.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
+            RadialLinesList.Add(new GridLine(angle, GetPointForAngle(angle, Center, 90), Center));
         }
 
-        InnerLine.Clear();
+        DrillingRingsList.Clear();
         var distance = 180.0 / (Capacity - 1);
-
-        for (int i = 1; i <= Capacity - 1; i++)
+        for (var i = 1; i <= Capacity - 1; i++)
         {
-            InnerLine.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
+            DrillingRingsList.Add(new Ring(i * distance, i * distance, i, (i * distance) / 2, new Thickness(RingThickness)));
         }
-        ListOfAngle.Clear();
-        for (int angle = 0; angle < 360; angle += GridFrequency)
+        
+        
+        AngleLabelsList.Clear();
+        for (var angle = 0; angle < 360; angle += GridFrequency)
         {
-            double width = ($"{angle}°".Length - 0.5) * 0.6 * FontSize;
-            double height = 1.2 * FontSize;
+            var width = ($"{angle}°".Length - 0.5) * 0.6 * FontSize;
+            var height = 1.2 * FontSize;
 
-            double leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
-            double topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
+            var leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
+            var topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
             
-            ListOfAngle.Add(
+            AngleLabelsList.Add(
                 new AnglePoint(
                     $"{angle}°", 
                     new Thickness(leftMargin, topMargin, 0, 0), 
                     FontSize));
+        }
+
+        // Если Capacity увеличилось, добавляем новые точки
+        while (DrillingPointsList.Count < Capacity)
+        {
+            DrillingPointsList.Add(new DrillingPoints(
+                new Thickness(0, 0, 0, 0),
+                DefaultRadius));
+        }
+
+        // Если Capacity уменьшилось, удаляем лишние точки
+        while (DrillingPointsList.Count > Capacity)
+        {
+            DrillingPointsList.RemoveAt(DrillingPointsList.Count - 1);
+        }
+
+        foreach (var point in DrillingPointsList)
+        {
+            point.Size = DefaultRadius / 2;
         }
         
     }
@@ -237,13 +263,23 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     public TargetSectionViewModel(IWindowService windowService)
     {
         Center = new Point(100, 100);
-        InnerLine = new ObservableCollection<Ring>();
-        GridLine = new ObservableCollection<GridLine>();
-        ListOfAngle = new ObservableCollection<AnglePoint>();
+        DrillingRingsList = new ObservableCollection<Ring>();
+        RadialLinesList = new ObservableCollection<GridLine>();
+        AngleLabelsList = new ObservableCollection<AnglePoint>();
+        DrillingPointsList = new ObservableCollection<DrillingPoints>();
+        // Очищаем список, если он уже был заполнен
+        DrillingPointsList.Clear();
+
+        // Создаем точки в зависимости от Capacity
+        DrillingPointsList.Add(new DrillingPoints(new Thickness(0), DefaultRadius));
+        for (var i = 1; i < Capacity - 1; i++)
+        {
+            DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
+        }
         
         Capacity = 6;
         GridFrequency = 45;
-        IsHalfMode = true;
+        IsHalfMode = false;
         RingThickness = RingWidth = 10;
         FontSize = 10;
         
@@ -267,11 +303,18 @@ public class TargetSectionViewModel: INotifyPropertyChanged
     
     public void SetPoint(int index, double angle)
     {
-        if (index < 0 || index >= _points.Length) return;
-        double radius = (index + 1) * 36;
+        if (index < 0 || index >= DrillingPointsList.Count - 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+        }
+
+        // Вычисляем радиус и новые координаты
+        var radius = (index + 1) * (180.0 / (Capacity - 1));
         var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
-        _points[index] = new Thickness(newPoint.X, newPoint.Y, 0, 0);
-        OnPropertyChanged($"Point{index + 1}");
+
+        // Обновляем координаты точки
+        DrillingPointsList[index].Margin = new Thickness(newPoint.X, newPoint.Y, 0, 0);
+        Console.WriteLine($"point [{index}] - radius - [{radius}] - margin - [{DrillingPointsList[index].Margin}]");
     }
     
     private void OpenInNewWindow()
@@ -280,41 +323,41 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         _windowService.OpenWindow(newControl, "Мишень");
     }
 
-    public static Point GetMidPoint(Point innerPoint, double distance, double angleDegrees)
+    private static Point GetMidPoint(Point innerPoint, double distance, double angleDegrees)
     {
         // Переводим угол из градусов в радианы
-        double angleRadians = angleDegrees * Math.PI / 180.0;
+        var angleRadians = angleDegrees * Math.PI / 180.0;
         
         // Вычисляем компоненты направления
-        double directionX = Math.Sin(angleRadians);
-        double directionY = -Math.Cos(angleRadians); // Инвертируем Y из-за системы координат
+        var directionX = Math.Sin(angleRadians);
+        var directionY = -Math.Cos(angleRadians); // Инвертируем Y из-за системы координат
         
         // Рассчитываем смещение
-        double offset = distance / 2.0;
-        double newX = innerPoint.X + (double)(directionX * offset);
-        double newY = innerPoint.Y + (double)(directionY * offset);
+        var offset = distance / 2.0;
+        var newX = innerPoint.X + (directionX * offset);
+        var newY = innerPoint.Y + (directionY * offset);
         
         return new Point(newX, newY);
     }
     
     private static Point GetPointForAngle(double angle, Point center, double radius)
     {
-        double rad = Math.PI * angle / 180.0;
+        var rad = Math.PI * angle / 180.0;
         return new Point(center.X + radius * Math.Sin(rad), center.Y - radius * Math.Cos(rad));
     }
     
     private static List<Point> CreateSectorPoints(Point center, Point start, Point end, int segments)
     {
         List<Point> points = [center, start];
-        double startAngle = Math.Atan2(start.Y - center.Y, start.X - center.X);
-        double endAngle = Math.Atan2(end.Y - center.Y, end.X - center.X);
+        var startAngle = Math.Atan2(start.Y - center.Y, start.X - center.X);
+        var endAngle = Math.Atan2(end.Y - center.Y, end.X - center.X);
         if (endAngle < startAngle) endAngle += 2 * Math.PI;
-        double step = (endAngle - startAngle) / segments;
+        var step = (endAngle - startAngle) / segments;
 
-        for (int i = 1; i < segments; i++)
+        for (var i = 1; i < segments; i++)
         {
-            double angle = startAngle + step * i;
-            double radius = Math.Sqrt(Math.Pow(start.X - center.X, 2) + Math.Pow(start.Y - center.Y, 2));
+            var angle = startAngle + step * i;
+            var radius = Math.Sqrt(Math.Pow(start.X - center.X, 2) + Math.Pow(start.Y - center.Y, 2));
             points.Add(new Point(center.X + radius * Math.Cos(angle), center.Y + radius * Math.Sin(angle)));
         }
         points.Add(end);

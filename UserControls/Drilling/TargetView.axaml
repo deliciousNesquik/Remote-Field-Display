@@ -8,10 +8,6 @@
              x:Class="RFD.UserControls.TargetSection"
              x:DataType="vm:TargetSectionViewModel">
     
-    <UserControl.Resources>
-        <converters:NegativeHalfConverter x:Key="NegativeHalfConverter"/>
-    </UserControl.Resources>
-    
     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
             CornerRadius="10" Padding="10">
         
@@ -34,6 +30,16 @@
                 <!-- Основной контейнер для всех элементов -->
                 <Grid Name="Target">
                     
+                    <Line StartPoint="{Binding StartPointVertical}" 
+                          EndPoint="{Binding EndPointVertical}" 
+                          Stroke="{DynamicResource Foreground}" 
+                          StrokeThickness="1"/>
+                    
+                    <Line StartPoint="{Binding StartPointHorizontal}" 
+                          EndPoint="{Binding EndPointHorizontal}" 
+                          Stroke="{DynamicResource Foreground}" 
+                          StrokeThickness="1"/>
+                    
                     <!--Внешнее кольцо и его цвет-->
                     <Ellipse Width="{Binding RingWidth}" 
                              Height="{Binding RingWidth}"
@@ -47,7 +53,9 @@
                              Fill="Transparent" 
                              Stroke="#67808080" />
                     
-                    <ItemsControl ItemsSource="{Binding InnerLine}" 
+                    
+                    
+                    <ItemsControl ItemsSource="{Binding DrillingRingsList}" 
                                   Width="{Binding RingWidth}" 
                                   Height="{Binding RingWidth}">
                         <ItemsControl.ItemsPanel>
@@ -67,7 +75,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                         
-                    <ItemsControl ItemsSource="{Binding GridLine}" 
+                    <ItemsControl ItemsSource="{Binding RadialLinesList}" 
                                   Width="{Binding RingWidth}" 
                                   Height="{Binding RingWidth}">
                         <ItemsControl.ItemsPanel>
@@ -85,7 +93,7 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                         
-                    <ItemsControl ItemsSource="{Binding ListOfAngle}" 
+                    <ItemsControl ItemsSource="{Binding AngleLabelsList}" 
                                   Width="{Binding RingWidth}" 
                                   Height="{Binding RingWidth}">
                         <ItemsControl.ItemsPanel>
@@ -104,16 +112,24 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                    <Line StartPoint="{Binding StartPointVertical}" 
-                          EndPoint="{Binding EndPointVertical}" 
-                          Stroke="{DynamicResource Foreground}" 
-                          StrokeThickness="1"/>
                     
-                    <Line StartPoint="{Binding StartPointHorizontal}" 
-                          EndPoint="{Binding EndPointHorizontal}" 
-                          Stroke="{DynamicResource Foreground}" 
-                          StrokeThickness="1"/>
+                    <ItemsControl ItemsSource="{Binding DrillingPointsList}"
+                                  Width="{Binding RingWidth}" 
+                                  Height="{Binding RingWidth}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="{Binding Size}" Height="{Binding Size}" Fill="{DynamicResource FocusingColor}"
+                                         Margin="{Binding Margin}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    
                     
                     <!--Сектор бурения-->
                     <Polygon Points="{Binding Sector}" 
