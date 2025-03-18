@@ -219,10 +219,17 @@ public class TargetSectionViewModel: INotifyPropertyChanged
         ListOfAngle.Clear();
         for (int angle = 0; angle < 360; angle += GridFrequency)
         {
-            ListOfAngle.Add(new AnglePoint($"{angle}°", new Thickness(
-                GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X, 
-                GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y, 
-                0, 0), FontSize));
+            double width = ($"{angle}°".Length - 0.5) * 0.6 * FontSize;
+            double height = 1.2 * FontSize;
+
+            double leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
+            double topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
+            
+            ListOfAngle.Add(
+                new AnglePoint(
+                    $"{angle}°", 
+                    new Thickness(leftMargin, topMargin, 0, 0), 
+                    FontSize));
         }
         
     }

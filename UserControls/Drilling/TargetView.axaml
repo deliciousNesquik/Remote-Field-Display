@@ -99,9 +99,7 @@
                                     Name="AngleTextBlock"
                                     Text="{Binding Angle}" 
                                     Margin="{Binding PointAngle}" 
-                                    FontSize="{Binding FontSize}"
-                                    RenderTransformOrigin="0.5,0.5">
-                                    
+                                    FontSize="{Binding FontSize}">
                                 </TextBlock>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
