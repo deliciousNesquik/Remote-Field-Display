@@ -102,6 +102,7 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         set
         {
             _isHalfMode = value;
+            UpdateTarget(); // Обновляем мишень при изменении режима
             OnPropertyChanged();
         }
     }
@@ -171,7 +172,21 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         }
     }
 
-    public double ReductionFactor { get; set; }
+    private double _reductionFactor = 1.0; // Значение по умолчанию
+    public double ReductionFactor
+    {
+        get => _reductionFactor;
+        set
+        {
+            if (value < 1.0 || value > 1.5)
+                throw new ArgumentOutOfRangeException(nameof(value), "ReductionFactor must be between 1.0 and 1.5.");
+
+            _reductionFactor = value;
+            UpdateTarget(); // Обновляем мишень при изменении коэффициента
+            OnPropertyChanged();
+        }
+    }
+
     public bool FromCenterToBorder { get; set; }
 
     public ObservableCollection<DrillingPoints> DrillingPointsList { get; set; }
@@ -241,33 +256,58 @@ public class TargetSectionViewModel : INotifyPropertyChanged
     private void UpdateAngleLabels()
     {
         AngleLabelsList.Clear();
-        for (var angle = 0; angle < 360; angle += GridFrequency)
+
+        if (IsHalfMode)
         {
-            var width = ($"{angle}°".Length - 0.5) * 0.6 * FontSize;
-            var height = 1.2 * FontSize;
-
-            var leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
-            var topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
-
-            AngleLabelsList.Add(new AnglePoint($"{angle}°", new Thickness(leftMargin, topMargin, 0, 0), FontSize));
+            // Режим IsHalfMode: от 0° до 180° и от -0° до -180°
+            for (var angle = 0; angle <= 180; angle += GridFrequency)
+            {
+                AddAngleLabel(angle);
+            }
+            for (var angle = -GridFrequency; angle > -180; angle -= GridFrequency)
+            {
+                AddAngleLabel(angle);
+            }
         }
+        else
+        {
+            // Режим !IsHalfMode: от 0° до 360°
+            for (var angle = 0; angle < 360; angle += GridFrequency)
+            {
+                AddAngleLabel(angle);
+            }
+        }
+    }
+
+    private void AddAngleLabel(double angle)
+    {
+        var width = ($"{angle}°".Length - 0.5) * 0.6 * FontSize;
+        var height = 1.2 * FontSize;
+
+        var leftMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).X - (width / 2);
+        var topMargin = GetMidPoint(GetPointForAngle(angle, Center, 90), RingThickness, angle).Y - (height / 2);
+
+        AngleLabelsList.Add(new AnglePoint($"{angle}°", new Thickness(leftMargin, topMargin, 0, 0), FontSize));
     }
 
     private void UpdatePoints()
     {
-        while (DrillingPointsList.Count < Capacity)
+        while (DrillingPointsList.Count < Capacity - 1)
         {
             DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
         }
 
-        while (DrillingPointsList.Count > Capacity)
+        while (DrillingPointsList.Count > Capacity - 1)
         {
             DrillingPointsList.RemoveAt(DrillingPointsList.Count - 1);
         }
 
-        foreach (var point in DrillingPointsList)
+        // Обновляем размер точек в зависимости от ReductionFactor (начиная с конца списка)
+        for (var i = 0; i < DrillingPointsList.Count; i++)
         {
-            point.Size = DefaultRadius / 2;
+            var reverseIndex = DrillingPointsList.Count - 1 - i; // Индекс с конца
+            var reduction = 1 - (reverseIndex / (double)(Capacity - 1)) * (ReductionFactor - 1);
+            DrillingPointsList[i].Size = DefaultRadius / 2 * reduction;
         }
     }
 
@@ -284,6 +324,7 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         IsHalfMode = false;
         RingThickness = RingWidth = 10;
         FontSize = 10;
+        ReductionFactor = 1.0; // Значение по умолчанию
 
         UpdateTarget();
 

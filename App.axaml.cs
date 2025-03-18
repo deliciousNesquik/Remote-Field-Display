@@ -351,6 +351,7 @@ public class App : Application
         (_mainWindowViewModel.TargetSectionViewModel.RingWidth, _mainWindowViewModel.TargetSectionViewModel.RingThickness) = (settings.Target.RingWidth, settings.Target.RingWidth);
         _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
+        Console.WriteLine(settings.Target.ReductionFactor);
         
         // Для установки конкретной темы
         _mainWindowViewModel.SwitchTheme(settings.ThemeStyle.ToString()[..(settings.ThemeStyle.ToString().Length - 5)]);

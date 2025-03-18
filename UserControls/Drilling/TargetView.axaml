@@ -124,7 +124,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Ellipse Width="{Binding Size}" Height="{Binding Size}" Fill="{DynamicResource FocusingColor}"
-                                         Margin="{Binding Margin}" />
+                                         Margin="{Binding Margin}" StrokeThickness="0.5" Stroke="{DynamicResource BorderBrush}">
+                                </Ellipse>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
