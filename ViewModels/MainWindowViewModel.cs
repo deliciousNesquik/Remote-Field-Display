@@ -222,7 +222,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         manualConnectionDialogViewModel.ConnectionAttempt += ip =>
         {
-            manualConnectionDialogViewModel.ConnectionStatus.Invoke(App.Instance.Connect(ip));
+            manualConnectionDialogViewModel.ConnectionStatus.Invoke(App.Instance.NetworkService.Connect(ip));
         };
         manualConnectionDialogViewModel.CloseDialog += () =>
         { 
@@ -257,7 +257,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             try
             {
-                bool isConnected = await App.Instance.AutoConnect();
+                bool isConnected = await App.Instance.NetworkService.AutoConnect();
 
                 // Если подключение успешно
                 if (isConnected)
@@ -289,19 +289,19 @@ public class MainWindowViewModel : INotifyPropertyChanged
     
     private void Disconnect()
     {
-        App.Instance.Disconnect();
+        App.Instance.NetworkService.Disconnect();
     }
     
-    private void UpdateConnectionStatus()
+    private void UpdateConnectionStatus(bool connected, string address)
     {
-        var isActuallyConnected = App.Instance.Client.Connected;
+        var isActuallyConnected = connected;
     
         if (isActuallyConnected)
         {
             // Если восстановили соединение - сразу обновляем
             _disconnectTimer.Stop();
             DisplayIsConnected = true;
-            DisplayAddress = App.Instance.Client.Address.ToString();
+            DisplayAddress = address;
         }
         else if (DisplayIsConnected)
         {
@@ -321,9 +321,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
     }
 
 // Вызывайте этот метод при любых изменениях подключения
-    public void OnConnectionStateChanged()
+    public void OnConnectionStateChanged(bool connected = false, string address = "Нет подключения")
     {
-        UpdateConnectionStatus();
+        UpdateConnectionStatus(connected, address);
     }
     #endregion
     
