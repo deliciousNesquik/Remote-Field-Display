@@ -292,16 +292,16 @@ public class MainWindowViewModel : INotifyPropertyChanged
         App.Instance.Disconnect();
     }
     
-    private void UpdateConnectionStatus(bool connected, string address)
+    private void UpdateConnectionStatus()
     {
-        var isActuallyConnected = connected;
+        var isActuallyConnected = App.Instance.Client.Connected;
     
         if (isActuallyConnected)
         {
             // Если восстановили соединение - сразу обновляем
             _disconnectTimer.Stop();
             DisplayIsConnected = true;
-            DisplayAddress = address;
+            DisplayAddress = App.Instance.Client.Address.ToString();
         }
         else if (DisplayIsConnected)
         {
@@ -321,9 +321,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
     }
 
 // Вызывайте этот метод при любых изменениях подключения
-    public void OnConnectionStateChanged(bool connected = false, string address = "Нет подключения")
+    public void OnConnectionStateChanged()
     {
-        UpdateConnectionStatus(connected, address);
+        UpdateConnectionStatus();
     }
     #endregion
     

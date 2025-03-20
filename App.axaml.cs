@@ -143,7 +143,7 @@ public class App : Application
         Client.Connect();
         
         //Обновление интерфейса для отображения подключения
-        _mainWindowViewModel.OnConnectionStateChanged(Client.Connected, Client.Address.ToString());
+        _mainWindowViewModel.OnConnectionStateChanged();
         Console.WriteLine($"[{DateTime.Now}] - [Successful connection] - [ip address: {Client.Address}]");
     }
 
@@ -184,7 +184,7 @@ public class App : Application
     private void Client_Disconnected(object? sender, EventArgs e)
     {
         Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{Client.Address}]");
-        _mainWindowViewModel.OnConnectionStateChanged(Client.Connected, Client.Address.ToString());
+        _mainWindowViewModel.OnConnectionStateChanged();
 
         //Проверка на автоматическое переподключение
         if (!_needAutoReconnect) return;
@@ -197,7 +197,7 @@ public class App : Application
             while (!_token.IsCancellationRequested && !Client.Connected)
             {
                 Reconnect(address);
-                _mainWindowViewModel.OnConnectionStateChanged(Client.Connected, Client.Address.ToString());
+                _mainWindowViewModel.OnConnectionStateChanged();
             }
         };
         Task.Factory.StartNew(action, _token);
@@ -212,7 +212,7 @@ public class App : Application
     {
         if (Client != null)
         {
-            _mainWindowViewModel.OnConnectionStateChanged(Client.Connected, Client.Address.ToString());
+            _mainWindowViewModel.OnConnectionStateChanged();
         }
     }
 

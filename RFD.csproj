@@ -82,5 +82,8 @@
     <Reference Include="LWDReceiver">
       <HintPath>Libraries\LWDReceiver.dll</HintPath>
     </Reference>
+    <Reference Include="NPFGEO.LWD.Net">
+      <HintPath>Libraries\NPFGEO.LWD.Net.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
