@@ -148,6 +148,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _disconnectTimer = new DispatcherTimer();
         _disconnectTimer.Interval = TimeSpan.FromSeconds(2);
         _disconnectTimer.Tick += OnDisconnectTimerTick;
+        
         TargetSectionViewModel = new TargetSectionViewModel(_windowService);
         ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);

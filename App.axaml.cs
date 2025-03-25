@@ -1,32 +1,27 @@
-using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using RFD.ViewModels;
-using RFD.Views;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Runtime.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Styling;
-using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
-using ExCSS;
-using NPFGEO.LWD.Net;
-using RFD.Models;
+using Avalonia.Controls;
+using Avalonia.Styling;
+using Avalonia;
+using System.Globalization;
+using System.Net;
 using DateTime = System.DateTime;
+
+using RFD.ViewModels;
+using RFD.Models;
+using RFD.Views;
+using NLog;
+
+using NPFGEO.LWD.Net;
 
 namespace RFD;
 
 public class App : Application
 {
+    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    
+    
     public static App Instance => (App)Current!; // Получаем текущий экземпляр приложения
     
     /// <summary>Создание объекта класса главного окна, для открытия его и управления внутренними методами и объектами</summary>
@@ -48,31 +43,69 @@ public class App : Application
     private CancellationTokenSource _cancelTokenSource = new();
     /// <summary>Переменная отвечающая за отмену от выполнения некоторых работ</summary>
     private CancellationToken _token;
-    // Событие для подписчиков
-    
-    
-    DataObject _dataObj = new DataObject();
-    public event Action<string>? ThemeChanged;
 
+
+    private DataObject _dataObj = new();
+    public event Action<string>? ThemeChanged;
+    
+    private static void ConfigureLogging()
+    {
+        try
+        {
+            LogManager.Setup().LoadConfigurationFromFile("NLog.config");
+            Logger.Info("Логирование настроено.");
+        }
+        catch (Exception ex)
+        { Console.WriteLine($"Ошибка загрузки конфигурации NLog: {ex.Message}"); }
+    }
+    
     public override void Initialize()
     {
-
-        AvaloniaXamlLoader.Load(this);
-        // Проверяем, не работает ли приложение в режиме дизайнера
-        if (Design.IsDesignMode)
-        {
-            return;
-        }
+        //Включаем логирование для отслеживания действий программы.
+        ConfigureLogging();
         
-        //Инициализация клиента и слушателя для дальнейшего взаимодействия с сервером
-        Client = new();
+        Logger.Info("Инициализация приложения...");
+        try { AvaloniaXamlLoader.Load(this); }
+        catch (Exception ex) { Logger.Error($"Ошибка инициализации приложения: {ex}."); return; }
+        finally { Logger.Info("Инициализация прошла успешно."); }
+        
+        if (Design.IsDesignMode) { Logger.Warn("Приложение запущено в Design режиме."); return; }
+        
+        Logger.Info("Инициализация MainWindowViewModel...");
+        try
+        {
+            _mainWindowViewModel = new MainWindowViewModel();
+        }
+        catch (Exception ex) { Logger.Error($"Ошибка инициализации MainWindowViewModel: {ex}."); return; }
+        finally { Logger.Info("Инициализация MainWindowViewModel прошла успешно."); }
+        
+        Logger.Info("Инициализация Client...");
+        try {Client = new Client();}
+        catch (Exception ex) { Logger.Error($"Ошибка инициализации Client: {ex}."); return; }
+        finally { Logger.Info("Инициализация Client прошла успешно."); }
+        
+        Logger.Info("Инициализация ServerListener...");
+        try {_listener = new ServerListener();}
+        catch (Exception ex) { Logger.Error($"Ошибка инициализации ServerListener: {ex}."); return; }
+        finally { Logger.Info("Инициализация ServerListener прошла успешно."); }
+        
+        
+        Logger.Info("Привязка метода Client_ReceiveData к Client.ReceiveData.");
         Client.ReceiveData += Client_ReceiveData;
+        
+        Logger.Info("Привязка метода Client_ReceiveSettings к Client.ReceiveSettings.");
         Client.ReceiveSettings += Client_ReceiveSettings;
+        
+        Logger.Info("Привязка метода Client_Disconnected к Client.Disconnected.");
         Client.Disconnected += Client_Disconnected;
+        
+        Logger.Info("Привязка метода Client_ConnectedStatusChanged к Client.ConnectedStatusChanged.");
         Client.ConnectedStatusChanged += Client_ConnectedStatusChanged;
 
-        _listener = new();
+        Logger.Info("Привязка метода Listener_ReceiveBroadcast к Client.ReceiveBroadcast.");
         _listener.ReceiveBroadcast += Listener_ReceiveBroadcast;
+        
+        Logger.Info("Старт ServerListener для прослушивания сервера.");
         _listener.Start();
 
     }
@@ -80,20 +113,24 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         switch (ApplicationLifetime)
-        {
-            //Условие для desktop приложений, которые поддерживают оконную систему отображения приложений
-            case IClassicDesktopStyleApplicationLifetime desktop:
+        { case IClassicDesktopStyleApplicationLifetime desktop:
             {
-                desktop.Exit += OnExit;
-                this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);
+                Logger.Info("Привязка метода закрытия приложения...");
+                try {desktop.Exit += OnExit;}
+                catch (Exception ex) {Logger.Error($"Ошибка привязки метода закрытия приложения: {ex}"); return;}
+                finally { Logger.Info("Успешно привязался метод для закрытия приложения"); }
                 
-                _mainWindowViewModel = new MainWindowViewModel();
-                /*foreach (var font in FontManager.Current.SystemFonts)
-                {
-                    Console.WriteLine(font.Name);
-                }*/
-                MainWindow mainWindow = new() { DataContext = _mainWindowViewModel, };
+                Logger.Info("Подписка на событие изменения темы приложения...");
+                try {this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);}
+                catch (Exception ex) {Logger.Error($"Ошибка подписки на событие изменения темы приложения: {ex}"); return;}
+                finally { Logger.Info("Успешная подписка на событие изменения темы приложения"); }
+                
+                Logger.Info("Инициализация главного окна...");
+                MainWindow mainWindow = new() { DataContext = _mainWindowViewModel };
+                
+                Logger.Info("Присваивание (desktop.MainWindow = mainWindow)...");
                 desktop.MainWindow = mainWindow;
+                
                 
                 break;
             }
@@ -101,28 +138,28 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    protected void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
     {
+        Logger.Info("Закрытие приложения...");
+        
+        Logger.Info("Остановка прослушивания ServerListener...");
+        try {_listener.Stop();}
+        catch (Exception ex) { Logger.Error($"Ошибка остановки ServerListener: {ex}"); return; }
+        finally {Logger.Info("Успешно остановлено прослушивание ServerListener.");}
+        
         _needAutoReconnect = false;
-        _listener.Stop();
-        if (Client != null)
-        {
-            Client.ReceiveData -= Client_ReceiveData;
-            Client.ReceiveSettings -= Client_ReceiveSettings;
-            Client.Disconnected -= Client_Disconnected;
-            Client.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
-            Client.Dispose();
-        }
+        
+        Client.ReceiveData -= Client_ReceiveData;
+        Client.ReceiveSettings -= Client_ReceiveSettings;
+        Client.Disconnected -= Client_Disconnected;
+        Client.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
+        Client.Dispose();
     }
     
     private void OnThemeChanged(ThemeVariant newTheme)
     {
+        Logger.Info("Изменение темы приложения.");
         ThemeChanged?.Invoke(newTheme.Key.ToString());
-    }
-
-    public void ClearBufferedData()
-    {
-        _dataObj = new DataObject();
     }
     
     /// <summary>
@@ -132,19 +169,23 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     void Listener_ReceiveBroadcast(object? sender, ReceiveBroadcastEventArgs e)
     {
+        Logger.Info("Вызов Listener_ReceiveBroadcast...");
         //Проверка состояния соединения
-        if (Client.Connected) return;
+        Logger.Info("Проверка состояния подключения к серверу.");
+        if (Client.Connected) {Logger.Info("Приложение подключено к серверу."); return;}
 
         //Остановка прослушивания
+        Logger.Info("Остановка прослушивания ServerListener.");
         _listener.Stop();
 
         //Переподключение
+        Logger.Info($"Попытка соединения с сервером по адресу: {e.Server.Address}");
         Client.Address = e.Server.Address;
-        Client.Connect();
+
+        if (Client.Connect()) { Logger.Info($"Успешное подключение к: {Client.Address}"); }
+        else { Logger.Error($"Ошибка подключения к: {Client.Address}"); }
         
-        //Обновление интерфейса для отображения подключения
         _mainWindowViewModel.OnConnectionStateChanged();
-        Console.WriteLine($"[{DateTime.Now}] - [Successful connection] - [ip address: {Client.Address}]");
     }
 
     /// <summary>
@@ -154,13 +195,14 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
-        Action action = () =>
+        Logger.Info("Получение настроек от сервера...");
+        Dispatcher.UIThread.InvokeAsync((Action)Action, DispatcherPriority.Background);
+        return;
+
+        void Action()
         {
             SetSettings(e.Settings);
-        };
-
-        Dispatcher.UIThread.InvokeAsync(action, DispatcherPriority.Background);
-        
+        }
     }
     
     /// <summary>
@@ -170,6 +212,7 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
    private void Client_ReceiveData(object? sender, ReceiveDataEventArgs e)
    {
+       Logger.Info("Получение данных от сервера...");
        Dispatcher.UIThread.InvokeAsync(() =>
        {
            SetData(e.Data);
@@ -183,7 +226,7 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_Disconnected(object? sender, EventArgs e)
     {
-        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{Client.Address}]");
+        Logger.Warn($"Отключение от сервера: {Client.Address}");
         _mainWindowViewModel.OnConnectionStateChanged();
 
         //Проверка на автоматическое переподключение
@@ -194,6 +237,7 @@ public class App : Application
         Action action = () =>
         {
             var address = Client.Address;
+            Logger.Info("Попытка подключения к серверу пока клиент не подключится...");
             while (!_token.IsCancellationRequested && !Client.Connected)
             {
                 Reconnect(address);
@@ -210,10 +254,8 @@ public class App : Application
     /// <param name="e">Аргументы события</param>
     private void Client_ConnectedStatusChanged(object? sender, EventArgs e)
     {
-        if (Client != null)
-        {
-            _mainWindowViewModel.OnConnectionStateChanged();
-        }
+        Logger.Info("Вызов Client_ConnectedStatusChanged изменение статуса подключения.");
+        _mainWindowViewModel.OnConnectionStateChanged();
     }
 
     /// <summary>
@@ -244,7 +286,7 @@ public class App : Application
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Error during auto-activation] [{ex.Message}]");
+            Logger.Error($"Ошибка при выполнении авто-подключения: {ex.Message}.");
             return false; // Ошибка при выполнении
         }
     }
@@ -280,15 +322,23 @@ public class App : Application
                 Client.Disconnect();
 
             Client.Address = IPAddress.Parse(address);
-            Client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{Client.Address}]");
             _needAutoReconnect = true;
-            return true; 
+            if (Client.Connect())
+            {
+                Logger.Info($"Подключение к серверу: {Client.Address}.");
+                return true; 
+            }
+            else
+            {
+                Logger.Error($"Ошибка подключения к серверу: {Client.Address}.");
+                return false; 
+            }
+            
         }
-        catch (Exception exc)
+        catch (Exception ex)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Connection to the server failed] - [{exc}]");
-            return false;
+            Logger.Error($"Ошибка подключения к серверу: {ex}.");
+            return false; 
         }
         
     }
@@ -304,12 +354,18 @@ public class App : Application
                 Client.Disconnect();
 
             Client.Address = address;
-            Client.Connect();
-            Console.WriteLine($"[{DateTime.Now}] - [Connecting to the server] - [{Client.Address}]");
+            if (Client.Connect())
+            {
+                Logger.Info($"Подключение к серверу: {Client.Address}.");
+            }
+            else
+            {
+                Logger.Error($"Ошибка подключения к серверу: {Client.Address}.");
+            }
         }
-        catch (Exception exc)
+        catch (Exception ex)
         {
-            Console.WriteLine($"[{DateTime.Now}] - [Connection to the server failed] - [{exc}]");
+            Logger.Error($"Ошибка подключения к серверу: {ex}.");
         }
 
         _needAutoReconnect = true;
@@ -321,28 +377,45 @@ public class App : Application
         _listener.Stop();
 
         if (Client.Connected != true) return;
-        Console.WriteLine($"[{DateTime.Now}] - [Disconnecting from the server] - [{Client.Connected}]");
+        Logger.Info($"Отключение от сервера: {Client.Address}");
         Client.Disconnect();
     }
 
 
     private void SetSettings(Settings settings)
     {
+        Logger.Info("[SetSettings] Начало установки настроек");
+        
         _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
         
+        Logger.Info("[SetSettings] Очистка информационных и статусных блоков завершена");
+        
         foreach (var flag in settings.Flags)
-        { _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); }
-
+        { 
+            Logger.Info($"[SetSettings] Добавление флага: {flag.Name}");
+            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false));
+        }
+        
         foreach (var flag in settings.Statuses)
-        { _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); }
-
+        { 
+            Logger.Info($"[SetSettings] Добавление статуса: {flag.Name}");
+            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name, false)); 
+        }
+        
         foreach (var param in settings.Parameters)
-        { _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units)); }
+        { 
+            Logger.Info($"[SetSettings] Добавление параметра: {param.Name} ({param.Units})");
+            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units)); 
+        }
+        
+        Logger.Info("[SetSettings] Установка параметров интерфейса");
         
         _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
         _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
-
+        
+        Logger.Info("[SetSettings] Установка параметров TargetSection");
+        
         _mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder = settings.Target.FromCenterToBorder;
         _mainWindowViewModel.TargetSectionViewModel.Capacity = settings.Target.Capacity;
         _mainWindowViewModel.TargetSectionViewModel.IsHalfMode = settings.Target.IsHalfMode;
@@ -351,66 +424,103 @@ public class App : Application
         (_mainWindowViewModel.TargetSectionViewModel.RingWidth, _mainWindowViewModel.TargetSectionViewModel.RingThickness) = (settings.Target.RingWidth, settings.Target.RingWidth);
         _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
-        Console.WriteLine(settings.Target.ReductionFactor);
         
-        // Для установки конкретной темы
+        Logger.Info("[SetSettings] Установка темы");
         _mainWindowViewModel.SwitchTheme(settings.ThemeStyle.ToString()[..(settings.ThemeStyle.ToString().Length - 5)]);
         
+        Logger.Info("[SetSettings] Установка сектора");
         _mainWindowViewModel.TargetSectionViewModel.SetSector(
             startAngle: settings.Target.SectorDirection - (settings.Target.SectorWidth / 2), 
             endAngle: settings.Target.SectorDirection + (settings.Target.SectorWidth / 2)
-            );
+        );
         
+        Logger.Info("[SetSettings] Вызов SetData");
         SetData(_dataObj);
     }
 
     private void SetData(DataObject data)
     {
+        Logger.Info("[SetData] Начало обработки данных");
         _dataObj = DataObject.Union(_dataObj, data);
-
+        
         var targetPoints = data.TargetPoints.ToList();
         for (var i = 0; i < targetPoints.Count; i++)
         {
+            Logger.Info($"[SetData] Обработка точки {i}: Угол {targetPoints[i].Angle}, Toolface {targetPoints[i].ToolfaceType}");
             _mainWindowViewModel.ParametersSectionViewModel.Angle = targetPoints[i].Angle;
             _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString();
             
             if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
             {
-                _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                    index: _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
-                    angle: targetPoints[i].Value);
+                Logger.Info($"[SetData] Установка точки (FromCenterToBorder): {targetPoints[i].Value}");
+                try
+                {
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
+                        angle: targetPoints[i].Value);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Ошибка при создании точки (FromCenterToBorder) {e.Message}");
+                }
             }
             else
             {
-                _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                    index: _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
-                    angle: targetPoints[i].Value);
+                Logger.Info($"[SetData] Установка точки (Not FromCenterToBorder): {targetPoints[i].Value}");
+                try
+                {
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
+                        index: _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
+                        angle: targetPoints[i].Value);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"Ошибка при создании точки (Not FromCenterToBorder) {e.Message}");
+                }
             }
         }
 
+        Logger.Info("[SetData] Обработка флагов и статусов");
+        
         foreach (var t in data.Flags)
-        { foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
-            { if (t2.Header == t.Name)
-                { t2.Status = t.Value;
+        {
+            foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
+            {
+                if (t2.Header == t.Name)
+                {
+                    Logger.Info($"[SetData] Флаг {t.Name} -> {t.Value}");
+                    t2.Status = t.Value;
                 }
             }
         }
-
+        
         foreach (var t in data.Statuses)
-        { foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
-            { if (t2.Header == t.Name)
-                { t2.Status = Convert.ToBoolean(t.Value);
+        {
+            foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
+            {
+                if (t2.Header == t.Name)
+                {
+                    Logger.Info($"[SetData] Статус {t.Name} -> {t.Value}");
+                    t2.Status = Convert.ToBoolean(t.Value);
                 }
             }
         }
-
+        
+        Logger.Info("[SetData] Обработка параметров");
+        
         foreach (var t in data.Parameters)
-        { foreach (var t2 in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
-            { if (t2.Title == t.Name)
-                { t2.Content = double.Round(t.Value, 2).ToString(CultureInfo.CurrentCulture); }
+        {
+            foreach (var t2 in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
+            {
+                if (t2.Title == t.Name)
+                {
+                    Logger.Info($"[SetData] Параметр {t.Name} -> {t.Value}");
+                    t2.Content = double.Round(t.Value, 2).ToString(CultureInfo.CurrentCulture);
+                }
             }
         }
-           
+        
+        Logger.Info("[SetData] Установка времени");
         _mainWindowViewModel.ParametersSectionViewModel.SetTime(data);
     }
 }

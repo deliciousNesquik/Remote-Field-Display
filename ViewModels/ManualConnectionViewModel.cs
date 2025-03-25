@@ -13,7 +13,7 @@ namespace RFD.ViewModels
         /// <summary>Триггер оповещает родителя о том, что диалоговое окно хочет выполнить попытку подключения</summary>
         public Action<string>? ConnectionAttempt;
         
-        /// <summary>Триггер, который необходимо вызывать в родителе чтобы уведомить диалоговое окно о том что соединение успешно</summary>
+        /// <summary>Триггер, который необходимо вызывать в родителе, чтобы уведомить диалоговое окно о том что соединение успешно</summary>
         public Action<bool> ConnectionStatus;
         
         public string? FieldIpАddress { get; set; }
