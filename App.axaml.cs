@@ -411,8 +411,8 @@ public class App : Application
         
         Logger.Info("[SetSettings] Установка параметров интерфейса");
         
-        _mainWindowViewModel.ParametersSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
-        _mainWindowViewModel.ParametersSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
+        _mainWindowViewModel.TargetSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
+        _mainWindowViewModel.TargetSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
         
         Logger.Info("[SetSettings] Установка параметров TargetSection");
         
@@ -447,8 +447,8 @@ public class App : Application
         for (var i = 0; i < targetPoints.Count; i++)
         {
             Logger.Info($"[SetData] Обработка точки {i}: Угол {targetPoints[i].Angle}, Toolface {targetPoints[i].ToolfaceType}");
-            _mainWindowViewModel.ParametersSectionViewModel.Angle = targetPoints[i].Angle;
-            _mainWindowViewModel.ParametersSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString();
+            _mainWindowViewModel.TargetSectionViewModel.Angle = Math.Round(targetPoints[i].Angle, 2);
+            _mainWindowViewModel.TargetSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString().Substring(0, 1);
             
             if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
             {
@@ -521,6 +521,6 @@ public class App : Application
         }
         
         Logger.Info("[SetData] Установка времени");
-        _mainWindowViewModel.ParametersSectionViewModel.SetTime(data);
+        _mainWindowViewModel.TargetSectionViewModel.SetTime(data);
     }
 }

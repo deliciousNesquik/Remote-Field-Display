@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RFD.ViewModels"
-             xmlns:converters="using:RFD.Converters"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
              x:Class="RFD.UserControls.TargetSection"
              x:DataType="vm:TargetSectionViewModel">
@@ -29,6 +28,33 @@
             <Viewbox Grid.Row="1" Stretch="Uniform" Margin="5">
                 <!-- Основной контейнер для всех элементов -->
                 <Grid Name="Target">
+                    
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding ToolfaceType}"
+                                   Foreground="{DynamicResource FocusingColor}"
+                                   FontSize="12" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Angle}"
+                                   Foreground="{DynamicResource FocusingColor}"
+                                   FontSize="10" FontWeight="Bold"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding TimeStamp}"
+                                   Foreground="{DynamicResource FocusingColor}"
+                                   FontSize="10" FontWeight="Bold"/>
+                    </StackPanel>
+                    
+                    <StackPanel Orientation="Vertical"
+                                VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding MagneticDeclination, StringFormat={}TN {0}}"
+                                   Foreground="{DynamicResource FocusingColor}"
+                                   FontSize="10" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding ToolfaceOffset, StringFormat={}DAO {0}}"
+                                   Foreground="{DynamicResource FocusingColor}"
+                                   FontSize="10" FontWeight="Bold"/>
+                    </StackPanel>
                     
                     <Line StartPoint="{Binding StartPointVertical}" 
                           EndPoint="{Binding EndPointVertical}" 

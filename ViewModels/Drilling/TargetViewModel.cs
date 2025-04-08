@@ -214,6 +214,59 @@ public class TargetSectionViewModel : INotifyPropertyChanged
     private const int SectorSmooth = 100;
     #endregion
 
+    private double _magneticDeclination;
+    private string _toolfacetype = "";
+    private double _toolfaceOffset;
+    private TimeSpan _timeStamp;
+    private double _angle;
+    
+    public double MagneticDeclination
+    {
+        get => _magneticDeclination;
+        set
+        {
+            _magneticDeclination = value;
+            OnPropertyChanged();
+        }
+    }
+    public double ToolfaceOffset {
+        get => _toolfaceOffset;
+        set
+        {
+            _toolfaceOffset = value;
+            OnPropertyChanged();
+        }
+    }
+    public TimeSpan TimeStamp {
+        get => _timeStamp;
+        set
+        {
+            _timeStamp = value;
+            OnPropertyChanged();
+        }
+    }
+    public double Angle {
+        get => _angle;
+        set
+        {
+            _angle = value;
+            OnPropertyChanged();
+        }
+    }
+    public string ToolfaceType {
+        get => _toolfacetype;
+        set
+        {
+            _toolfacetype = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public void SetTime(NPFGEO.LWD.Net.DataObject data)
+    {
+        TimeStamp = data.TimeStamp == TimeSpan.MaxValue ? TimeSpan.FromSeconds(0) : data.TimeStamp;
+    }
+    
     private void UpdateTarget()
     {
         lock (_updateLock) // Блокируем обновление

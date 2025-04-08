@@ -80,10 +80,7 @@ public class ParametersSectionViewModel : INotifyPropertyChanged
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
     }
     
-    public void SetTime(NPFGEO.LWD.Net.DataObject data)
-    {
-        TimeStamp = data.TimeStamp == TimeSpan.MaxValue ? TimeSpan.FromSeconds(0) : data.TimeStamp;
-    }
+    
 
     private void OpenInNewWindow()
     {

@@ -150,21 +150,18 @@
 					</DockPanel>
 					
 					<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-					      ColumnDefinitions="0.5*,0.5*" RowDefinitions="0.8*,0.2*" Margin="10">
+					      ColumnDefinitions="*, *" RowDefinitions="*" Margin="10">
 						
 						<ContentControl Grid.Row="0" Grid.Column="0"
 						                VerticalAlignment="Stretch" Margin="0 0 5 5"
 						                Content="{Binding FirstCell}"/>
-						<ContentControl Grid.Row="1" Grid.Column="0"
-						                VerticalAlignment="Stretch" Margin="0 5 5 0"
-						                Content="{Binding SecondCell}"/>
 						
 						
-						<Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" RowDefinitions="0.8*, 0.2*">
+						<Grid Grid.Row="0" Grid.Column="1" RowDefinitions="0.6*, 0.4*">
 							<ContentControl Grid.Row="0" Grid.Column="0"
 							                VerticalAlignment="Stretch" Margin="5 0 0 5"
 							                Content="{Binding ThirdCell}"/>
-						
+							
 							<ContentControl Grid.Row="1" Grid.Column="0"
 							                VerticalAlignment="Stretch" Margin="5 5 0 0"
 							                Content="{Binding FourCell}"/>
