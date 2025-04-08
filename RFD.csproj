@@ -66,10 +66,6 @@
       <DependentUpon>InfoView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="UserControls\Drilling\ParametersView.axaml.cs">
-      <DependentUpon>ParametersView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="UserControls\Drilling\TargetView.axaml.cs">
       <DependentUpon>TargetView.axaml</DependentUpon>
       <SubType>Code</SubType>

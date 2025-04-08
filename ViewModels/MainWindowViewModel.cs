@@ -22,7 +22,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     
     #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
     public TargetSectionViewModel TargetSectionViewModel { get; }
-    public ParametersSectionViewModel ParametersSectionViewModel { get; }
     public InformationSectionViewModel InformationSectionViewModel { get; }
     public StatusSectionViewModel StatusSectionViewModel { get; }
     #endregion
@@ -149,13 +148,11 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _disconnectTimer.Interval = TimeSpan.FromSeconds(2);
         _disconnectTimer.Tick += OnDisconnectTimerTick;
         
-        TargetSectionViewModel = new TargetSectionViewModel(_windowService);
-        ParametersSectionViewModel = new ParametersSectionViewModel(_windowService);
+        TargetSectionViewModel = new TargetSectionViewModel(_windowService); 
         InformationSectionViewModel = new InformationSectionViewModel(_windowService);
         StatusSectionViewModel = new StatusSectionViewModel(_windowService);
         
-        FirstCell = new TargetSection() { DataContext = TargetSectionViewModel };
-        SecondCell = new ParametersSection() { DataContext = ParametersSectionViewModel };
+        FirstCell = new TargetSection() { DataContext = TargetSectionViewModel }; 
         ThirdCell = new InformationSection() { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection() { DataContext = StatusSectionViewModel };
         
