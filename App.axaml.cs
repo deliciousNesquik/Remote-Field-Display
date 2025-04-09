@@ -67,7 +67,7 @@ public class App : Application
         Logger.Info("Инициализация приложения...");
         try { AvaloniaXamlLoader.Load(this); }
         catch (Exception ex) { Logger.Error($"Ошибка инициализации приложения: {ex}."); return; }
-        finally { Logger.Info("Инициализация прошла успешно."); }
+        Logger.Info("Инициализация прошла успешно.");
         
         if (Design.IsDesignMode) { Logger.Warn("Приложение запущено в Design режиме."); return; }
         
@@ -77,17 +77,22 @@ public class App : Application
             _mainWindowViewModel = new MainWindowViewModel();
         }
         catch (Exception ex) { Logger.Error($"Ошибка инициализации MainWindowViewModel: {ex}."); return; }
-        finally { Logger.Info("Инициализация MainWindowViewModel прошла успешно."); }
+        Logger.Info("Инициализация MainWindowViewModel прошла успешно.");
         
         Logger.Info("Инициализация Client...");
         try {Client = new Client();}
         catch (Exception ex) { Logger.Error($"Ошибка инициализации Client: {ex}."); return; }
-        finally { Logger.Info("Инициализация Client прошла успешно."); }
+        Logger.Info("Инициализация Client прошла успешно.");
         
         Logger.Info("Инициализация ServerListener...");
         try {_listener = new ServerListener();}
         catch (Exception ex) { Logger.Error($"Ошибка инициализации ServerListener: {ex}."); return; }
-        finally { Logger.Info("Инициализация ServerListener прошла успешно."); }
+        Logger.Info("Инициализация ServerListener прошла успешно.");
+        
+        Logger.Info("Инициализация _token...");
+        try {_token = _cancelTokenSource.Token;}
+        catch (Exception ex) { Logger.Error($"Ошибка инициализации _token: {ex}."); return; }
+        Logger.Info("Инициализация _token прошла успешно.");
         
         
         Logger.Info("Привязка метода Client_ReceiveData к Client.ReceiveData.");
@@ -118,12 +123,12 @@ public class App : Application
                 Logger.Info("Привязка метода закрытия приложения...");
                 try {desktop.Exit += OnExit;}
                 catch (Exception ex) {Logger.Error($"Ошибка привязки метода закрытия приложения: {ex}"); return;}
-                finally { Logger.Info("Успешно привязался метод для закрытия приложения"); }
+                Logger.Info("Успешно привязался метод для закрытия приложения");
                 
                 Logger.Info("Подписка на событие изменения темы приложения...");
                 try {this.GetObservable(ActualThemeVariantProperty).Subscribe(OnThemeChanged);}
                 catch (Exception ex) {Logger.Error($"Ошибка подписки на событие изменения темы приложения: {ex}"); return;}
-                finally { Logger.Info("Успешная подписка на событие изменения темы приложения"); }
+                Logger.Info("Успешная подписка на событие изменения темы приложения");
                 
                 Logger.Info("Инициализация главного окна...");
                 MainWindow mainWindow = new() { DataContext = _mainWindowViewModel };
@@ -145,7 +150,7 @@ public class App : Application
         Logger.Info("Остановка прослушивания ServerListener...");
         try {_listener.Stop();}
         catch (Exception ex) { Logger.Error($"Ошибка остановки ServerListener: {ex}"); return; }
-        finally {Logger.Info("Успешно остановлено прослушивание ServerListener.");}
+        Logger.Info("Успешно остановлено прослушивание ServerListener.");
         
         _needAutoReconnect = false;
         
@@ -196,8 +201,15 @@ public class App : Application
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
         Logger.Info("Получение настроек от сервера...");
-        Dispatcher.UIThread.InvokeAsync((Action)Action, DispatcherPriority.Background);
-        return;
+        try
+        {
+            Dispatcher.UIThread.InvokeAsync((Action)Action, DispatcherPriority.Background);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"Ошибка запуска потока SetSettings - {ex}");
+        }
+        
 
         void Action()
         {
@@ -213,10 +225,15 @@ public class App : Application
    private void Client_ReceiveData(object? sender, ReceiveDataEventArgs e)
    {
        Logger.Info("Получение данных от сервера...");
-       Dispatcher.UIThread.InvokeAsync(() =>
+       try
        {
-           SetData(e.Data);
-       });
+           Dispatcher.UIThread.InvokeAsync(() => { SetData(e.Data); });
+       }
+       catch (Exception ex)
+       {
+           Logger.Error($"Ошибка запуска потока SetData - {ex}");
+       }
+       
    }
 
     /// <summary>
@@ -316,7 +333,7 @@ public class App : Application
             _listener.Stop();
 
             _cancelTokenSource.Cancel();
-            Thread.Sleep(1000);
+            Task.Delay(1000);
 
             if (Client.Connected)
                 Client.Disconnect();
