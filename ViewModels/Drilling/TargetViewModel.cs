@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia;
+using Avalonia.Logging;
 using Avalonia.Media;
 using DynamicData;
 using ReactiveUI;
@@ -345,12 +346,12 @@ public class TargetSectionViewModel : INotifyPropertyChanged
 
     private void UpdatePoints()
     {
-        while (DrillingPointsList.Count < Capacity - 1)
+        while (DrillingPointsList.Count < Capacity)
         {
             DrillingPointsList.Add(new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius));
         }
 
-        while (DrillingPointsList.Count > Capacity - 1)
+        while (DrillingPointsList.Count > Capacity)
         {
             DrillingPointsList.RemoveAt(DrillingPointsList.Count - 1);
         }
@@ -370,7 +371,7 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         DrillingRingsList = new ObservableCollection<Ring>();
         RadialLinesList = new ObservableCollection<GridLine>();
         AngleLabelsList = new ObservableCollection<AnglePoint>();
-        DrillingPointsList = new ObservableCollection<DrillingPoints>();
+        DrillingPointsList = new ObservableCollection<DrillingPoints>{new DrillingPoints(new Thickness(0, 0, 0, 0), DefaultRadius)};
 
         Capacity = 6;
         GridFrequency = 45;
@@ -405,7 +406,7 @@ public class TargetSectionViewModel : INotifyPropertyChanged
             throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
         }
 
-        var radius = (index + 1) * (180.0 / (Capacity - 1));
+        var radius = (index) * (180.0 / (Capacity - 1));
         var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
 
         DrillingPointsList[index].Margin = new Thickness(newPoint.X, newPoint.Y, 0, 0);

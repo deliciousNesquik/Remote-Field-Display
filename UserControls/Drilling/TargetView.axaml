@@ -31,9 +31,9 @@
                     
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Top" HorizontalAlignment="Left">
-                        <TextBlock Text="{Binding ToolfaceType}"
+                        <TextBlock Text="{Binding ToolfaceType} "
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="12" FontWeight="Bold"/>
+                                   FontSize="10" FontWeight="Bold"/>
                         <TextBlock Text="{Binding Angle}"
                                    Foreground="{DynamicResource FocusingColor}"
                                    FontSize="10" FontWeight="Bold"/>
@@ -41,19 +41,19 @@
                     
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <TextBlock Text="{Binding TimeStamp}"
+                        <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:h\\:mm\\:ss}}"
                                    Foreground="{DynamicResource FocusingColor}"
                                    FontSize="10" FontWeight="Bold"/>
                     </StackPanel>
                     
                     <StackPanel Orientation="Vertical"
                                 VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                        <TextBlock Text="{Binding MagneticDeclination, StringFormat={}TN {0}}"
+                        <TextBlock Text="{Binding MagneticDeclination, StringFormat={}TN    {0:F2}}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="10" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding ToolfaceOffset, StringFormat={}DAO {0}}"
+                                   FontSize="7" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding ToolfaceOffset, StringFormat={}DAO {0:F2}}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="10" FontWeight="Bold"/>
+                                   FontSize="7" FontWeight="Bold"/>
                     </StackPanel>
                     
                     <Line StartPoint="{Binding StartPointVertical}" 
