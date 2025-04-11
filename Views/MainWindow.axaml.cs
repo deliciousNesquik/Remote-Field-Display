@@ -17,9 +17,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        InitializeComponent(attachDevTools: true);
-
-        DataContext = new MainWindowViewModel();
+        InitializeComponent();
 
         _dragRegionHeight = TopBar.Height;
         MainBorder.PointerPressed += MainBorder_PointerPressed;

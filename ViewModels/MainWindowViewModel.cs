@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using RFD.Interfaces;
 using RFD.Services;
 using RFD.UserControls;
 
@@ -12,11 +14,18 @@ namespace RFD.ViewModels;
 public class MainWindowViewModel : INotifyPropertyChanged
 {
     private readonly WindowService _windowService = new();
-
-    public MainWindowViewModel()
+    private readonly ILoggerService _logger;
+    private readonly IConnectionService _connectionService;
+    
+    public MainWindowViewModel(
+        ILoggerService logger,
+        IConnectionService connectionService)
     {
+        _logger = logger;
+        _connectionService = connectionService;
+        
         _currentUserControl = new UserControl();
-        DisplayAddress = "Определение...";
+        _displayAddress = "Определение...";
         _disconnectTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(2)
@@ -216,7 +225,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         manualConnectionDialogViewModel.ConnectionAttempt += ip =>
         {
-            manualConnectionDialogViewModel.ConnectionStatus.Invoke(App.Instance.Connect(ip));
+            manualConnectionDialogViewModel.ConnectionStatus.Invoke(_connectionService.ConnectAsync(ip).Result);
         };
         manualConnectionDialogViewModel.CloseDialog += () =>
         {
@@ -252,7 +261,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         {
             try
             {
-                var isConnected = await App.Instance.AutoConnect();
+                var isConnected = _connectionService.AutoConnectAsync().Result;
 
                 // Если подключение успешно
                 if (isConnected)
@@ -284,19 +293,17 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private void Disconnect()
     {
-        App.Instance.Disconnect();
+        
     }
 
-    private void UpdateConnectionStatus()
+    private void UpdateConnectionStatus(string address, bool connected)
     {
-        var isActuallyConnected = App.Instance.Client.Connected;
-
-        if (isActuallyConnected)
+        if (connected)
         {
             // Если восстановили соединение - сразу обновляем
             _disconnectTimer.Stop();
             DisplayIsConnected = true;
-            DisplayAddress = App.Instance.Client.Address.ToString();
+            DisplayAddress = address;
         }
         else if (DisplayIsConnected)
         {
@@ -311,11 +318,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
         DisplayIsConnected = false;
         DisplayAddress = "Нет подключения";
     }
-
-// Вызывайте этот метод при любых изменениях подключения
-    public void OnConnectionStateChanged()
+    
+    public void OnConnectionStateChanged(string address = "Не найдено", bool connected = false)
     {
-        UpdateConnectionStatus();
+        UpdateConnectionStatus(address, connected);
     }
 
     #endregion

@@ -28,6 +28,7 @@
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.3.25171.5" />
         <PackageReference Include="NLog" Version="5.4.0"/>
         <PackageReference Include="NLog.Config" Version="4.7.15"/>
         <PackageReference Include="SharpZipLib" Version="1.4.2"/>
@@ -75,8 +76,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="LWDReceiver">
-            <HintPath>Libraries\LWDReceiver.dll</HintPath>
-        </Reference>
+      <Reference Include="LWDReceiver">
+        <HintPath>Libraries\LWDReceiver.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>
