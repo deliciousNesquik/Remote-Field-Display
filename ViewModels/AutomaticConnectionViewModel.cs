@@ -1,22 +1,34 @@
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace RFD.ViewModels;
+
 public class AutomaticConnectionDialogViewModel
 {
-    /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
-    public Action? CloseDialog;
-    
-    /// <summary>Триггер, который вызывается если пользователь закроет диалоговое окно</summary>
-    public Action? UserCloseDialog;
-    
     /// <summary>Триггер, который необходимо вызывать в родителе, чтобы уведомить диалоговое окно о том что соединение успешно</summary>
     public readonly Action<bool> ConnectionStatus;
 
     private bool _connection;
+
+    /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
+    public Action? CloseDialog;
+
+    /// <summary>Триггер, который вызывается если пользователь закроет диалоговое окно</summary>
+    public Action? UserCloseDialog;
+
+    public AutomaticConnectionDialogViewModel()
+    {
+        ConnectionStatus += statusConnection =>
+        {
+            Connection = statusConnection;
+            Close();
+        };
+
+        CancelCommand = new RelayCommand(UserClose);
+    }
+
     public bool Connection
     {
         get => _connection;
@@ -26,17 +38,8 @@ public class AutomaticConnectionDialogViewModel
             OnPropertyChanged();
         }
     }
+
     public ICommand CancelCommand { get; }
-    public AutomaticConnectionDialogViewModel()
-    {
-        ConnectionStatus += statusConnection =>
-        {
-            Connection = statusConnection;
-            Close();
-        };
-        
-        CancelCommand = new RelayCommand(UserClose);
-    }
 
     private void UserClose()
     {
@@ -44,8 +47,11 @@ public class AutomaticConnectionDialogViewModel
         Close();
     }
 
-    private void Close() => CloseDialog?.Invoke();
-    
+    private void Close()
+    {
+        CloseDialog?.Invoke();
+    }
+
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

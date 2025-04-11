@@ -1,84 +1,82 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.2.1" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
-    <PackageReference Include="Avalonia.Svg" Version="11.2.0.2" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.2.1">
-      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5" />
-    <PackageReference Include="NLog" Version="5.4.0" />
-    <PackageReference Include="NLog.Config" Version="4.7.15" />
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Styles\Common.axaml" />
-    <UpToDateCheckInput Remove="Styles\DarkTheme.axaml" />
-    <UpToDateCheckInput Remove="Styles\LightTheme.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\Arc.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\Arcs.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\ArcsRing.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\DoubleBounce.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\FlipPlane.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\Pulse.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\Ring.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\ThreeDots.axaml" />
-    <UpToDateCheckInput Remove="UserControls\Themes\Wave.axaml" />
-    <UpToDateCheckInput Remove="Styles\Buttons.axaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.2.1"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.2.1"/>
+        <PackageReference Include="Avalonia.Svg" Version="11.2.0.2"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.2.1">
+            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
+        <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5"/>
+        <PackageReference Include="NLog" Version="5.4.0"/>
+        <PackageReference Include="NLog.Config" Version="4.7.15"/>
+        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="Controls\Themes\Arc.axaml" />
-    <AdditionalFiles Include="Controls\Themes\Arcs.axaml" />
-    <AdditionalFiles Include="Controls\Themes\ArcsRing.axaml" />
-    <AdditionalFiles Include="Controls\Themes\DoubleBounce.axaml" />
-    <AdditionalFiles Include="Controls\Themes\FlipPlane.axaml" />
-    <AdditionalFiles Include="Controls\Themes\Pulse.axaml" />
-    <AdditionalFiles Include="Controls\Themes\Ring.axaml" />
-    <AdditionalFiles Include="Controls\Themes\ThreeDots.axaml" />
-    <AdditionalFiles Include="Controls\Themes\Wave.axaml" />
-  </ItemGroup>
+    <ItemGroup>
+        <AvaloniaResource Include="Themes\Light.axaml"/>
+        <AvaloniaResource Include="Themes\Dark.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\Arc.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\Arcs.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\ArcsRing.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\DoubleBounce.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\FlipPlane.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\Pulse.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\Ring.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\ThreeDots.axaml"/>
+        <UpToDateCheckInput Remove="UserControls\Themes\Wave.axaml"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="UserControls\Drilling\InfoView.axaml.cs">
-      <DependentUpon>InfoView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="UserControls\Drilling\TargetView.axaml.cs">
-      <DependentUpon>TargetView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="UserControls\Drilling\ComponentStatusView.axaml.cs">
-      <DependentUpon>ComponentStatusView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="Controls\Themes\Arc.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\Arcs.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\ArcsRing.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\DoubleBounce.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\FlipPlane.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\Pulse.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\Ring.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\ThreeDots.axaml"/>
+        <AdditionalFiles Include="Controls\Themes\Wave.axaml"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="LWDReceiver">
-      <HintPath>Libraries\LWDReceiver.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Update="UserControls\Drilling\InfoView.axaml.cs">
+            <DependentUpon>InfoView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="UserControls\Drilling\TargetView.axaml.cs">
+            <DependentUpon>TargetView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="UserControls\Drilling\ComponentStatusView.axaml.cs">
+            <DependentUpon>ComponentStatusView.axaml</DependentUpon>
+            <SubType>Code</SubType>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="LWDReceiver">
+            <HintPath>Libraries\LWDReceiver.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

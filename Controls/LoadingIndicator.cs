@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Styling;
@@ -13,16 +11,17 @@ public class LoadingIndicator : TemplatedControl
     private const string INACTIVE_STATE = ":inactive";
     private const string ACTIVE_STATE = ":active";
 
-    // ReSharper disable InconsistentNaming
-    public static readonly StyledProperty<bool> IsActiveProperty =
-        AvaloniaProperty.Register<LoadingIndicator, bool>(nameof(IsActive), true);
-    public static readonly StyledProperty<LoadingIndicatorMode> ModeProperty =
-        AvaloniaProperty.Register<LoadingIndicator, LoadingIndicatorMode>(nameof(Mode));
-    public static readonly StyledProperty<double> SpeedRatioProperty =
-        AvaloniaProperty.Register<LoadingIndicator, double>(nameof(SpeedRatio), 1d);
-    // ReSharper restore InconsistentNaming
-
     private static readonly Dictionary<LoadingIndicatorMode, ControlTheme> themes;
+
+    static LoadingIndicator()
+    {
+        if (!TryGetThemes(out themes)) throw new NullReferenceException("Failed to get control themes");
+    }
+
+    public LoadingIndicator()
+    {
+        UpdateTheme();
+    }
 
     protected override Type StyleKeyOverride => typeof(LoadingIndicator);
 
@@ -31,23 +30,18 @@ public class LoadingIndicator : TemplatedControl
         get => GetValue(IsActiveProperty);
         set => SetValue(IsActiveProperty, value);
     }
+
     public LoadingIndicatorMode Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
     }
+
     public double SpeedRatio
     {
         get => GetValue(SpeedRatioProperty);
         set => SetValue(SpeedRatioProperty, value);
     }
-
-    static LoadingIndicator()
-    {
-        if (!TryGetThemes(out themes)) throw new NullReferenceException("Failed to get control themes");
-    }
-
-    public LoadingIndicator() => UpdateTheme();
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -72,6 +66,7 @@ public class LoadingIndicator : TemplatedControl
             if (resource is not ControlTheme theme) continue;
             controlThemes.Add(mode, theme);
         }
+
         return controlThemes.Count > 0;
     }
 
@@ -86,4 +81,15 @@ public class LoadingIndicator : TemplatedControl
         PseudoClasses.Remove(INACTIVE_STATE);
         PseudoClasses.Add(IsActive ? ACTIVE_STATE : INACTIVE_STATE);
     }
+
+    // ReSharper disable InconsistentNaming
+    public static readonly StyledProperty<bool> IsActiveProperty =
+        AvaloniaProperty.Register<LoadingIndicator, bool>(nameof(IsActive), true);
+
+    public static readonly StyledProperty<LoadingIndicatorMode> ModeProperty =
+        AvaloniaProperty.Register<LoadingIndicator, LoadingIndicatorMode>(nameof(Mode));
+
+    public static readonly StyledProperty<double> SpeedRatioProperty =
+        AvaloniaProperty.Register<LoadingIndicator, double>(nameof(SpeedRatio), 1d);
+    // ReSharper restore InconsistentNaming
 }

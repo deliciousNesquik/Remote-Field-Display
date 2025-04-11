@@ -21,6 +21,9 @@
         <entry key="UserControls/AboutDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/AutomaticConnectingDialog.axaml" value="RFD.csproj" />
         <entry key="UserControls/ConnectionControl.axaml" value="RFD.csproj" />
+        <entry key="UserControls/Drilling/ComponentStatusView.axaml" value="RFD.csproj" />
+        <entry key="UserControls/Drilling/InfoView.axaml" value="RFD.csproj" />
+        <entry key="UserControls/Drilling/ParametersView.axaml" value="RFD.csproj" />
         <entry key="UserControls/Drilling/TargetView.axaml" value="RFD.csproj" />
         <entry key="UserControls/InformationSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />

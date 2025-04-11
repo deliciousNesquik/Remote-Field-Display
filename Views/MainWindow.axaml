@@ -5,171 +5,195 @@
         xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
         xmlns:converters="using:RFD.Converters"
-        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="820"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+
         Background="{DynamicResource Background}" Icon="../Assets/app-icon.ico" Title="Remote Field Display"
-        
+
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
-        
+
         MinHeight="19"
         MinWidth="530">
-	
-	<Design.DataContext>
-        <vm:MainWindowViewModel/>
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-	
-	<Window.Resources>
-		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
-		<converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"/>
-	</Window.Resources>
-	
-	
-	<Border Name="MainBorder"
-	        BorderThickness="1" 
-	        BorderBrush="{DynamicResource BorderBrush}">
-		
-		<Grid RowDefinitions="Auto, *">
-			<!--Кастомная верхняя панель-->
-			
-			<Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28" Background="{DynamicResource TopBarGradientBrush}">
-				<!--Заголовок приложения и картинка-->
-				<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-					<Image Source="{SvgImage ../Assets/app-icon.svg}" Margin="5 2 0 2"></Image>
-					<TextBlock Text="{DynamicResource AppTitle}" VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0"/>
-				</StackPanel>
-				
-				<!--Кнопки для управления приложением-->
-				<StackPanel Grid.Column="1" Orientation="Horizontal">
-					<Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
-						<Svg Path="../Assets/button-minimize.svg"/>
-					</Button>
-					<Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
-						<Svg Path="../Assets/button-maximize.svg"/>
-					</Button>
-					<Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
-						<Svg Path="../Assets/button-close.svg"/>
-					</Button>
-				</StackPanel>
-			</Grid>
-			
-			<Grid Grid.Row="1">
-				<!--Затенение экрана при открытии различных модальных окон поверх главного-->
-				<Border Name="BlackoutWindow"
-				        IsVisible="{Binding IsModalWindowOpen}"
-				        Background="#80000000"
-				        Opacity="{Binding IsModalWindowOpen, Converter={StaticResource BoolToOpacityConverter}}"
-				        ZIndex="1000"
-				        HorizontalAlignment="Stretch"
-				        VerticalAlignment="Stretch">
-					
-					<!-- Плавная анимация Opacity -->
-					<Border.Transitions>
-						<Transitions>
-							<DoubleTransition Property="Opacity" Duration="0:0:0.35"/>
-						</Transitions>
-					</Border.Transitions>
-					
-					<!--DataTemplate для всех модальных окон-->
-					<ContentControl Content="{Binding CurrentUserControl}">
-						<ContentControl.DataTemplates>
-							<DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
-								<usercontrols:AutomaticConnectingDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							</DataTemplate>
-							<DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
-								<usercontrols:ManualConnectionDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							</DataTemplate>
-							
-							<DataTemplate DataType="{x:Type usercontrols:AboutDialog}">
-								<usercontrols:AboutDialog Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							</DataTemplate>
-						</ContentControl.DataTemplates>
-					</ContentControl>
-				</Border>
-				
-				<!--Основное содержимое главного окна-->
-				<Grid RowDefinitions="Auto, *" ColumnDefinitions="*, *">
-					<Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"/>
-					
-					<!--Блюр экрана при открытии различных модальных окон поверх главного-->
-					<Grid.Effect>
-						<BlurEffect Radius="{Binding BlurRadius}"/>
-					</Grid.Effect>
-					
-					<!--Блок меню-->
-					<DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Height="28">
-						<Menu DockPanel.Dock="Left" Height="27">
-							<MenuItem Classes="main">
-								<MenuItem.Header>
-									<StackPanel Orientation="Horizontal">
-										<Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Dark.svg" Width="15" Margin="0 0 5 0" />
-										<TextBlock Text="Подключение" Foreground="{DynamicResource Foreground}"/>
-									</StackPanel>
-								</MenuItem.Header>
-								
-								<MenuItem Header="Автоматическое подключение" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}"/>
-								<MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding OpenManualConnectingCommand}"/>
-								<MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding DisconnectCommand}"/>
-							</MenuItem>
-							<MenuItem Classes="main" Command="{Binding SettingsCommand}">
-								<MenuItem.Header>
-									<StackPanel Orientation="Horizontal">
-										<Svg Name="SettingsImage" Path="../Assets/settings-Dark.svg" Width="17" Margin="0 0 5 0"/>
-										<TextBlock Text="Изменить тему" Foreground="{DynamicResource Foreground}"/>
-									</StackPanel>
-								</MenuItem.Header>
-							</MenuItem>
-							<MenuItem Classes="main">
-								<MenuItem.Header>
-									<StackPanel Orientation="Horizontal">
-										<Svg Name="HelpImage" Path="../Assets/help-Dark.svg" Width="16" Margin="0 0 5 0"/>
-										<TextBlock Text="Помощь" Foreground="{DynamicResource Foreground}"/>
-									</StackPanel>
-								</MenuItem.Header>
-								
-								<MenuItem Header="Руководство пользователя" Foreground="{DynamicResource Foreground}" Classes="sub">
-								</MenuItem>
-								<MenuItem Header="О приложении" Foreground="{DynamicResource Foreground}" Command="{Binding AboutCommand}" Classes="sub"/>
-							</MenuItem>
-						</Menu>
-						
-						<StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
-							<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0 0 15 0">
-								<Grid Margin="0 0 0 0">
-									<Ellipse ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу" Fill="{Binding DisplayIsConnected, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}" Width="6" Height="6" VerticalAlignment="Center"/>
-									<Svg Name="ConnectionStatusImage" Path="../Assets/connection-status-Dark.svg" Width="20" Height="20" VerticalAlignment="Center" ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу"/>
-								</Grid>
-								<Label Content="{Binding DisplayAddress, UpdateSourceTrigger=PropertyChanged}" 
-								       Foreground="{DynamicResource Foreground}" 
-								       ToolTip.Tip="Данное поле отвечает за отображение IP-адреса сервера от которого принимаются данные"
-								       FontWeight="650" VerticalAlignment="Center"/>
-							</StackPanel>
-						</StackPanel>
-					</DockPanel>
-					
-					<Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
-					      ColumnDefinitions="*, *" RowDefinitions="*" Margin="10">
-						
-						<ContentControl Grid.Row="0" Grid.Column="0"
-						                VerticalAlignment="Stretch" Margin="0 0 5 5"
-						                Content="{Binding FirstCell}"/>
-						
-						
-						<Grid Grid.Row="0" Grid.Column="1" RowDefinitions="0.6*, 0.4*">
-							<ContentControl Grid.Row="0" Grid.Column="0"
-							                VerticalAlignment="Stretch" Margin="5 0 0 5"
-							                Content="{Binding ThirdCell}"/>
-							
-							<ContentControl Grid.Row="1" Grid.Column="0"
-							                VerticalAlignment="Stretch" Margin="5 5 0 0"
-							                Content="{Binding FourCell}"/>
-						</Grid>
-						
-					</Grid>
-				</Grid>
-			</Grid>
-		</Grid>
-	</Border>
+
+    <Window.Resources>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+    </Window.Resources>
+
+
+    <Border Name="MainBorder"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource BorderBrush}">
+
+        <Grid RowDefinitions="Auto, *">
+            <!--Кастомная верхняя панель-->
+
+            <Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28"
+                  Background="{DynamicResource TopBarGradientBrush}">
+                <!--Заголовок приложения и картинка-->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Svg Path="{DynamicResource AppIcon}"
+                         Stretch="Uniform"
+                         Width="16" Height="16"
+                         Margin="5 2 0 2" />
+                    <TextBlock Text="{DynamicResource AppTitle}" VerticalAlignment="Center" Foreground="White"
+                               FontWeight="Medium" Margin="3 0 0 0" />
+                </StackPanel>
+
+                <!--Кнопки для управления приложением-->
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
+                        <Svg Path="{DynamicResource MinimizeIcon}" Stretch="Uniform" Width="16" Height="16" />
+                    </Button>
+                    <Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
+                        <Svg Path="{DynamicResource MaximizeIcon}" Stretch="Uniform" Width="16" Height="16" />
+                    </Button>
+                    <Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
+                        <Svg Path="{DynamicResource CloseIcon}" Stretch="Uniform" Width="16" Height="16" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <!--Затенение экрана при открытии различных модальных окон поверх главного-->
+                <Border Name="BlackoutWindow"
+                        IsVisible="{Binding IsModalWindowOpen}"
+                        Background="#80000000"
+                        Opacity="{Binding IsModalWindowOpen, Converter={StaticResource BoolToOpacityConverter}}"
+                        ZIndex="1000"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+
+                    <!-- Плавная анимация Opacity -->
+                    <Border.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.35" />
+                        </Transitions>
+                    </Border.Transitions>
+
+                    <!--DataTemplate для всех модальных окон-->
+                    <ContentControl Content="{Binding CurrentUserControl}">
+                        <ContentControl.DataTemplates>
+                            <DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
+                                <usercontrols:AutomaticConnectingDialog
+                                    Background="{DynamicResource GradientBackground}" HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
+                                <usercontrols:ManualConnectionDialog Background="{DynamicResource GradientBackground}"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" />
+                            </DataTemplate>
+
+                            <DataTemplate DataType="{x:Type usercontrols:AboutDialog}">
+                                <usercontrols:AboutDialog Background="{DynamicResource GradientBackground}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </ContentControl.DataTemplates>
+                    </ContentControl>
+                </Border>
+
+                <!--Основное содержимое главного окна-->
+                <Grid RowDefinitions="Auto, *">
+                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0 0 0 1" />
+
+                    <!--Блюр экрана при открытии различных модальных окон поверх главного-->
+                    <Grid.Effect>
+                        <BlurEffect Radius="{Binding BlurRadius}" />
+                    </Grid.Effect>
+
+                    <!--Блок меню-->
+                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28">
+                        <Menu DockPanel.Dock="Left" Height="27">
+                            <MenuItem Classes="main">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform"
+                                             Width="15" Height="15" />
+                                        <TextBlock Text="Подключение" Margin="5 0 0 0"
+                                                   Foreground="{DynamicResource Foreground}" />
+                                    </StackPanel>
+                                </MenuItem.Header>
+
+                                <MenuItem Header="Автоматическое подключение" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}" />
+                                <MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
+                                <MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub"
+                                          Command="{Binding DisconnectCommand}" />
+                            </MenuItem>
+                            <MenuItem Classes="main" Command="{Binding SettingsCommand}">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15"
+                                             Height="15" />
+                                        <TextBlock Text="Изменить тему" Margin="5 0 0 0 "
+                                                   Foreground="{DynamicResource Foreground}" />
+                                    </StackPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem Classes="main">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Svg Path="{DynamicResource HelpIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <TextBlock Text="Помощь" Margin="5 0 0 0 "
+                                                   Foreground="{DynamicResource Foreground}" />
+                                    </StackPanel>
+                                </MenuItem.Header>
+
+                                <MenuItem Header="Руководство пользователя" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" />
+                                <MenuItem Header="О приложении" Foreground="{DynamicResource Foreground}"
+                                          Command="{Binding AboutCommand}" Classes="sub" />
+                            </MenuItem>
+                        </Menu>
+
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0 0 15 0">
+                                <Grid Margin="0 0 0 0"
+                                      ToolTip.Tip="Данный элемент отвечает за статус подключения к серверу">
+                                    <Ellipse
+                                        Fill="{Binding DisplayIsConnected, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBrushConverter}}"
+                                        Width="6" Height="6" VerticalAlignment="Center" />
+                                    <Svg Path="{DynamicResource ConnectionStatusIcon}" Stretch="Uniform" Width="20"
+                                         Height="20" VerticalAlignment="Center" />
+                                </Grid>
+                                <Label Content="{Binding DisplayAddress, UpdateSourceTrigger=PropertyChanged}"
+                                       Foreground="{DynamicResource Foreground}"
+                                       ToolTip.Tip="Данное поле отвечает за отображение IP-адреса сервера от которого принимаются данные"
+                                       FontWeight="650" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Grid Grid.Row="1" Grid.Column="0"
+                          ColumnDefinitions="*, 2, *" RowDefinitions="*">
+
+                        <Grid Grid.Column="0" Grid.Row="0"
+                              RowDefinitions="*, Auto, Auto" ColumnDefinitions="*">
+                            <ContentControl Grid.Row="0" Margin="10 10 4 5" Content="{Binding FirstCell}" />
+                            <ContentControl Grid.Row="2" Margin="10 5 4 10" Content="{Binding FourCell}" />
+                        </Grid>
+
+                        <GridSplitter Grid.Column="1" Background="Transparent" ResizeDirection="Columns" />
+
+                        <Grid Grid.Column="2" Grid.Row="0"
+                              RowDefinitions="*" ColumnDefinitions="*">
+                            <ContentControl Grid.Row="0" Margin="4 10 10 10" Content="{Binding ThirdCell}" />
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
 </Window>

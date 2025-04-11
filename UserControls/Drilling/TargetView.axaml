@@ -6,165 +6,165 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="500"
              x:Class="RFD.UserControls.TargetSection"
              x:DataType="vm:TargetSectionViewModel">
-    
+
     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
             CornerRadius="10" Padding="10">
-        
+
         <Grid RowDefinitions="Auto, *">
-            
+
             <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
                         HorizontalAlignment="Left" VerticalAlignment="Top">
-                
-                <Svg Name="FrameExpandImage" Path="avares://RFD/Assets/frame-expand-Light.svg" Width="12"/>
-                <TextBlock Text="Мишень" FontWeight="Bold" Classes="section"/>
+
+                <Svg Path="{DynamicResource FrameExpandIcon}" Width="12" Height="12" Stretch="Uniform" />
+                <TextBlock Text="Мишень" Foreground="{DynamicResource Foreground}" FontWeight="Bold" Classes="section" />
             </StackPanel>
-            
-            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0" Margin="-1.7 -0.7 0 0" Background="Transparent"
+
+            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0"
+                    Margin="-1.7 -0.7 0 0" Background="Transparent"
                     Command="{Binding OpenInNewWindowCommand}"
                     ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне">
-                <Svg Name="ExternalImage" Path="avares://RFD/Assets/external-Light.svg" Width="17"/>
+                <Svg Path="{DynamicResource ExternalIcon}" Width="17" Height="17" Stretch="Uniform" />
             </Button>
-            
+
             <Viewbox Grid.Row="1" Stretch="Uniform" Margin="5">
                 <!-- Основной контейнер для всех элементов -->
                 <Grid Name="Target">
-                    
+
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Top" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding ToolfaceType} "
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="10" FontWeight="Bold"/>
+                                   FontSize="10" FontWeight="Bold" />
                         <TextBlock Text="{Binding Angle}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="10" FontWeight="Bold"/>
+                                   FontSize="10" FontWeight="Bold" />
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Top" HorizontalAlignment="Right">
                         <TextBlock Text="{Binding TimeStamp, StringFormat={}{0:h\\:mm\\:ss}}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="10" FontWeight="Bold"/>
+                                   FontSize="10" FontWeight="Bold" />
                     </StackPanel>
-                    
+
                     <StackPanel Orientation="Vertical"
                                 VerticalAlignment="Bottom" HorizontalAlignment="Left">
                         <TextBlock Text="{Binding MagneticDeclination, StringFormat={}TN    {0:F2}}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="7" FontWeight="Bold"/>
+                                   FontSize="7" FontWeight="Bold" />
                         <TextBlock Text="{Binding ToolfaceOffset, StringFormat={}DAO {0:F2}}"
                                    Foreground="{DynamicResource FocusingColor}"
-                                   FontSize="7" FontWeight="Bold"/>
+                                   FontSize="7" FontWeight="Bold" />
                     </StackPanel>
-                    
-                    <Line StartPoint="{Binding StartPointVertical}" 
-                          EndPoint="{Binding EndPointVertical}" 
-                          Stroke="{DynamicResource Foreground}" 
-                          StrokeThickness="1"/>
-                    
-                    <Line StartPoint="{Binding StartPointHorizontal}" 
-                          EndPoint="{Binding EndPointHorizontal}" 
-                          Stroke="{DynamicResource Foreground}" 
-                          StrokeThickness="1"/>
-                    
+
+                    <Line StartPoint="{Binding StartPointVertical}"
+                          EndPoint="{Binding EndPointVertical}"
+                          Stroke="{DynamicResource Foreground}"
+                          StrokeThickness="1" />
+
+                    <Line StartPoint="{Binding StartPointHorizontal}"
+                          EndPoint="{Binding EndPointHorizontal}"
+                          Stroke="{DynamicResource Foreground}"
+                          StrokeThickness="1" />
+
                     <!--Внешнее кольцо и его цвет-->
-                    <Ellipse Width="{Binding RingWidth}" 
+                    <Ellipse Width="{Binding RingWidth}"
                              Height="{Binding RingWidth}"
-                             Stroke="{DynamicResource Foreground}" 
-                             StrokeThickness="0.5" 
-                             Fill="Transparent"/>
-                    
-                    <Ellipse Width="{Binding RingWidth}" 
+                             Stroke="{DynamicResource Foreground}"
+                             StrokeThickness="0.5"
+                             Fill="Transparent" />
+
+                    <Ellipse Width="{Binding RingWidth}"
                              Height="{Binding RingWidth}"
                              StrokeThickness="{Binding RingThickness}"
-                             Fill="Transparent" 
+                             Fill="Transparent"
                              Stroke="#67808080" />
-                    
-                    
-                    
-                    <ItemsControl ItemsSource="{Binding DrillingRingsList}" 
-                                  Width="{Binding RingWidth}" 
+
+
+                    <ItemsControl ItemsSource="{Binding DrillingRingsList}"
+                                  Width="{Binding RingWidth}"
                                   Height="{Binding RingWidth}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <Grid/>
+                                <Grid />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Ellipse Margin="{Binding Margin}" 
-                                         Width="{Binding Width}" 
-                                         Height="{Binding Height}" 
-                                         Stroke="{DynamicResource Foreground}" 
+                                <Ellipse Margin="{Binding Margin}"
+                                         Width="{Binding Width}"
+                                         Height="{Binding Height}"
+                                         Stroke="{DynamicResource Foreground}"
                                          StrokeThickness="0.5"
-                                         Fill="Transparent"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                        
-                    <ItemsControl ItemsSource="{Binding RadialLinesList}" 
-                                  Width="{Binding RingWidth}" 
-                                  Height="{Binding RingWidth}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Grid/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Line StartPoint="{Binding PointOfAngle}" 
-                                      EndPoint="{Binding PointCenter}" 
-                                      Stroke="{DynamicResource Foreground}" 
-                                      StrokeThickness="0.3"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                        
-                    <ItemsControl ItemsSource="{Binding AngleLabelsList}" 
-                                  Width="{Binding RingWidth}" 
-                                  Height="{Binding RingWidth}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Grid/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock 
-                                    Name="AngleTextBlock"
-                                    Text="{Binding Angle}" 
-                                    Margin="{Binding PointAngle}" 
-                                    FontSize="{Binding FontSize}">
-                                </TextBlock>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    
-                    <ItemsControl ItemsSource="{Binding DrillingPointsList}"
-                                  Width="{Binding RingWidth}" 
-                                  Height="{Binding RingWidth}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Grid/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Ellipse Width="{Binding Size}" Height="{Binding Size}" Fill="{DynamicResource FocusingColor}"
-                                         Margin="{Binding Margin}" StrokeThickness="0.5" Stroke="{DynamicResource BorderBrush}">
-                                </Ellipse>
+                                         Fill="Transparent" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    
-                    
+                    <ItemsControl ItemsSource="{Binding RadialLinesList}"
+                                  Width="{Binding RingWidth}"
+                                  Height="{Binding RingWidth}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Line StartPoint="{Binding PointOfAngle}"
+                                      EndPoint="{Binding PointCenter}"
+                                      Stroke="{DynamicResource Foreground}"
+                                      StrokeThickness="0.3" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl ItemsSource="{Binding AngleLabelsList}"
+                                  Width="{Binding RingWidth}"
+                                  Height="{Binding RingWidth}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Name="AngleTextBlock"
+                                    Text="{Binding Angle}"
+                                    Foreground="{DynamicResource Foreground}"
+                                    Margin="{Binding PointAngle}"
+                                    FontSize="{Binding FontSize}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl ItemsSource="{Binding DrillingPointsList}"
+                                  Width="{Binding RingWidth}"
+                                  Height="{Binding RingWidth}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Ellipse Width="{Binding Size}" Height="{Binding Size}"
+                                         Fill="{DynamicResource FocusingColor}"
+                                         Margin="{Binding Margin}" StrokeThickness="0.5"
+                                         Stroke="{DynamicResource BorderBrush}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+
                     <!--Сектор бурения-->
-                    <Polygon Points="{Binding Sector}" 
-                             Fill="{Binding SectorColor}"/>
+                    <Polygon Points="{Binding Sector}"
+                             Fill="{Binding SectorColor}" />
                 </Grid>
             </Viewbox>
         </Grid>
     </Border>
-    
-    
+
+
 </UserControl>

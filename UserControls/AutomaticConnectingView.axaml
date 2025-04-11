@@ -7,39 +7,43 @@
              mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="270"
              x:Class="RFD.UserControls.AutomaticConnectingDialog"
              x:DataType="vm:AutomaticConnectionDialogViewModel">
-    
+
     <Design.DataContext>
-        <vm:AutomaticConnectionDialogViewModel/>
+        <vm:AutomaticConnectionDialogViewModel />
     </Design.DataContext>
-    
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
             CornerRadius="10"
-            Background="{DynamicResource Background}" Padding="15" 
+            Background="{DynamicResource Background}" Padding="15"
             Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
-        
+
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"/>
-                <TextBlock Text="Автоматическое подключение"  FontSize="{DynamicResource FrameFontSizeBig}"  FontWeight="Bold" TextAlignment="Center" />
+                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg"
+                     Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
+                <TextBlock Text="Автоматическое подключение" FontSize="{DynamicResource FrameFontSizeBig}"
+                           FontWeight="Bold" TextAlignment="Center" />
             </StackPanel>
-            
+
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Подключение..." VerticalAlignment="Center"/>
-                    <li:LoadingIndicator IsActive="True" Mode="Arc" Foreground="{DynamicResource Foreground}" SpeedRatio="2" Width="45" VerticalAlignment="Center"/>
+                    <TextBlock Text="Подключение..." VerticalAlignment="Center" />
+                    <li:LoadingIndicator IsActive="True" Mode="Arc" Foreground="{DynamicResource Foreground}"
+                                         SpeedRatio="2" Width="45" VerticalAlignment="Center" />
                 </StackPanel>
-                <TextBlock Margin="0 10 0 0" TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Center">
-                    Автоматическое подключение позволяет системе самостоятельно обнаружить доступный сервер в локальной сети. 
+                <TextBlock Margin="0 10 0 0" TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}"
+                           TextAlignment="Center">
+                    Автоматическое подключение позволяет системе самостоятельно обнаружить доступный сервер в локальной сети.
                     Этот процесс может занять некоторое время, в зависимости от состояния вашей сети и доступности сервера.
                 </TextBlock>
             </StackPanel>
-            
+
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                 <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
-                    <TextBlock Text="Отменить" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Отменить" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Button>
             </StackPanel>
         </Grid>
     </Border>
-    
+
 </UserControl>

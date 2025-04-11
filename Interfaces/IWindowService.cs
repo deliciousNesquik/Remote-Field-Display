@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+
 namespace RFD.Interfaces;
 
 public interface IWindowService

@@ -176,15 +176,15 @@
                             <Rectangle x:Name="Rectangle2"
                                        Grid.Column="2"
                                        Fill="{TemplateBinding Foreground}" />
-                            
+
                             <Rectangle x:Name="Rectangle3"
                                        Grid.Column="4"
                                        Fill="{TemplateBinding Foreground}" />
-                            
+
                             <Rectangle x:Name="Rectangle4"
                                        Grid.Column="6"
                                        Fill="{TemplateBinding Foreground}" />
-                            
+
                             <Rectangle x:Name="Rectangle5"
                                        Grid.Column="8"
                                        Fill="{TemplateBinding Foreground}" />

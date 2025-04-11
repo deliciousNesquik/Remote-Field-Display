@@ -1,8 +1,7 @@
 ﻿using ReactiveUI;
 
-namespace RFD.Interfaces
+namespace RFD.Interfaces;
+
+public class ViewModelBase : ReactiveObject
 {
-    public class ViewModelBase : ReactiveObject
-    {
-    }
 }

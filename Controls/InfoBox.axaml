@@ -1,22 +1,30 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:controls="using:RFD.Controls">
-	
-	<Design.PreviewWith>
-		<controls:InfoBox Title="Глубина" Content="23.5" Inscription="м."/>
-	</Design.PreviewWith>
-	
-	<Style Selector="controls|InfoBox">
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Width="160" Height="115" CornerRadius="10">
-					<Grid>
-						<TextBlock Text="{TemplateBinding Title}" Padding="0 5 0 0" FontWeight="Medium" FontSize="18" TextWrapping="Wrap" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-						<Label Content="{TemplateBinding Content}" Padding="0 0 0 15" FontWeight="Bold" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-						<Label Content="{TemplateBinding Inscription}" Padding="0 0 5 5" FontSize="14" FontWeight="Medium" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-					</Grid>
-				</Border>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+        xmlns:controls="using:RFD.Controls">
+
+    <Design.PreviewWith>
+        <controls:InfoBox Title="Глубина" Content="23.5" Inscription="м." />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|InfoBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                        Width="160" Height="115" CornerRadius="10">
+                    <Grid>
+                        <TextBlock Text="{TemplateBinding Title}" Padding="0 5 0 0" FontWeight="Medium" FontSize="18"
+                                   TextWrapping="Wrap" Foreground="{DynamicResource Foreground}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top" />
+                        <Label Content="{TemplateBinding Content}" Padding="0 0 0 15" FontWeight="Bold" FontSize="30"
+                               HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                               Foreground="{DynamicResource Foreground}" />
+                        <Label Content="{TemplateBinding Inscription}" Padding="0 0 5 5" FontSize="14"
+                               FontWeight="Medium" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                               Foreground="{DynamicResource Foreground}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>

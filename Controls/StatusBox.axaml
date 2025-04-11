@@ -3,28 +3,30 @@
         xmlns:controls="using:RFD.Controls"
         xmlns:converters="using:RFD.Converters">
 
-	<Design.PreviewWith>
-		<Grid Margin="30">
-			<controls:StatusBox Header="Компонент" Status="True"/>
-		</Grid>
-	</Design.PreviewWith>
-	
-	<Styles.Resources>
-		<converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
-	</Styles.Resources>
+    <Design.PreviewWith>
+        <Grid Margin="30">
+            <controls:StatusBox Header="Компонент" Status="True" />
+        </Grid>
+    </Design.PreviewWith>
 
-	<Style Selector="controls|StatusBox">
-		<Setter Property="Foreground" Value="White"/>
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Background="{TemplateBinding Status, Converter={StaticResource BoolToBrushConverter}}" 
-				        BorderBrush="{DynamicResource BorderBrush}" 
-				        BorderThickness="1" Width="160" Height="50" CornerRadius="10">
-					<Grid>
-						<Label Content="{TemplateBinding Header}" FontWeight="700" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</Grid>
-				</Border>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+    <Styles.Resources>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+    </Styles.Resources>
+
+    <Style Selector="controls|StatusBox">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Status, Converter={StaticResource BoolToBrushConverter}}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1" Width="160" Height="50" CornerRadius="10">
+                    <Grid>
+                        <Label Content="{TemplateBinding Header}" FontWeight="700" FontSize="20"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource Foreground}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>

@@ -6,36 +6,40 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="270"
              x:Class="RFD.UserControls.ManualConnectionDialog"
              x:DataType="vm:ManualConnectionDialogViewModel">
-   
+
     <Design.DataContext>
-        <vm:ManualConnectionDialogViewModel/>
+        <vm:ManualConnectionDialogViewModel />
     </Design.DataContext>
-    
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
-            Background="{DynamicResource Background}" Padding="15" 
+
+    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+            Background="{DynamicResource Background}" Padding="15"
             CornerRadius="10"
             Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
-        
+
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg" Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0"/>
-                <TextBlock Text="Ручное подключение" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold" TextAlignment="Center"/>
+                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg"
+                     Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
+                <TextBlock Text="Ручное подключение" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
+                           TextAlignment="Center" />
             </StackPanel>
-            
+
             <!-- Пример полей для ввода -->
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center"> 
-                <TextBox Watermark="Введите IP-адрес" Text="{Binding FieldIpАddress, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" Margin="0 20 0 20" TextAlignment="Center">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                <TextBox Watermark="Введите IP-адрес"
+                         Text="{Binding FieldIpАddress, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" Margin="0 20 0 20"
+                           TextAlignment="Center">
                     Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
                     <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
-                    Например: <Run Foreground="Green">192.168.1.100</Run>. 
+                    Например: <Run Foreground="Green">192.168.1.100</Run>.
                     Убедитесь, что ваш сервер включён и доступен в сети.
                 </TextBlock>
             </StackPanel>
-            
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
                 <Button Content="Подключиться" Command="{Binding ConfirmCommand}" />
-                <Button Content="Отмена" Command="{Binding CancelCommand}"/>
+                <Button Content="Отмена" Command="{Binding CancelCommand}" />
             </StackPanel>
         </Grid>
     </Border>

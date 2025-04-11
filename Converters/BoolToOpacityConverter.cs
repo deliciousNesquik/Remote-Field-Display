@@ -1,8 +1,8 @@
-using System;
-using Avalonia.Data.Converters;
 using System.Globalization;
+using Avalonia.Data.Converters;
 
 namespace RFD.Converters;
+
 public class BoolToOpacityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
