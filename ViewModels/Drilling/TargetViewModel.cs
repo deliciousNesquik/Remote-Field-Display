@@ -217,7 +217,6 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         var newPoint = GetPointForAngle(angle, new Point(0, 0), radius);
 
         DrillingPointsList[index].Margin = new Thickness(newPoint.X, newPoint.Y, 0, 0);
-        //Console.WriteLine($"point [{index}] - radius - [{radius}] - margin - [{DrillingPointsList[index].Margin}]");
     }
 
     private void OpenInNewWindow()

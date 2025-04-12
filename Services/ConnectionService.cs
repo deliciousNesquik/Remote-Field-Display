@@ -7,17 +7,20 @@ namespace RFD.Services;
 
 public class ConnectionService: IConnectionService
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly ILoggerService _logger;
     private readonly Client _client;
     
-    public ConnectionService(Client client)
+    public ConnectionService(
+        Client client,
+        ILoggerService logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _logger = logger;
         InitializeEvents();
     }
     
     public bool Connected => _client.Connected;
-    public string Address => _client.Connected ? _client.Address.ToString() : "Нет подключения";
+    public string Address => _client.Address.ToString();
     private CancellationTokenSource _cancelTokenSource = new();
     private bool _needAutoReconnect = true;
     
@@ -54,16 +57,15 @@ public class ConnectionService: IConnectionService
             
             if (_client.Connect())
             {
-                Logger.Info($"Подключение к серверу: {_client.Address}.");
+                _logger.Info($"Успешное подключение к: {_client.Address}.");
                 return true;
             }
-
-            Logger.Error($"Ошибка подключения к серверу: {_client.Address}.");
+            _logger.Error($"Ошибка подключения к серверу: {_client.Address}.");
             return false;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, $"Ошибка подключения к серверу");
+            _logger.Error(ex, $"Ошибка подключения к серверу");
             return false;
         }
     }
@@ -76,7 +78,7 @@ public class ConnectionService: IConnectionService
         var token = _cancelTokenSource.Token;
         var address = _client.Address;
 
-        Logger.Info("Попытка подключения к серверу пока клиент не подключится...");
+        _logger.Info("Попытка подключения к серверу пока клиент не подключится...");
         
         while (!token.IsCancellationRequested && !_client.Connected)
         {
@@ -88,16 +90,16 @@ public class ConnectionService: IConnectionService
                 _client.Address = address;
                 if (_client.Connect())
                 {
-                    Logger.Info($"Подключение к серверу: {_client.Address}.");
+                    _logger.Info($"Успешное подключение к: {_client.Address}.");
                     break;
                 }
                 
-                Logger.Error($"Ошибка подключения к серверу: {_client.Address}.");
+                _logger.Error($"Ошибка подключения к серверу: {_client.Address}.");
                 await Task.Delay(5000, token);
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "Ошибка при автоматическом переподключении");
+                _logger.Error(ex, "Ошибка при автоматическом переподключении");
                 await Task.Delay(5000, token);
             }
         }
@@ -119,7 +121,7 @@ public class ConnectionService: IConnectionService
         
         if (_client.Connected)
         {
-            Logger.Info($"Отключение от сервера: {_client.Address}");
+            _logger.Info($"Отключение от сервера: {_client.Address}");
             _client.Disconnect();
             
             return true;

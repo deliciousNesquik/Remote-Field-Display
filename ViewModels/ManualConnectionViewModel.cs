@@ -44,7 +44,6 @@ public class ManualConnectionDialogViewModel
             ConnectionAttempt?.Invoke(FieldIpАddress);
             IsActionInProgress = true;
         }
-        //Console.WriteLine("Invalid IP address format");
     }
 
     private void Close()
