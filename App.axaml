@@ -43,13 +43,13 @@
 
         <!--Стиль для верхнего элемента меню-->
         <Style Selector="MenuItem.main">
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}" />
+            <Setter Property="Foreground" Value="{DynamicResource Foreground}" />
             <Setter Property="FontWeight" Value="650" />
         </Style>
 
         <!--Стиль для нижнего элемента меню-->
         <Style Selector="MenuItem.sub">
-            <Setter Property="Foreground" Value="{DynamicResource ForegroundColor02}" />
+            <Setter Property="Foreground" Value="{DynamicResource Foreground}" />
             <Setter Property="FontWeight" Value="500" />
         </Style>
 
