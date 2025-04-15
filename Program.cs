@@ -5,6 +5,7 @@ using NLog;
 using NPFGEO.LWD.Net;
 using RFD.Interfaces;
 using RFD.Services;
+using RFD.UserControls;
 using RFD.ViewModels;
 using RFD.Views;
 
@@ -12,20 +13,13 @@ namespace RFD;
 
 internal sealed class Program
 {
-    // Инициализация DI контейнера
     public static IServiceProvider? Services { get; private set; }
-    
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
     [STAThread]
     public static void Main(string[] args)
     {
-        // Настройка NLog
-        var logger = NLog.LogManager.Setup()
+        var logger = LogManager.Setup()
             .LoadConfigurationFromFile("NLog.config")
             .GetCurrentClassLogger();
-            
         try
         {
             logger.Debug("Инициализация приложения");
@@ -50,7 +44,7 @@ internal sealed class Program
         }
         finally
         {
-            NLog.LogManager.Shutdown();
+            LogManager.Shutdown();
         }
     }
     
@@ -67,14 +61,31 @@ internal sealed class Program
         
         // 3. Регистрируем логгер
         services.AddSingleton<ILoggerService, NLoggerService>();
+        services.AddSingleton<IWindowService, WindowService>();
         
         // 4. Регистрируем ViewModel и другие компоненты
+        services.AddSingleton<AboutViewModel>();
+        services.AddSingleton<AboutDialog>();
+
+        services.AddSingleton<ManualConnectionDialogViewModel>();
+        services.AddSingleton<ManualConnectionDialog>();
+
+        services.AddSingleton<AutomaticConnectionDialogViewModel>();
+        services.AddSingleton<AutomaticConnectingDialog>();
+
+        services.AddSingleton<TargetSectionViewModel>();
+        services.AddSingleton<TargetSection>();
+        services.AddSingleton<InformationSectionViewModel>();
+        services.AddSingleton<InformationSection>();
+        services.AddSingleton<StatusSectionViewModel>();
+        services.AddSingleton<StatusSection>();
+        
         services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<MainWindow>();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
+    private static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
