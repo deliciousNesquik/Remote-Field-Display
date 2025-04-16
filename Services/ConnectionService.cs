@@ -107,9 +107,9 @@ public class ConnectionService: IConnectionService
 
     public async Task<bool> AutoConnectAsync()
     {
-        _needAutoReconnect = false;
-        await HandleDisconnection();
         _needAutoReconnect = true;
+        await HandleDisconnection();
+        _needAutoReconnect = false;
 
         return true;
     }
