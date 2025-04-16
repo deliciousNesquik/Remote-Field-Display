@@ -13,7 +13,6 @@ namespace RFD.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private readonly WindowService _windowService = new();
     private readonly ILoggerService _logger;
     private readonly IConnectionService _connectionService;
     
@@ -32,24 +31,18 @@ public class MainWindowViewModel : INotifyPropertyChanged
         };
         _disconnectTimer.Tick += OnDisconnectTimerTick;
 
-        TargetSectionViewModel = new TargetSectionViewModel(_windowService);
-        InformationSectionViewModel = new InformationSectionViewModel(_windowService);
-        StatusSectionViewModel = new StatusSectionViewModel(_windowService);
+        TargetSectionViewModel = new TargetSectionViewModel(new WindowService());
+        InformationSectionViewModel = new InformationSectionViewModel(new WindowService());
+        StatusSectionViewModel = new StatusSectionViewModel(new WindowService());
 
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
 
-        OpenAutomaticConnectingCommand =
-            new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
-        OpenManualConnectingCommand =
-            new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
         DisconnectCommand = new RelayCommand(Disconnect, () => DisplayIsConnected);
-
-        SettingsCommand = new RelayCommand(() =>
-                ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark),
-            () => true);
-
+        SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
 
@@ -214,86 +207,32 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
 
+    private void HideConnectionDialog()
+    {
+        CurrentUserControl = new UserControl();
+        IsAutomaticConnectingOpen = false;
+        IsManualConnectingOpen = false;
+    }
+    
     private void OpenManualConnecting()
     {
-        ManualConnectionDialogViewModel manualConnectionDialogViewModel = new();
-        CurrentUserControl = new ManualConnectionDialog
-        {
-            DataContext = manualConnectionDialogViewModel
-        };
         IsManualConnectingOpen = true;
-
-        manualConnectionDialogViewModel.ConnectionAttempt += ip =>
-        {
-            manualConnectionDialogViewModel.ConnectionStatus.Invoke(_connectionService.ConnectAsync(ip).Result);
-        };
-        manualConnectionDialogViewModel.CloseDialog += () =>
-        {
-            CurrentUserControl = new UserControl();
-            IsManualConnectingOpen = false;
-        };
+        var manualConnectionDialogViewModel = new ManualConnectionDialogViewModel(_connectionService, _logger);
+        CurrentUserControl = new ManualConnectionDialog() { DataContext = manualConnectionDialogViewModel };
+        manualConnectionDialogViewModel.DialogClose += HideConnectionDialog;
     }
 
-    public void OpenAutomaticConnecting()
+    private void OpenAutomaticConnecting()
     {
-        var cancellationTokenSource = new CancellationTokenSource();
-        AutomaticConnectionDialogViewModel automaticConnectionDialogViewModel = new();
-        CurrentUserControl = new AutomaticConnectingDialog
-        {
-            DataContext = automaticConnectionDialogViewModel
-        };
         IsAutomaticConnectingOpen = true;
-
-        automaticConnectionDialogViewModel.UserCloseDialog += () =>
-        {
-            CurrentUserControl = new UserControl();
-            IsAutomaticConnectingOpen = false;
-            cancellationTokenSource.Cancel();
-        };
-
-        automaticConnectionDialogViewModel.CloseDialog += () =>
-        {
-            CurrentUserControl = new UserControl();
-            IsAutomaticConnectingOpen = false;
-        };
-
-        Task.Run(async () =>
-        {
-            try
-            {
-                var isConnected = _connectionService.AutoConnectAsync().Result;
-
-                // Если подключение успешно
-                if (isConnected)
-                {
-                    automaticConnectionDialogViewModel.ConnectionStatus.Invoke(true);
-                    Console.WriteLine($"[{DateTime.Now}] - [Connection to the server is successful]");
-                }
-                else
-                {
-                    automaticConnectionDialogViewModel.ConnectionStatus.Invoke(false);
-                    Console.WriteLine($"[{DateTime.Now}] - [Couldn't connect to the server]");
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                Console.WriteLine($"[{DateTime.Now}] - [Connection canceled]");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"[{DateTime.Now}] - [Connection error: {e.Message}]");
-            }
-            finally
-            {
-                // В любом случае закрываем окно подключения
-                await cancellationTokenSource.CancelAsync();
-            }
-        }, cancellationTokenSource.Token);
+        var automaticConnectingDialogViewModel = new AutomaticConnectionDialogViewModel(_connectionService, _logger);
+        CurrentUserControl = new AutomaticConnectingDialog { DataContext = automaticConnectingDialogViewModel };
+        automaticConnectingDialogViewModel.DialogClose += HideConnectionDialog;
     }
 
     private void Disconnect()
     {
-        
+        _connectionService.Disconnect();
     }
 
     private void UpdateConnectionStatus(string address, bool connected)
