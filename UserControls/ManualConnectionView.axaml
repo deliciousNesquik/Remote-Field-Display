@@ -18,9 +18,9 @@
 
         <Grid>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Svg Name="InternetConnectionImage" Path="../Assets/internet-connection-Light.svg"
+                <Svg Path="{DynamicResource InternetConnectionIcon}"
                      Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
-                <TextBlock Text="Ручное подключение" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
+                <TextBlock Text="Ручное подключение" Foreground="{DynamicResource Foreground}" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
                            TextAlignment="Center" />
             </StackPanel>
 
@@ -29,7 +29,7 @@
                 <TextBox Watermark="Введите IP-адрес"
                          Text="{Binding Аddress, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" Margin="0 20 0 20"
-                           TextAlignment="Center">
+                           TextAlignment="Center" Foreground="{DynamicResource Foreground}">
                     Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
                     <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
                     Например: <Run Foreground="Green">192.168.1.100</Run>.
@@ -38,8 +38,8 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Content="Подключиться" Command="{Binding ConfirmCommand}" />
-                <Button Content="Отмена" Command="{Binding CancelCommand}" />
+                <Button Content="Подключиться" Foreground="{DynamicResource Foreground}" Command="{Binding ConfirmCommand}" />
+                <Button Content="Отмена" Foreground="{DynamicResource Foreground}" Command="{Binding CancelCommand}" />
             </StackPanel>
         </Grid>
     </Border>

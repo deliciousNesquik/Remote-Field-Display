@@ -16,7 +16,15 @@ public class AutomaticConnectionDialogViewModel: ViewModelBase, IDialog
     public Action? DialogClose { get; set; }
 
     private CancellationTokenSource? _cancellationTokenSource;
-    
+
+
+    public AutomaticConnectionDialogViewModel()
+    {
+        ConfirmCommand = null!;
+        CancelCommand = new RelayCommand(Cancel);
+        
+        AutoConnection();
+    }
 
     public AutomaticConnectionDialogViewModel(
         IConnectionService connectionService,
