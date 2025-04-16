@@ -1,54 +1,75 @@
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using ReactiveUI;
+using RFD.Core;
+using RFD.Interfaces;
+using Tmds.DBus.Protocol;
 
 namespace RFD.ViewModels;
 
-public class ManualConnectionDialogViewModel
+public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
 {
-    /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
-    public Action? CloseDialog;
+    private readonly IConnectionService _connectionService;
+    private readonly ILoggerService _logger;
 
-    /// <summary>Триггер оповещает родителя о том, что диалоговое окно хочет выполнить попытку подключения</summary>
-    public Action<string>? ConnectionAttempt;
+    public IRelayCommand ConfirmCommand { get; set; }
+    public IRelayCommand CancelCommand { get; set; }
+    public Action? DialogClose { get; set; }
 
-    /// <summary>Триггер, который необходимо вызывать в родителе, чтобы уведомить диалоговое окно о том что соединение успешно</summary>
-    public Action<bool> ConnectionStatus;
+    private bool _isBusy;
+    private string _address = "";
 
-    public ManualConnectionDialogViewModel()
+    public string Аddress
     {
-        IsActionInProgress = false;
-
-        ConnectionStatus += statusConnection =>
-        {
-            if (statusConnection) CloseDialog?.Invoke();
-        };
-
-        ConfirmCommand = new RelayCommand(() => Confirm(), () => !IsActionInProgress);
-        CancelCommand = new RelayCommand(() => Close(), () => !IsActionInProgress);
+        get => _address;
+        set => this.RaiseAndSetIfChanged(ref _address, value);
     }
 
-    public string? FieldIpАddress { get; set; }
-    public bool IsActionInProgress { get; set; }
-    public ICommand ConfirmCommand { get; }
-    public ICommand CancelCommand { get; }
+    public ManualConnectionDialogViewModel(
+        IConnectionService connectionService,
+        ILoggerService loggerService)
+    {
+        _connectionService = connectionService;
+        _logger = loggerService;
+
+        ConfirmCommand = new RelayCommand(Confirm);
+        CancelCommand = new RelayCommand(Cancel, (() => !_isBusy));
+    }
 
     private void Confirm()
     {
-        if (string.IsNullOrEmpty(FieldIpАddress)) return;
-
-        var pattern =
-            @"^((25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[1-9]?[0-9])$";
-        if (Regex.IsMatch(FieldIpАddress, pattern))
+        _logger.Debug($"Проверка ip адреса: {_address}");
+        if (IpAddressValidator.IsValidIPv4(_address))
         {
-            ConnectionAttempt?.Invoke(FieldIpАddress);
-            IsActionInProgress = true;
+            _logger.Info("Успешно проверен адрес. Попытка подключения по данному адресу.");
+            
+            _isBusy = true;
+
+            var connect = Task.Run((() => _connectionService.ConnectAsync(_address)));
+            if (!connect.Result)
+            {
+                _logger.Error("Результат автоматического подключения не удачный.");
+                _isBusy = false;
+                return;
+            }
+            _isBusy = false;
+            DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
+
+            Cancel();
+        }
+        else
+        {
+            _isBusy = false;
+            _logger.Error("Ошибка не правильно написан адрес");
         }
     }
 
-    private void Close()
+    private void Cancel()
     {
-        IsActionInProgress = false;
-        CloseDialog?.Invoke();
+        _logger.Info($"Параметр _isBusy = {_isBusy}");
+        _isBusy = false;
+        _logger.Info("Окно ручного подключения вызывает триггер для закрытия.");
+        DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
     }
 }

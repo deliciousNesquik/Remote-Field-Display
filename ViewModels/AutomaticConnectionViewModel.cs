@@ -2,61 +2,58 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using RFD.Interfaces;
 
 namespace RFD.ViewModels;
 
-public class AutomaticConnectionDialogViewModel
+public class AutomaticConnectionDialogViewModel: ViewModelBase, IDialog
 {
-    /// <summary>Триггер, который необходимо вызывать в родителе, чтобы уведомить диалоговое окно о том что соединение успешно</summary>
-    public readonly Action<bool> ConnectionStatus;
+    private readonly IConnectionService _connectionService;
+    private readonly ILoggerService _logger;
+    
+    public IRelayCommand ConfirmCommand { get; set; }
+    public IRelayCommand CancelCommand { get; set; }
+    public Action? DialogClose { get; set; }
 
-    private bool _connection;
+    private CancellationTokenSource? _cancellationTokenSource;
+    
 
-    /// <summary>Триггер для отлавливания закрытия диалогового окна</summary>
-    public Action? CloseDialog;
-
-    /// <summary>Триггер, который вызывается если пользователь закроет диалоговое окно</summary>
-    public Action? UserCloseDialog;
-
-    public AutomaticConnectionDialogViewModel()
+    public AutomaticConnectionDialogViewModel(
+        IConnectionService connectionService,
+        ILoggerService loggerService)
     {
-        ConnectionStatus += statusConnection =>
-        {
-            Connection = statusConnection;
-            Close();
-        };
+        _connectionService = connectionService;
+        _logger = loggerService;
 
-        CancelCommand = new RelayCommand(UserClose);
+        ConfirmCommand = null!;
+        CancelCommand = new RelayCommand(Cancel);
+        
+        AutoConnection();
     }
 
-    public bool Connection
+    private void AutoConnection()
     {
-        get => _connection;
-        set
+        _cancellationTokenSource = new CancellationTokenSource();
+        _logger.Info("Запуск задачи автоматического подключения.");
+        try
         {
-            _connection = value;
-            OnPropertyChanged();
+            _connectionService.AutoConnectAsync();
         }
+        catch (OperationCanceledException)
+        {
+            _logger.Warn("Операция автоматического подключения отменена.");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Не предвиденная ошибка при автоматическом подключении: {ex}");
+        }
+        
+        Cancel();
     }
-
-    public ICommand CancelCommand { get; }
-
-    private void UserClose()
+    
+    private void Cancel()
     {
-        UserCloseDialog?.Invoke();
-        Close();
-    }
-
-    private void Close()
-    {
-        CloseDialog?.Invoke();
-    }
-
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string propertyName = null!)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        _logger.Info("Окно автоматического подключения вызывает триггер для закрытия.");
+        DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
     }
 }
