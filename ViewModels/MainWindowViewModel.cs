@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using NPFGEO.LWD.Net;
 using RFD.Interfaces;
 using RFD.Services;
 using RFD.UserControls;
@@ -15,6 +16,35 @@ public class MainWindowViewModel : INotifyPropertyChanged
 {
     private readonly ILoggerService _logger;
     private readonly IConnectionService _connectionService;
+
+    public MainWindowViewModel()
+    {
+        _logger = new NLoggerService();
+        _connectionService = new ConnectionService(new Client(), _logger);
+
+        _currentUserControl = new UserControl();
+        _isModalWindowOpen = false;
+
+        _displayAddress = "Нет подключения";
+        _displayIsConnected = false;
+        
+        _disconnectTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+        _disconnectTimer.Tick += OnDisconnectTimerTick;
+        
+        FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
+        ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
+        FourCell = new StatusSection { DataContext = StatusSectionViewModel };
+        
+        
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
+        DisconnectCommand = new RelayCommand(Disconnect, () => DisplayIsConnected);
+        SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
+        AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
+    }
     
     public MainWindowViewModel(
         ILoggerService logger,
@@ -27,13 +57,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _displayAddress = "Определение...";
         _disconnectTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(2)
+            Interval = TimeSpan.FromSeconds(1)
         };
         _disconnectTimer.Tick += OnDisconnectTimerTick;
-
-        TargetSectionViewModel = new TargetSectionViewModel(new WindowService());
-        InformationSectionViewModel = new InformationSectionViewModel(new WindowService());
-        StatusSectionViewModel = new StatusSectionViewModel(new WindowService());
 
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
@@ -72,9 +98,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
 
-    public TargetSectionViewModel TargetSectionViewModel { get; }
-    public InformationSectionViewModel InformationSectionViewModel { get; }
-    public StatusSectionViewModel StatusSectionViewModel { get; }
+    public TargetSectionViewModel TargetSectionViewModel { get; } = new TargetSectionViewModel(new WindowService());
+    public InformationSectionViewModel InformationSectionViewModel { get; } = new InformationSectionViewModel(new WindowService());
+    public StatusSectionViewModel StatusSectionViewModel { get; } = new StatusSectionViewModel(new WindowService());
 
     #endregion
 
@@ -251,7 +277,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    private void OnDisconnectTimerTick(object sender, EventArgs e)
+    private void OnDisconnectTimerTick(object? sender, EventArgs e)
     {
         _disconnectTimer.Stop();
         DisplayIsConnected = false;

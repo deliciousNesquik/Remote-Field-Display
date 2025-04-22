@@ -45,6 +45,7 @@ public partial class MainWindow : Window
 
     private void WindowCloseButton_OnClick(object? sender, RoutedEventArgs e)
     {
+        //TODO Реализовать нормальное выключение приложения
         Exit(0);
     }
 

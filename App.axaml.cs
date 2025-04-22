@@ -19,23 +19,30 @@ namespace RFD;
 
 public class App : Application
 {
-    private readonly ILoggerService _logger = Program.Services!.GetRequiredService<ILoggerService>();
-    private readonly IConnectionService _connectionService = Program.Services!.GetRequiredService<IConnectionService>();
-    private readonly IBroadcastListener _broadcastListener = Program.Services!.GetRequiredService<IBroadcastListener>();
-    private readonly MainWindowViewModel _mainWindowViewModel = Program.Services!.GetRequiredService<MainWindowViewModel>();
+    private ILoggerService? _logger;
+    private IConnectionService? _connectionService;
+    private IBroadcastListener? _broadcastListener;
+    private MainWindowViewModel? _mainWindowViewModel;
     private DataObject _dataObj = new();
-
+    
     public override void Initialize()
     {
+        AvaloniaXamlLoader.Load(this);
+        
+        if (Design.IsDesignMode)
+        {
+            Console.WriteLine("Приложение запущено в режиме Design-time");
+            return;
+        }
+
+        _logger = Program.Services!.GetRequiredService<ILoggerService>();
         _logger.Info("Инициализация приложения");
+        
         try
         {
-            AvaloniaXamlLoader.Load(this);
-            if (Design.IsDesignMode)
-            {
-                _logger.Warn("Приложение запущено в Design режиме.");
-                return;
-            }
+            _connectionService = Program.Services!.GetRequiredService<IConnectionService>();
+            _broadcastListener = Program.Services!.GetRequiredService<IBroadcastListener>();
+            
             SubscribeToEvents();
             _broadcastListener.Start();
         }
@@ -47,19 +54,13 @@ public class App : Application
     }
     private void SubscribeToEvents()
     {
+        if (_connectionService == null || _broadcastListener == null) return;
+        
         _connectionService.ReceiveData += Client_ReceiveData;
         _connectionService.ReceiveSettings += Client_ReceiveSettings;
         _connectionService.Disconnected += Client_Disconnected;
         _connectionService.ConnectedStatusChanged += Client_ConnectedStatusChanged;
         _broadcastListener.ReceiveBroadcast += Listener_ReceiveBroadcast;
-    }
-    private void UnsubscribeFromEvents()
-    {
-        _connectionService.ReceiveData -= Client_ReceiveData;
-        _connectionService.ReceiveSettings -= Client_ReceiveSettings;
-        _connectionService.Disconnected -= Client_Disconnected;
-        _connectionService.ConnectedStatusChanged -= Client_ConnectedStatusChanged;
-        _broadcastListener.ReceiveBroadcast -= Listener_ReceiveBroadcast;
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -67,26 +68,21 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             ThemeManager.ApplyTheme(AppTheme.Light);
+
+            _mainWindowViewModel = Program.Services!.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
                 DataContext = _mainWindowViewModel
             };
-            desktop.Exit += OnExit;
         }
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-    {
-        _logger.Info("Закрытие приложения...");
-        UnsubscribeFromEvents();
-        _broadcastListener.Dispose();
-        _connectionService.Dispose();
     }
 
     
     private void Listener_ReceiveBroadcast(object? sender, ReceiveBroadcastEventArgs e)
     {
+        if (_logger == null || _connectionService == null || _broadcastListener == null || _mainWindowViewModel == null) return;
+        
         _logger.Info($"Получение широковещательного сигнала от {e.Server.Address}:{e.Server.Port}");
         if (_connectionService.Connected)
         {
@@ -109,6 +105,8 @@ public class App : Application
     }
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
+        if (_logger == null || _connectionService == null) return;
+        
         _logger.Info($"Получение настроек приложения от: {_connectionService.Address}");
         try
         {
@@ -121,6 +119,8 @@ public class App : Application
     }
     private void Client_ReceiveData(object? sender, ReceiveDataEventArgs e)
     {
+        if (_logger == null || _connectionService == null) return;
+        
         _logger.Info($"Получение данных приложения от: {_connectionService.Address}");
         try
         {
@@ -133,17 +133,23 @@ public class App : Application
     }
     private void Client_Disconnected(object? sender, EventArgs e)
     {
+        if (_logger == null || _mainWindowViewModel == null || _connectionService == null) return;
+        
         _logger.Warn($"Разорвано соединение с: {_connectionService.Address}");
         _mainWindowViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
     private void Client_ConnectedStatusChanged(object? sender, EventArgs e)
     {
+        if (_logger == null || _mainWindowViewModel == null || _connectionService == null) return;
+        
         _logger.Info($"Статус подключения для: {_connectionService.Address} изменен: {!_connectionService.Connected} -> {_connectionService.Connected}");
         _mainWindowViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
     
     private void SetSettings(Settings settings)
     {
+        if (_mainWindowViewModel == null) return;
+        
         _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
         _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
 
@@ -186,6 +192,8 @@ public class App : Application
 
     private void SetData(DataObject data)
     {
+        if (_mainWindowViewModel == null || _logger == null) return;
+        
         _dataObj = DataObject.Union(_dataObj, data);
 
         var targetPoints = data.TargetPoints.ToList();

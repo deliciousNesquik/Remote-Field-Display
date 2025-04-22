@@ -63,25 +63,7 @@ internal sealed class Program
         services.AddSingleton<ILoggerService, NLoggerService>();
         services.AddSingleton<IWindowService, WindowService>();
         
-        // 4. Регистрируем ViewModel и другие компоненты
-        services.AddSingleton<AboutViewModel>();
-        services.AddSingleton<AboutDialog>();
-
-        services.AddSingleton<ManualConnectionDialogViewModel>();
-        services.AddSingleton<ManualConnectionDialog>();
-
-        services.AddSingleton<AutomaticConnectionDialogViewModel>();
-        services.AddSingleton<AutomaticConnectingDialog>();
-
-        services.AddSingleton<TargetSectionViewModel>();
-        services.AddSingleton<TargetSection>();
-        services.AddSingleton<InformationSectionViewModel>();
-        services.AddSingleton<InformationSection>();
-        services.AddSingleton<StatusSectionViewModel>();
-        services.AddSingleton<StatusSection>();
-        
         services.AddSingleton<MainWindowViewModel>();
-        services.AddTransient<MainWindow>();
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
