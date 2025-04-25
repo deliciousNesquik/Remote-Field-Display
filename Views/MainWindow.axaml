@@ -127,7 +127,7 @@
                         
                     </DockPanel>
                     
-                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"/>
+                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1" IsVisible="{Binding UseDefaultMenu}"/>
                     <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}">
                         <Menu DockPanel.Dock="Left" Height="27" >
                             <MenuItem Classes="main">
