@@ -111,7 +111,7 @@
 
                 <!--Основное содержимое главного окна-->
                 <Grid RowDefinitions="Auto, *">
-                    <Border Grid.Row="0" Grid.Column="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1" />
+                    <Border Grid.Row="0" Grid.Column="0"/>
 
                     <!--Блюр экрана при открытии различных модальных окон поверх главного-->
                     <Grid.Effect>
@@ -119,8 +119,17 @@
                     </Grid.Effect>
 
                     <!--Блок меню-->
-                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="True">
-                        <Menu DockPanel.Dock="Left" Height="27">
+                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseNativeMenu}">
+                        <Grid ColumnDefinitions="Auto" HorizontalAlignment="Center">
+                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1 0 1 1" CornerRadius="0 0 15 15"/>
+                            <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}" Margin="20 0 20 0"/>
+                        </Grid>
+                        
+                    </DockPanel>
+                    
+                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"/>
+                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}">
+                        <Menu DockPanel.Dock="Left" Height="27" >
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
@@ -154,7 +163,7 @@
                             </MenuItem>
                         </Menu>
 
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}"/>
                         </StackPanel>
                     </DockPanel>
@@ -164,15 +173,15 @@
 
                         <Grid Grid.Column="0" Grid.Row="0"
                               RowDefinitions="*, Auto, Auto" ColumnDefinitions="*">
-                            <ContentControl Grid.Row="0" Margin="5 10 4 5" Content="{Binding FirstCell}" />
-                            <ContentControl Grid.Row="2" Margin="5 5 4 10" Content="{Binding FourCell}" />
+                            <ContentControl Grid.Row="0" Margin="5 5 2 0" Content="{Binding FirstCell}" />
+                            <ContentControl Grid.Row="2" Margin="5 5 2 5" Content="{Binding FourCell}" />
                         </Grid>
 
                         <GridSplitter Grid.Column="1" Background="Transparent" ResizeDirection="Columns" />
 
                         <Grid Grid.Column="2" Grid.Row="0"
                               RowDefinitions="*" ColumnDefinitions="*">
-                            <ContentControl Grid.Row="0" Margin="4 10 5 10" Content="{Binding ThirdCell}" />
+                            <ContentControl Grid.Row="0" Margin="2 5 5 10" Content="{Binding ThirdCell}" />
                         </Grid>
 
                     </Grid>

@@ -20,6 +20,12 @@
         <GradientStop Color="#3E66AD" Offset="0" />
         <GradientStop Color="#34589C" Offset="1" />
     </LinearGradientBrush>
+    
+    <!-- Градиент для текста -->
+    <LinearGradientBrush x:Key="TextGradient" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#ededed" Offset="0"/>
+        <GradientStop Color="#BEBEBE" Offset="1"/>
+    </LinearGradientBrush>
 
     <!-- SVG иконки -->
     <x:String x:Key="AppIcon">avares://RFD/Assets/app-icon.svg</x:String>

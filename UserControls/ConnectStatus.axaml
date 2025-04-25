@@ -10,12 +10,6 @@
     
     <UserControl.Resources>
         <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
-        
-        <!-- Градиент для текста -->
-        <LinearGradientBrush x:Key="TextGradient" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#333333" Offset="0"/>
-            <GradientStop Color="#575757" Offset="1"/>
-        </LinearGradientBrush>
     </UserControl.Resources>
     
     <Design.DataContext>
@@ -42,7 +36,7 @@
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource TextGradient}">
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="2" Color="White" Opacity="0.5" OffsetX="0.5" OffsetY="0.5"/>
+                    <DropShadowEffect BlurRadius="2" Color="{DynamicResource Background}" Opacity="0.5" OffsetX="0.5" OffsetY="0.5"/>
                 </TextBlock.Effect>
             </TextBlock>
         </Grid>

@@ -19,6 +19,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     private readonly IConnectionService _connectionService;
     
     public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
+    public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
     public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
     
     public MainWindowViewModel()
@@ -28,6 +29,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         _currentUserControl = new UserControl();
         _isModalWindowOpen = false;
+        
+        UseDefaultMenu = true;
+        UseNativeMenu = false;
 
         ConnectStatusViewModel = new ConnectStatusViewModel();
         
