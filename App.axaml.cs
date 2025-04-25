@@ -101,7 +101,7 @@ public class App : Application
         {
             _logger.Error($"Ошибка при попытке подключения к: {_connectionService.Address}");
         }
-        _mainWindowViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
+        _mainWindowViewModel.ConnectStatusViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
     {
@@ -133,17 +133,17 @@ public class App : Application
     }
     private void Client_Disconnected(object? sender, EventArgs e)
     {
-        if (_logger == null || _mainWindowViewModel == null || _connectionService == null) return;
+        if (_logger == null || _mainWindowViewModel == null || _connectionService == null || _mainWindowViewModel.ConnectStatusViewModel == null) return;
         
         _logger.Warn($"Разорвано соединение с: {_connectionService.Address}");
-        _mainWindowViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
+        _mainWindowViewModel.ConnectStatusViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
     private void Client_ConnectedStatusChanged(object? sender, EventArgs e)
     {
-        if (_logger == null || _mainWindowViewModel == null || _connectionService == null) return;
+        if (_logger == null || _mainWindowViewModel == null || _connectionService == null || _mainWindowViewModel.ConnectStatusViewModel == null) return;
         
         _logger.Info($"Статус подключения для: {_connectionService.Address} изменен: {!_connectionService.Connected} -> {_connectionService.Connected}");
-        _mainWindowViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
+        _mainWindowViewModel.ConnectStatusViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
     
     private void SetSettings(Settings settings)

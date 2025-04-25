@@ -73,6 +73,10 @@
             <DependentUpon>ComponentStatusView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="UserControls\ConnectStatus.axaml.cs">
+          <DependentUpon>ConnectStatus.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

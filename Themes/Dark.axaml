@@ -1,12 +1,12 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Brush x:Key="Background">#232323</Brush>
-    <Brush x:Key="Foreground">#ededed</Brush>
-    <Brush x:Key="BorderBrush">#ededed</Brush>
+    <Color x:Key="Background">#232323</Color>
+    <Color x:Key="Foreground">#ededed</Color>
+    <Color x:Key="BorderBrush">#ededed</Color>
 
-    <Brush x:Key="ForegroundButton">#ededed</Brush>
-    <Brush x:Key="BackgroundButton">#3e66ad</Brush>
+    <Color x:Key="ForegroundButton">#ededed</Color>
+    <Color x:Key="BackgroundButton">#3e66ad</Color>
 
     <Color x:Key="ForegroundColor02">#1B2046</Color>
 
@@ -20,7 +20,6 @@
         <GradientStop Color="#3E66AD" Offset="0" />
         <GradientStop Color="#34589C" Offset="1" />
     </LinearGradientBrush>
-
 
     <!-- SVG иконки -->
     <x:String x:Key="AppIcon">avares://RFD/Assets/app-icon.svg</x:String>

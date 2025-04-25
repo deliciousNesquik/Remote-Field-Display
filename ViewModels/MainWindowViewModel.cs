@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using NPFGEO.LWD.Net;
+using RFD.Core;
 using RFD.Interfaces;
 using RFD.Services;
 using RFD.UserControls;
@@ -16,7 +17,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
 {
     private readonly ILoggerService _logger;
     private readonly IConnectionService _connectionService;
-
+    
+    public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
+    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
+    
     public MainWindowViewModel()
     {
         _logger = new NLoggerService();
@@ -25,23 +29,16 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _currentUserControl = new UserControl();
         _isModalWindowOpen = false;
 
-        _displayAddress = "Нет подключения";
-        _displayIsConnected = false;
-        
-        _disconnectTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _disconnectTimer.Tick += OnDisconnectTimerTick;
+        ConnectStatusViewModel = new ConnectStatusViewModel();
         
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
         
         
-        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
-        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
-        DisconnectCommand = new RelayCommand(Disconnect, () => DisplayIsConnected);
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
+        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectStatusViewModel.Status);
         SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
@@ -54,20 +51,17 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _connectionService = connectionService;
         
         _currentUserControl = new UserControl();
-        _displayAddress = "Определение...";
-        _disconnectTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _disconnectTimer.Tick += OnDisconnectTimerTick;
+        _isModalWindowOpen = false;
+        
+        ConnectStatusViewModel = new ConnectStatusViewModel();
 
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
 
-        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
-        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !DisplayIsConnected);
-        DisconnectCommand = new RelayCommand(Disconnect, () => DisplayIsConnected);
+        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
+        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
+        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectStatusViewModel.Status);
         SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
         AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
     }
@@ -193,44 +187,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand AboutCommand { get; }
 
     #endregion
-
-    #region Переменные: Параметры соединения с сервером
-
-    private string _displayAddress;
-
-    public string DisplayAddress
-    {
-        get => _displayAddress;
-        set
-        {
-            if (_displayAddress != value)
-            {
-                _displayAddress = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    private bool _displayIsConnected;
-
-    public bool DisplayIsConnected
-    {
-        get => _displayIsConnected;
-        set
-        {
-            if (_displayIsConnected != value)
-            {
-                _displayIsConnected = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(DisplayAddress));
-            }
-        }
-    }
-
-    private readonly DispatcherTimer _disconnectTimer;
-
-    #endregion
-
+    
     #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
 
     private void HideConnectionDialog()
@@ -259,34 +216,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
     private void Disconnect()
     {
         _connectionService.Disconnect();
-    }
-
-    private void UpdateConnectionStatus(string address, bool connected)
-    {
-        if (connected)
-        {
-            // Если восстановили соединение - сразу обновляем
-            _disconnectTimer.Stop();
-            DisplayIsConnected = true;
-            DisplayAddress = address;
-        }
-        else if (DisplayIsConnected)
-        {
-            // Если было подключение и потеряли - запускаем таймер
-            if (!_disconnectTimer.IsEnabled) _disconnectTimer.Start();
-        }
-    }
-
-    private void OnDisconnectTimerTick(object? sender, EventArgs e)
-    {
-        _disconnectTimer.Stop();
-        DisplayIsConnected = false;
-        DisplayAddress = "Нет подключения";
-    }
-    
-    public void OnConnectionStateChanged(string address = "Не найдено", bool connected = false)
-    {
-        UpdateConnectionStatus(address, connected);
     }
 
     #endregion

@@ -1,19 +1,21 @@
+using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace RFD.Converters;
-
-public class BoolToOpacityConverter : IValueConverter
+namespace RFD.Converters
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public class BoolToOpacityConverter : IValueConverter
     {
-        if (value is bool boolValue)
-            return boolValue ? 1.0 : 0.0;
-        return 0.0;
-    }
+        public static BoolToOpacityConverter Instance { get; } = new();
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value is bool boolValue && boolValue ? 1.0 : 0.7;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

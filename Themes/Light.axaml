@@ -1,12 +1,12 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Brush x:Key="Background">#ededed</Brush>
-    <Brush x:Key="Foreground">#232323</Brush>
-    <Brush x:Key="BorderBrush">#232323</Brush>
+    <Color x:Key="Background">#ededed</Color>
+    <Color x:Key="Foreground">#232323</Color>
+    <Color x:Key="BorderBrush">#232323</Color>
 
-    <Brush x:Key="ForegroundButton">#ededed</Brush>
-    <Brush x:Key="BackgroundButton">#3e66ad</Brush>
+    <Color x:Key="ForegroundButton">#ededed</Color>
+    <Color x:Key="BackgroundButton">#3e66ad</Color>
 
     <Color x:Key="ForegroundColor02">#1B2046</Color>
 
