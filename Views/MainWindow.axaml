@@ -14,13 +14,16 @@
         Title="Remote Field Display"
 
         WindowStartupLocation="CenterScreen"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1"
 
         MinHeight="19"
         MinWidth="530">
 
+    <!-- Данные параметры необходимы для приложения с собственной верхней панелью
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+    -->
+    
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
@@ -44,7 +47,7 @@
             <NativeMenuItem Header="Настройки">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Изменить тему" Command="{Binding SettingsCommand}"/>
+                        <NativeMenuItem Header="Изменить тему приложения" Command="{Binding SettingsCommand}"/>
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -63,7 +66,7 @@
     <Border Name="MainBorder" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
         <Grid RowDefinitions="Auto, *">
             
-            <Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28" Background="{DynamicResource TopBarGradientBrush}">
+            <Grid Name="TopBar" IsVisible="False" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28" Background="{DynamicResource TopBarGradientBrush}">
                 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <Svg Path="{DynamicResource AppIcon}" Stretch="Uniform" Width="16" Height="16" Margin="5 2 0 2" />
@@ -142,13 +145,15 @@
                                 <MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
                                 <MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding DisconnectCommand}" />
                             </MenuItem>
-                            <MenuItem Classes="main" Command="{Binding SettingsCommand}">
+                            <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15" Height="15" />
-                                        <TextBlock Text="Изменить тему" Margin="5 0 0 0 " Foreground="{DynamicResource Foreground}" />
+                                        <TextBlock Text="Настройки" Margin="5 0 0 0 " Foreground="{DynamicResource Foreground}" />
                                     </StackPanel>
                                 </MenuItem.Header>
+                                
+                                <MenuItem Header="Изменить тему приложения" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding SettingsCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
