@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Sockets;
 
 namespace RFD.Core;
 
@@ -8,7 +9,7 @@ public class IpAddressValidator
     {
         if (IPAddress.TryParse(ipAddress, out var address))
         {
-            if (address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
+            if (address.AddressFamily != AddressFamily.InterNetwork)
                 return false;
 
             // Проверка, что это не "0.0.0.0"
@@ -22,6 +23,7 @@ public class IpAddressValidator
 
             return true;
         }
+
         return false;
     }
 }

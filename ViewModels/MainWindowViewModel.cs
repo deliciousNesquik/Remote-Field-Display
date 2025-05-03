@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Net;
+using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia.Controls;
-using Avalonia.Threading;
-using CommunityToolkit.Mvvm.Input;
 using NPFGEO.LWD.Net;
+using ReactiveUI;
 using RFD.Core;
 using RFD.Interfaces;
 using RFD.Services;
@@ -15,13 +14,9 @@ namespace RFD.ViewModels;
 
 public class MainWindowViewModel : INotifyPropertyChanged
 {
-    private readonly ILoggerService _logger;
     private readonly IConnectionService _connectionService;
-    
-    public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
-    public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
-    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
-    
+    private readonly ILoggerService _logger;
+
     public MainWindowViewModel()
     {
         _logger = new NLoggerService();
@@ -29,46 +24,102 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
         _currentUserControl = new UserControl();
         _isModalWindowOpen = false;
-        
+
         UseDefaultMenu = true;
         UseNativeMenu = false;
 
         ConnectStatusViewModel = new ConnectStatusViewModel();
-        
+
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-        
-        
-        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
-        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
-        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectStatusViewModel.Status);
-        SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
-        AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
+
+
+        OpenAutomaticConnectingCommand = ReactiveCommand.Create(
+            OpenAutomaticConnecting,
+            this.WhenAnyValue(
+                x => x.IsModalWindowOpen,
+                x => x.ConnectStatusViewModel.Status,
+                (isModalOpen, status) => !isModalOpen && !status
+            )
+        );
+
+        OpenManualConnectingCommand = ReactiveCommand.Create(
+            OpenManualConnecting,
+            this.WhenAnyValue(
+                x => x.IsModalWindowOpen,
+                x => x.ConnectStatusViewModel.Status,
+                (isModalOpen, status) => !isModalOpen && !status
+            )
+        );
+
+        DisconnectCommand = ReactiveCommand.Create(
+            Disconnect,
+            Observable.Return(ConnectStatusViewModel.Status)
+        );
+
+        SettingsCommand = ReactiveCommand.Create(
+            () => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark)
+        );
+
+        AboutCommand = ReactiveCommand.Create(
+            OpenAbout,
+            Observable.Return(!IsModalWindowOpen)
+        );
     }
-    
+
     public MainWindowViewModel(
         ILoggerService logger,
         IConnectionService connectionService)
     {
         _logger = logger;
         _connectionService = connectionService;
-        
+
         _currentUserControl = new UserControl();
         _isModalWindowOpen = false;
-        
+
         ConnectStatusViewModel = new ConnectStatusViewModel();
 
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
 
-        OpenAutomaticConnectingCommand = new RelayCommand(OpenAutomaticConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
-        OpenManualConnectingCommand = new RelayCommand(OpenManualConnecting, () => !IsModalWindowOpen && !ConnectStatusViewModel.Status);
-        DisconnectCommand = new RelayCommand(Disconnect, () => ConnectStatusViewModel.Status);
-        SettingsCommand = new RelayCommand(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark), () => true);
-        AboutCommand = new RelayCommand(OpenAbout, () => !IsModalWindowOpen);
+        OpenAutomaticConnectingCommand = ReactiveCommand.Create(
+            OpenAutomaticConnecting,
+            this.WhenAnyValue(
+                x => x.IsModalWindowOpen,
+                x => x.ConnectStatusViewModel.Status,
+                (isModalOpen, status) => !isModalOpen && !status
+            )
+        );
+
+        OpenManualConnectingCommand = ReactiveCommand.Create(
+            OpenManualConnecting,
+            this.WhenAnyValue(
+                x => x.IsModalWindowOpen,
+                x => x.ConnectStatusViewModel.Status,
+                (isModalOpen, status) => !isModalOpen && !status
+            )
+        );
+
+        DisconnectCommand = ReactiveCommand.Create(
+            Disconnect,
+            Observable.Return(ConnectStatusViewModel.Status)
+        );
+
+        SettingsCommand = ReactiveCommand.Create(
+            () => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark)
+        );
+
+        AboutCommand = ReactiveCommand.Create(
+            OpenAbout,
+            Observable.Return(!IsModalWindowOpen)
+        );
     }
+
+    public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
+    public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
+    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -96,9 +147,9 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
 
-    public TargetSectionViewModel TargetSectionViewModel { get; } = new TargetSectionViewModel(new WindowService());
-    public InformationSectionViewModel InformationSectionViewModel { get; } = new InformationSectionViewModel(new WindowService());
-    public StatusSectionViewModel StatusSectionViewModel { get; } = new StatusSectionViewModel(new WindowService());
+    public TargetSectionViewModel TargetSectionViewModel { get; } = new(new WindowService());
+    public InformationSectionViewModel InformationSectionViewModel { get; } = new(new WindowService());
+    public StatusSectionViewModel StatusSectionViewModel { get; } = new(new WindowService());
 
     #endregion
 
@@ -191,7 +242,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand AboutCommand { get; }
 
     #endregion
-    
+
     #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
 
     private void HideConnectionDialog()
@@ -200,12 +251,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
         IsAutomaticConnectingOpen = false;
         IsManualConnectingOpen = false;
     }
-    
+
     private void OpenManualConnecting()
     {
         IsManualConnectingOpen = true;
         var manualConnectionDialogViewModel = new ManualConnectionDialogViewModel(_connectionService, _logger);
-        CurrentUserControl = new ManualConnectionDialog() { DataContext = manualConnectionDialogViewModel };
+        CurrentUserControl = new ManualConnectionDialog { DataContext = manualConnectionDialogViewModel };
         manualConnectionDialogViewModel.DialogClose += HideConnectionDialog;
     }
 

@@ -21,13 +21,15 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
                 <Svg Path="{DynamicResource InternetConnectionIcon}"
                      Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
-                <TextBlock Text="Автоматическое подключение" Foreground="{DynamicResource Foreground}" FontSize="{DynamicResource FrameFontSizeBig}"
+                <TextBlock Text="Автоматическое подключение" Foreground="{DynamicResource Foreground}"
+                           FontSize="{DynamicResource FrameFontSizeBig}"
                            FontWeight="Bold" TextAlignment="Center" />
             </StackPanel>
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="Подключение..." Foreground="{DynamicResource Foreground}" VerticalAlignment="Center" />
+                    <TextBlock Text="Подключение..." Foreground="{DynamicResource Foreground}"
+                               VerticalAlignment="Center" />
                     <li:LoadingIndicator IsActive="True" Mode="Arc" Foreground="{DynamicResource Foreground}"
                                          SpeedRatio="2" Width="45" VerticalAlignment="Center" />
                 </StackPanel>
@@ -40,7 +42,8 @@
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                 <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
-                    <TextBlock Text="Отменить" Foreground="{DynamicResource Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock Text="Отменить" Foreground="{DynamicResource Foreground}" VerticalAlignment="Center"
+                               HorizontalAlignment="Center" />
                 </Button>
             </StackPanel>
         </Grid>

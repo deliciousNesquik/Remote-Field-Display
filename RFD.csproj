@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <RuntimeIdentifiers>win-x64;osx-x64;osx-arm64;linux-x64</RuntimeIdentifiers>
         <OutputType>Exe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+        <ApplicationIcon>Assets/app-icon.ico</ApplicationIcon>
+        <Version>1.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,12 +29,10 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.1"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
         <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc4.5"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.3.25171.5" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.3.25171.5"/>
         <PackageReference Include="NLog" Version="5.4.0"/>
         <PackageReference Include="NLog.Config" Version="4.7.15"/>
-        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -74,14 +75,14 @@
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="UserControls\ConnectStatus.axaml.cs">
-          <DependentUpon>ConnectStatus.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>ConnectStatus.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="LWDReceiver">
-        <HintPath>Libraries\LWDReceiver.dll</HintPath>
-      </Reference>
+        <Reference Include="LWDReceiver">
+            <HintPath>Libraries\LWDReceiver.dll</HintPath>
+        </Reference>
     </ItemGroup>
 </Project>

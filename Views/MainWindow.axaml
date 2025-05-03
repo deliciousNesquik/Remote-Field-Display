@@ -2,61 +2,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
         xmlns:vm="using:RFD.ViewModels"
         xmlns:usercontrols="using:RFD.UserControls"
         xmlns:converters="using:RFD.Converters"
+
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="RFD.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
 
-        Background="{DynamicResource Background}" 
-        Icon="../Assets/app-icon.ico" 
+        Background="{DynamicResource Background}"
+        Icon="../Assets/app-icon.ico"
         Title="Remote Field Display"
 
         WindowStartupLocation="CenterScreen"
-
         MinHeight="19"
         MinWidth="530">
 
-    <!-- Данные параметры необходимы для приложения с собственной верхней панелью
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1"
-    -->
-    
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <Window.Resources>
-        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
     </Window.Resources>
-    
+
     <NativeMenu.Menu>
         <NativeMenu>
             <NativeMenuItem Header="Подключение">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}"/>
-                        <NativeMenuItem Header="Автоматическое подключение" Command="{Binding OpenAutomaticConnectingCommand}"/>
-                        <NativeMenuItem Header="Отключение" Command="{Binding DisconnectCommand}"/>
+                        <NativeMenuItem Header="Автоматическое подключение"
+                                        Command="{Binding OpenAutomaticConnectingCommand}" />
+                        <NativeMenuItem Header="Ручное подключение" Command="{Binding OpenManualConnectingCommand}" />
+                        <NativeMenuItem Header="Отключение" Command="{Binding DisconnectCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
             <NativeMenuItem Header="Настройки">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Изменить тему приложения" Command="{Binding SettingsCommand}"/>
+                        <NativeMenuItem Header="Изменить тему приложения" Command="{Binding SettingsCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
-            
+
             <NativeMenuItem Header="Помощь">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Руководство пользователя"/>
-                        <NativeMenuItem Header="О приложении" Command="{Binding AboutCommand}"/>
+                        <NativeMenuItem Header="Руководство пользователя" />
+                        <NativeMenuItem Header="О приложении" Command="{Binding AboutCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -65,29 +60,11 @@
 
     <Border Name="MainBorder" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
         <Grid RowDefinitions="Auto, *">
-            
-            <Grid Name="TopBar" IsVisible="False" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28" Background="{DynamicResource TopBarGradientBrush}">
-                
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Svg Path="{DynamicResource AppIcon}" Stretch="Uniform" Width="16" Height="16" Margin="5 2 0 2" />
-                    <TextBlock Text="{DynamicResource AppTitle}" VerticalAlignment="Center" Foreground="White" FontWeight="Medium" Margin="3 0 0 0" />
-                </StackPanel>
-                
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
-                        <Svg Path="{DynamicResource MinimizeIcon}" Stretch="Uniform" Width="16" Height="16" />
-                    </Button>
-                    <Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
-                        <Svg Path="{DynamicResource MaximizeIcon}" Stretch="Uniform" Width="16" Height="16" />
-                    </Button>
-                    <Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
-                        <Svg Path="{DynamicResource CloseIcon}" Stretch="Uniform" Width="16" Height="16" />
-                    </Button>
-                </StackPanel>
-            </Grid>
 
             <Grid Grid.Row="1">
-                <Border IsVisible="{Binding IsModalWindowOpen}" Background="#64000000" Opacity="{Binding IsModalWindowOpen, Converter={StaticResource BoolToOpacityConverter}}" ZIndex="1000">
+                <Border IsVisible="{Binding IsModalWindowOpen}" Background="#64000000"
+                        Opacity="{Binding IsModalWindowOpen, Converter={StaticResource BoolToOpacityConverter}}"
+                        ZIndex="1000">
                     <!-- Плавная анимация Opacity -->
                     <Border.Transitions>
                         <Transitions>
@@ -99,14 +76,19 @@
                     <ContentControl Content="{Binding CurrentUserControl}">
                         <ContentControl.DataTemplates>
                             <DataTemplate DataType="{x:Type usercontrols:AutomaticConnectingDialog}">
-                                <usercontrols:AutomaticConnectingDialog Background="{DynamicResource Background}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <usercontrols:AutomaticConnectingDialog Background="{DynamicResource Background}"
+                                                                        HorizontalAlignment="Center"
+                                                                        VerticalAlignment="Center" />
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type usercontrols:ManualConnectionDialog}">
-                                <usercontrols:ManualConnectionDialog Background="{DynamicResource Background}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <usercontrols:ManualConnectionDialog Background="{DynamicResource Background}"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" />
                             </DataTemplate>
 
                             <DataTemplate DataType="{x:Type usercontrols:AboutDialog}">
-                                <usercontrols:AboutDialog Background="{DynamicResource Background}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <usercontrols:AboutDialog Background="{DynamicResource Background}"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </DataTemplate>
                         </ContentControl.DataTemplates>
                     </ContentControl>
@@ -114,7 +96,7 @@
 
                 <!--Основное содержимое главного окна-->
                 <Grid RowDefinitions="Auto, *">
-                    <Border Grid.Row="0" Grid.Column="0"/>
+                    <Border Grid.Row="0" Grid.Column="0" />
 
                     <!--Блюр экрана при открытии различных модальных окон поверх главного-->
                     <Grid.Effect>
@@ -124,52 +106,66 @@
                     <!--Блок меню-->
                     <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseNativeMenu}">
                         <Grid ColumnDefinitions="Auto" HorizontalAlignment="Center">
-                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1 0 1 1" CornerRadius="0 0 15 15"/>
-                            <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}" Margin="20 0 20 0"/>
+                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1 0 1 1"
+                                    CornerRadius="0 0 15 15" />
+                            <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}"
+                                                        Margin="20 0 20 0" />
                         </Grid>
-                        
+
                     </DockPanel>
-                    
-                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1" IsVisible="{Binding UseDefaultMenu}"/>
+
+                    <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"
+                            IsVisible="{Binding UseDefaultMenu}" />
                     <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}">
-                        <Menu DockPanel.Dock="Left" Height="27" >
+                        <Menu DockPanel.Dock="Left" Height="27">
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform" Width="15" Height="15" />
-                                        <TextBlock Text="Подключение" Margin="5 0 0 0" Foreground="{DynamicResource Foreground}" />
+                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform"
+                                             Width="15" Height="15" />
+                                        <TextBlock Text="Подключение" Margin="5 0 0 0"
+                                                   Foreground="{DynamicResource Foreground}" />
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Автоматическое подключение" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}" />
-                                <MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
-                                <MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding DisconnectCommand}" />
+                                <MenuItem Header="Автоматическое подключение" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}" />
+                                <MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
+                                <MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub"
+                                          Command="{Binding DisconnectCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15" Height="15" />
-                                        <TextBlock Text="Настройки" Margin="5 0 0 0 " Foreground="{DynamicResource Foreground}" />
+                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15"
+                                             Height="15" />
+                                        <TextBlock Text="Настройки" Margin="5 0 0 0 "
+                                                   Foreground="{DynamicResource Foreground}" />
                                     </StackPanel>
                                 </MenuItem.Header>
-                                
-                                <MenuItem Header="Изменить тему приложения" Foreground="{DynamicResource Foreground}" Classes="sub" Command="{Binding SettingsCommand}" />
+
+                                <MenuItem Header="Изменить тему приложения" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" Command="{Binding SettingsCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Svg Path="{DynamicResource HelpIcon}" Stretch="Uniform" Width="15" Height="15" />
-                                        <TextBlock Text="Помощь" Margin="5 0 0 0 " Foreground="{DynamicResource Foreground}" />
+                                        <TextBlock Text="Помощь" Margin="5 0 0 0 "
+                                                   Foreground="{DynamicResource Foreground}" />
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Руководство пользователя" Foreground="{DynamicResource Foreground}" Classes="sub" />
-                                <MenuItem Header="О приложении" Foreground="{DynamicResource Foreground}" Command="{Binding AboutCommand}" Classes="sub" />
+                                <MenuItem Header="Руководство пользователя" Foreground="{DynamicResource Foreground}"
+                                          Classes="sub" />
+                                <MenuItem Header="О приложении" Foreground="{DynamicResource Foreground}"
+                                          Command="{Binding AboutCommand}" Classes="sub" />
                             </MenuItem>
                         </Menu>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                            <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}"/>
+                            <usercontrols:ConnectStatus DataContext="{Binding ConnectStatusViewModel}" />
                         </StackPanel>
                     </DockPanel>
 

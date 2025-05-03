@@ -22,11 +22,11 @@
         <GradientStop Color="#3E66AD" Offset="0" />
         <GradientStop Color="#34589C" Offset="1" />
     </LinearGradientBrush>
-    
+
     <!-- Градиент для текста -->
     <LinearGradientBrush x:Key="TextGradient" StartPoint="0,0" EndPoint="1,0">
-        <GradientStop Color="#333333" Offset="0"/>
-        <GradientStop Color="#575757" Offset="1"/>
+        <GradientStop Color="#333333" Offset="0" />
+        <GradientStop Color="#575757" Offset="1" />
     </LinearGradientBrush>
 
     <!-- SVG иконки -->

@@ -1,5 +1,5 @@
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+using System.Reactive;
+using ReactiveUI;
 
 namespace RFD.ViewModels;
 
@@ -9,10 +9,10 @@ public class AboutViewModel
 
     public AboutViewModel()
     {
-        CloseCommand = new RelayCommand(Close);
+        CloseCommand = ReactiveCommand.Create(Close);
     }
 
-    public ICommand CloseCommand { get; }
+    public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
     private void Close()
     {

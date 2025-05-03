@@ -1,28 +1,28 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+using System.Reactive;
+using NPFGEO.LWD.Net;
+using ReactiveUI;
 using RFD.Interfaces;
+using RFD.Services;
 
 namespace RFD.ViewModels;
 
-public class AutomaticConnectionDialogViewModel: ViewModelBase, IDialog
+public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
 {
     private readonly IConnectionService _connectionService;
     private readonly ILoggerService _logger;
-    
-    public IRelayCommand ConfirmCommand { get; set; }
-    public IRelayCommand CancelCommand { get; set; }
-    public Action? DialogClose { get; set; }
 
     private CancellationTokenSource? _cancellationTokenSource;
 
 
     public AutomaticConnectionDialogViewModel()
     {
+        _logger = new NLoggerService();
+        _connectionService = new ConnectionService(new Client(), _logger);
+
+
         ConfirmCommand = null!;
-        CancelCommand = new RelayCommand(Cancel);
-        
+        CancelCommand = ReactiveCommand.Create(Cancel);
+
         AutoConnection();
     }
 
@@ -34,10 +34,14 @@ public class AutomaticConnectionDialogViewModel: ViewModelBase, IDialog
         _logger = loggerService;
 
         ConfirmCommand = null!;
-        CancelCommand = new RelayCommand(Cancel);
-        
+        CancelCommand = ReactiveCommand.Create(Cancel);
+
         AutoConnection();
     }
+
+    public ReactiveCommand<Unit, Unit> ConfirmCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
+    public Action? DialogClose { get; set; }
 
     private void AutoConnection()
     {
@@ -55,10 +59,10 @@ public class AutomaticConnectionDialogViewModel: ViewModelBase, IDialog
         {
             _logger.Error($"Не предвиденная ошибка при автоматическом подключении: {ex}");
         }
-        
+
         Cancel();
     }
-    
+
     private void Cancel()
     {
         _logger.Info("Окно автоматического подключения вызывает триггер для закрытия.");

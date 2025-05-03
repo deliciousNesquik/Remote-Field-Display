@@ -4,14 +4,26 @@ using RFD.Interfaces;
 
 namespace RFD.ViewModels;
 
-public class ConnectStatusViewModel: ViewModelBase
+public class ConnectStatusViewModel : ViewModelBase
 {
-    private const string NOT_CONNECTION = "Нет подключения";
+    private const string NotConnection = "Нет подключения";
     private readonly DispatcherTimer _disconnectTimer;
-    
-    private bool _status;
     private string _address;
-    
+
+    private bool _status;
+
+    public ConnectStatusViewModel()
+    {
+        _status = false;
+        _address = NotConnection;
+
+        _disconnectTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+        _disconnectTimer.Tick += OnDisconnectTimerTick;
+    }
+
     public bool Status
     {
         get => _status;
@@ -24,19 +36,6 @@ public class ConnectStatusViewModel: ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _address, value);
     }
 
-    public ConnectStatusViewModel()
-    {
-        _status = false;
-        _address = NOT_CONNECTION;
-        
-        _disconnectTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _disconnectTimer.Tick += OnDisconnectTimerTick;
-        
-    }
-    
     private void UpdateConnectionStatus(string address, bool connected)
     {
         if (connected)
@@ -57,10 +56,10 @@ public class ConnectStatusViewModel: ViewModelBase
     {
         _disconnectTimer.Stop();
         _status = false;
-        _address = NOT_CONNECTION;
+        _address = NotConnection;
     }
-    
-    public void OnConnectionStateChanged(string address = NOT_CONNECTION, bool connected = false)
+
+    public void OnConnectionStateChanged(string address = NotConnection, bool connected = false)
     {
         UpdateConnectionStatus(address, connected);
     }

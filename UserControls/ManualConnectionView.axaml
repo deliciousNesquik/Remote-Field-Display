@@ -20,7 +20,8 @@
             <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
                 <Svg Path="{DynamicResource InternetConnectionIcon}"
                      Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
-                <TextBlock Text="Ручное подключение" Foreground="{DynamicResource Foreground}" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
+                <TextBlock Text="Ручное подключение" Foreground="{DynamicResource Foreground}"
+                           FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
                            TextAlignment="Center" />
             </StackPanel>
 
@@ -38,7 +39,8 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Content="Подключиться" Foreground="{DynamicResource Foreground}" Command="{Binding ConfirmCommand}" />
+                <Button Content="Подключиться" Foreground="{DynamicResource Foreground}"
+                        Command="{Binding ConfirmCommand}" />
                 <Button Content="Отмена" Foreground="{DynamicResource Foreground}" Command="{Binding CancelCommand}" />
             </StackPanel>
         </Grid>

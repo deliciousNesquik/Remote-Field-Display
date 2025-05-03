@@ -1,10 +1,8 @@
-using System.Text.RegularExpressions;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
+using System.Reactive;
+using System.Reactive.Linq;
 using ReactiveUI;
 using RFD.Core;
 using RFD.Interfaces;
-using Tmds.DBus.Protocol;
 
 namespace RFD.ViewModels;
 
@@ -12,19 +10,9 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
 {
     private readonly IConnectionService _connectionService;
     private readonly ILoggerService _logger;
-
-    public IRelayCommand ConfirmCommand { get; set; }
-    public IRelayCommand CancelCommand { get; set; }
-    public Action? DialogClose { get; set; }
-
-    private bool _isBusy;
     private string _address = "";
 
-    public string Аddress
-    {
-        get => _address;
-        set => this.RaiseAndSetIfChanged(ref _address, value);
-    }
+    private bool _isBusy;
 
     public ManualConnectionDialogViewModel(
         IConnectionService connectionService,
@@ -33,9 +21,19 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
         _connectionService = connectionService;
         _logger = loggerService;
 
-        ConfirmCommand = new RelayCommand(Confirm);
-        CancelCommand = new RelayCommand(Cancel, (() => !_isBusy));
+        ConfirmCommand = ReactiveCommand.Create(Confirm);
+        CancelCommand = ReactiveCommand.Create(Cancel, Observable.Return(!_isBusy));
     }
+
+    public string Аddress
+    {
+        get => _address;
+        set => this.RaiseAndSetIfChanged(ref _address, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> ConfirmCommand { get; set; }
+    public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
+    public Action? DialogClose { get; set; }
 
     private void Confirm()
     {
@@ -43,16 +41,17 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
         if (IpAddressValidator.IsValidIPv4(_address))
         {
             _logger.Info("Успешно проверен адрес. Попытка подключения по данному адресу.");
-            
+
             _isBusy = true;
 
-            var connect = Task.Run((() => _connectionService.ConnectAsync(_address)));
+            var connect = Task.Run(() => _connectionService.ConnectAsync(_address));
             if (!connect.Result)
             {
                 _logger.Error("Результат автоматического подключения не удачный.");
                 _isBusy = false;
                 return;
             }
+
             _isBusy = false;
             DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
 
