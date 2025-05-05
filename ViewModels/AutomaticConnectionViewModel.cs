@@ -46,30 +46,15 @@ public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
         _cancellationTokenSource = new CancellationTokenSource();
         _logger.Info("Запуск задачи автоматического подключения.");
         
-        try
+        var connect = Task.Run(() => _connectionService.AutoConnectAsync());
+        if (!connect.Result)
         {
-            var connect = _connectionService.AutoConnectAsync();
-            connect.Wait();
-
-            if (connect.Result == false)
-            {
-                _logger.Error("Закрываю окно с неудачным подключением");
-                Cancel();
-            }
-            else if (connect.Result == true)
-            {
-                _logger.Error("Закрываю окно с удачным подключением");
-                Cancel();
-            }
+            _logger.Error("Результат автоматического подключения не удачный.");
+            return;
         }
-        catch (OperationCanceledException)
-        {
-            _logger.Warn("Операция автоматического подключения отменена.");
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Не предвиденная ошибка при автоматическом подключении: {ex}");
-        }
+        
+        DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
+        Cancel();
     }
 
     private void Cancel()

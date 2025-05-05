@@ -24,7 +24,7 @@
 
         <!--Стиль для нижнего элемента меню-->
         <Style Selector="MenuItem.sub">
-            <Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+            <Setter Property="Foreground" Value="#232323" />
             <Setter Property="FontWeight" Value="500" />
         </Style>
 

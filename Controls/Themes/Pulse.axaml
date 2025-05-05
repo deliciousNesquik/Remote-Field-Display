@@ -10,7 +10,7 @@
                                 Theme="{DynamicResource Pulse}"
                                 IsActive="True"
                                 Mode="Pulse"
-                                SpeedRatio="1" />
+                                SpeedRatio="5" />
         </Border>
     </Design.PreviewWith>
 

@@ -28,44 +28,22 @@ public class MainWindowViewModel : INotifyPropertyChanged
         UseDefaultMenu = true;
         UseNativeMenu = false;
 
-        ConnectStatusViewModel = new ConnectStatusViewModel();
-
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
 
 
-        OpenAutomaticConnectingCommand = ReactiveCommand.Create(
-            OpenAutomaticConnecting,
-            this.WhenAnyValue(
-                x => x.IsModalWindowOpen,
-                x => x.ConnectStatusViewModel.Status,
-                (isModalOpen, status) => !isModalOpen && !status
-            )
-        );
+        OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
 
-        OpenManualConnectingCommand = ReactiveCommand.Create(
-            OpenManualConnecting,
-            this.WhenAnyValue(
-                x => x.IsModalWindowOpen,
-                x => x.ConnectStatusViewModel.Status,
-                (isModalOpen, status) => !isModalOpen && !status
-            )
-        );
+        OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
 
-        DisconnectCommand = ReactiveCommand.Create(
-            Disconnect,
-            Observable.Return(ConnectStatusViewModel.Status)
-        );
+        DisconnectCommand = ReactiveCommand.Create(Disconnect);
 
         SettingsCommand = ReactiveCommand.Create(
             () => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark)
         );
 
-        AboutCommand = ReactiveCommand.Create(
-            OpenAbout,
-            Observable.Return(!IsModalWindowOpen)
-        );
+        AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
     public MainWindowViewModel(
@@ -78,48 +56,20 @@ public class MainWindowViewModel : INotifyPropertyChanged
         _currentUserControl = new UserControl();
         _isModalWindowOpen = false;
 
-        ConnectStatusViewModel = new ConnectStatusViewModel();
-
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-
-        OpenAutomaticConnectingCommand = ReactiveCommand.Create(
-            OpenAutomaticConnecting,
-            this.WhenAnyValue(
-                x => x.IsModalWindowOpen,
-                x => x.ConnectStatusViewModel.Status,
-                (isModalOpen, status) => !isModalOpen && !status
-            )
-        );
-
-        OpenManualConnectingCommand = ReactiveCommand.Create(
-            OpenManualConnecting,
-            this.WhenAnyValue(
-                x => x.IsModalWindowOpen,
-                x => x.ConnectStatusViewModel.Status,
-                (isModalOpen, status) => !isModalOpen && !status
-            )
-        );
-
-        DisconnectCommand = ReactiveCommand.Create(
-            Disconnect,
-            Observable.Return(ConnectStatusViewModel.Status)
-        );
-
-        SettingsCommand = ReactiveCommand.Create(
-            () => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark)
-        );
-
-        AboutCommand = ReactiveCommand.Create(
-            OpenAbout,
-            Observable.Return(!IsModalWindowOpen)
-        );
+        
+        OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
+        OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
+        DisconnectCommand = ReactiveCommand.Create(Disconnect);
+        SettingsCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
+        AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
     public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
     public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
-    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
+    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; } = new ConnectStatusViewModel();
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -180,32 +130,6 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    private bool _isManualConnectingOpen;
-
-    public bool IsManualConnectingOpen
-    {
-        get => _isManualConnectingOpen;
-        set
-        {
-            _isManualConnectingOpen = value;
-            IsModalWindowOpen = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool _isAutomaticConnectingOpen;
-
-    public bool IsAutomaticConnectingOpen
-    {
-        get => _isAutomaticConnectingOpen;
-        set
-        {
-            _isAutomaticConnectingOpen = value;
-            IsModalWindowOpen = value;
-            OnPropertyChanged();
-        }
-    }
-
     private double _blurRadius;
 
     public double BlurRadius
@@ -248,13 +172,12 @@ public class MainWindowViewModel : INotifyPropertyChanged
     private void HideConnectionDialog()
     {
         CurrentUserControl = new UserControl();
-        IsAutomaticConnectingOpen = false;
-        IsManualConnectingOpen = false;
+        IsModalWindowOpen = false;
     }
 
     private void OpenManualConnecting()
     {
-        IsManualConnectingOpen = true;
+        IsModalWindowOpen = true;
         var manualConnectionDialogViewModel = new ManualConnectionDialogViewModel(_connectionService, _logger);
         CurrentUserControl = new ManualConnectionDialog { DataContext = manualConnectionDialogViewModel };
         manualConnectionDialogViewModel.DialogClose += HideConnectionDialog;
@@ -262,7 +185,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     private void OpenAutomaticConnecting()
     {
-        IsAutomaticConnectingOpen = true;
+        IsModalWindowOpen = true;
         var automaticConnectingDialogViewModel = new AutomaticConnectionDialogViewModel(_connectionService, _logger);
         CurrentUserControl = new AutomaticConnectingDialog { DataContext = automaticConnectingDialogViewModel };
         automaticConnectingDialogViewModel.DialogClose += HideConnectionDialog;

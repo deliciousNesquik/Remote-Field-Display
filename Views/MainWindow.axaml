@@ -42,7 +42,7 @@
             <NativeMenuItem Header="Настройки">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Изменить тему приложения" Command="{Binding SettingsCommand}" />
+                        <NativeMenuItem Header="Темная тема" Command="{Binding SettingsCommand}" ToggleType="CheckBox" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -50,7 +50,6 @@
             <NativeMenuItem Header="Помощь">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Руководство пользователя" />
                         <NativeMenuItem Header="О приложении" Command="{Binding AboutCommand}" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
@@ -116,51 +115,39 @@
 
                     <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"
                             IsVisible="{Binding UseDefaultMenu}" />
-                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}">
+                    <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}" >
                         <Menu DockPanel.Dock="Left" Height="27">
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform"
-                                             Width="15" Height="15" />
-                                        <TextBlock Text="Подключение" Margin="5 0 0 0"
-                                                   Foreground="{DynamicResource Foreground}" />
+                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <TextBlock Text="Подключение" Margin="5 0 0 0"/>
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Автоматическое подключение" Foreground="{DynamicResource Foreground}"
-                                          Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}" />
-                                <MenuItem Header="Ручное подключение" Foreground="{DynamicResource Foreground}"
-                                          Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
-                                <MenuItem Header="Отключиться" Foreground="{DynamicResource Foreground}" Classes="sub"
-                                          Command="{Binding DisconnectCommand}" />
+                                <MenuItem Header="Автоматическое подключение" Classes="sub" Command="{Binding OpenAutomaticConnectingCommand}" />
+                                <MenuItem Header="Ручное подключение" Classes="sub" Command="{Binding OpenManualConnectingCommand}" />
+                                <MenuItem Header="Отключиться" Classes="sub" Command="{Binding DisconnectCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15"
-                                             Height="15" />
-                                        <TextBlock Text="Настройки" Margin="5 0 0 0 "
-                                                   Foreground="{DynamicResource Foreground}" />
+                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <TextBlock Text="Настройки" Margin="5 0 0 0 "/>
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Изменить тему приложения" Foreground="{DynamicResource Foreground}"
-                                          Classes="sub" Command="{Binding SettingsCommand}" />
+                                <MenuItem Header="Темная тема" ToggleType="CheckBox" Classes="sub" Command="{Binding SettingsCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <Svg Path="{DynamicResource HelpIcon}" Stretch="Uniform" Width="15" Height="15" />
-                                        <TextBlock Text="Помощь" Margin="5 0 0 0 "
-                                                   Foreground="{DynamicResource Foreground}" />
+                                        <TextBlock Text="Помощь" Margin="5 0 0 0 "/>
                                     </StackPanel>
                                 </MenuItem.Header>
-
-                                <MenuItem Header="Руководство пользователя" Foreground="{DynamicResource Foreground}"
-                                          Classes="sub" />
-                                <MenuItem Header="О приложении" Foreground="{DynamicResource Foreground}"
-                                          Command="{Binding AboutCommand}" Classes="sub" />
+                                
+                                <MenuItem Header="О приложении" Command="{Binding AboutCommand}" Classes="sub" />
                             </MenuItem>
                         </Menu>
 

@@ -58,14 +58,12 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
             var connect = Task.Run(() => _connectionService.ConnectAsync(_address));
             if (!connect.Result)
             {
-                _logger.Error("Результат автоматического подключения не удачный.");
+                _logger.Error("Результат ручного подключения не удачный.");
                 _isBusy = false;
                 return;
             }
 
             _isBusy = false;
-            DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
-
             Cancel();
         }
         else
@@ -77,7 +75,6 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
 
     private void Cancel()
     {
-        _logger.Info($"Параметр _isBusy = {_isBusy}");
         _isBusy = false;
         _logger.Info("Окно ручного подключения вызывает триггер для закрытия.");
         DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.

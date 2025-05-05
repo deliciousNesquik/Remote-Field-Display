@@ -95,11 +95,14 @@ public class App : Application
         _broadcastListener.Stop();
 
         if (_connectionService.ConnectAsync(e.Server.Address.ToString()).Result)
+        {
             _logger.Info($"Подключение успешно к: {_connectionService.Address}:{e.Server.Port}");
+        }
         else
+        {
             _logger.Error($"Ошибка при попытке подключения к: {_connectionService.Address}");
-        _mainWindowViewModel.ConnectStatusViewModel.OnConnectionStateChanged(_connectionService.Address,
-            _connectionService.Connected);
+        }
+        _mainWindowViewModel.ConnectStatusViewModel.OnConnectionStateChanged(_connectionService.Address, _connectionService.Connected);
     }
 
     private void Client_ReceiveSettings(object? sender, ReceiveSettingsEventArgs e)
