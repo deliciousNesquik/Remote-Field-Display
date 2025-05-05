@@ -1,8 +1,10 @@
 using System.Reactive;
 using System.Reactive.Linq;
+using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Core;
 using RFD.Interfaces;
+using RFD.Services;
 
 namespace RFD.ViewModels;
 
@@ -21,6 +23,15 @@ public class ManualConnectionDialogViewModel : ViewModelBase, IDialog
         _connectionService = connectionService;
         _logger = loggerService;
 
+        ConfirmCommand = ReactiveCommand.Create(Confirm);
+        CancelCommand = ReactiveCommand.Create(Cancel, Observable.Return(!_isBusy));
+    }
+
+    public ManualConnectionDialogViewModel()
+    {
+        _logger = new NLoggerService();
+        _connectionService = new ConnectionService(new Client(), _logger);
+        
         ConfirmCommand = ReactiveCommand.Create(Confirm);
         CancelCommand = ReactiveCommand.Create(Cancel, Observable.Return(!_isBusy));
     }

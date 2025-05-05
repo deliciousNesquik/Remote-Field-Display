@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <TextBlock Text="Заголовок"/>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+    </Style>
+    
+    <Style Selector="TextBlock.main">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+</Styles>

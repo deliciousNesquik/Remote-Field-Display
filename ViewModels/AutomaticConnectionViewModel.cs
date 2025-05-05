@@ -22,8 +22,6 @@ public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
 
         ConfirmCommand = null!;
         CancelCommand = ReactiveCommand.Create(Cancel);
-
-        AutoConnection();
     }
 
     public AutomaticConnectionDialogViewModel(
@@ -47,9 +45,22 @@ public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
     {
         _cancellationTokenSource = new CancellationTokenSource();
         _logger.Info("Запуск задачи автоматического подключения.");
+        
         try
         {
-            _connectionService.AutoConnectAsync();
+            var connect = _connectionService.AutoConnectAsync();
+            connect.Wait();
+
+            if (connect.Result == false)
+            {
+                _logger.Error("Закрываю окно с неудачным подключением");
+                Cancel();
+            }
+            else if (connect.Result == true)
+            {
+                _logger.Error("Закрываю окно с удачным подключением");
+                Cancel();
+            }
         }
         catch (OperationCanceledException)
         {
@@ -59,13 +70,12 @@ public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
         {
             _logger.Error($"Не предвиденная ошибка при автоматическом подключении: {ex}");
         }
-
-        Cancel();
     }
 
     private void Cancel()
     {
-        _logger.Info("Окно автоматического подключения вызывает триггер для закрытия.");
+        _logger.Info($"Окно автоматического подключения вызывает триггер для закрытия в {this}");
+        _cancellationTokenSource?.Cancel();
         DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
     }
 }

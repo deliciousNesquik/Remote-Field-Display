@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:RFD.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="270"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
              x:Class="RFD.UserControls.ManualConnectionDialog"
              x:DataType="vm:ManualConnectionDialogViewModel">
 
@@ -11,6 +11,71 @@
         <vm:ManualConnectionDialogViewModel />
     </Design.DataContext>
 
+    <Border CornerRadius="10"
+            Width="{DynamicResource FrameWidth}"
+            Height="{DynamicResource FrameHeight}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{DynamicResource Background}"
+            BorderThickness="1">
+        
+        <Grid>
+            
+            <Svg Path="{DynamicResource InternetConnectionIcon}" 
+                 Width="50" 
+                 Height="50"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Top"
+                 ZIndex="1000"
+                 Margin="0 -25 0 0"/>
+            
+            <Ellipse Fill="{DynamicResource Background}"
+                     Width="70"
+                     Height="70"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="0 -35 0 0"/>
+            
+            <TextBlock Text="Ручное подключение" 
+                       Classes="main"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="0 40 0 0"/>
+            
+            <TextBox Watermark="Введите IP-адрес"
+                      
+                     Text="{Binding Аddress, UpdateSourceTrigger=PropertyChanged}" 
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     TextAlignment="Center"
+                     Width="330"
+                     Margin="0 80 0 0"/>
+            
+            <TextBlock TextWrapping="Wrap" 
+                       FontSize="{DynamicResource FrameFontSizeSmall}" 
+                       Width="330"
+                       Margin="0 85 0 20"
+                       TextAlignment="DetectFromContent" 
+                       Foreground="{DynamicResource Foreground}"
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center">
+                
+                
+                Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
+                <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
+                Например: <Run Foreground="Green">192.168.1.100</Run>.
+                Убедитесь, что ваш сервер включён и доступен в сети.
+            </TextBlock>
+            
+            <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
+                <Button Classes="negative" Content="Отменить" Command="{Binding CancelCommand}" />
+                <Button Classes="positive" Content="Подключиться" Command="{Binding ConfirmCommand}" />
+            </StackPanel>
+        </Grid>
+        
+    </Border>
+    
+    
+    <!--
     <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
             Background="{DynamicResource Background}" Padding="15"
             CornerRadius="10"
@@ -24,8 +89,7 @@
                            FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
                            TextAlignment="Center" />
             </StackPanel>
-
-            <!-- Пример полей для ввода -->
+            
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                 <TextBox Watermark="Введите IP-адрес"
                          Text="{Binding Аddress, UpdateSourceTrigger=PropertyChanged}" />
@@ -39,10 +103,11 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Content="Подключиться" Foreground="{DynamicResource Foreground}"
-                        Command="{Binding ConfirmCommand}" />
-                <Button Content="Отмена" Foreground="{DynamicResource Foreground}" Command="{Binding CancelCommand}" />
+                <Button Content="Подключиться" Command="{Binding ConfirmCommand}" />
+                <Button Content="Отмена" Command="{Binding CancelCommand}" />
             </StackPanel>
         </Grid>
     </Border>
+    -->
+    
 </UserControl>

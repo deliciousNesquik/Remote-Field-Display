@@ -32,12 +32,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                <Button Height="35" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
-                    <TextBlock Text="Проверить обновления" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Button>
-                <Button Height="35" HorizontalAlignment="Right" Command="{Binding CloseCommand}">
-                    <TextBlock Text="Закрыть" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Button>
+                <Button Content="Закрыть" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

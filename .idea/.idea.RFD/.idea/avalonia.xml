@@ -13,6 +13,7 @@
         <entry key="Controls/StatusBox.axaml" value="RFD.csproj" />
         <entry key="Converters/Converters.axaml" value="RFD.csproj" />
         <entry key="Styles/Buttons.axaml" value="RFD.csproj" />
+        <entry key="Styles/TextBlock.axaml" value="RFD.csproj" />
         <entry key="Theme/Dark.axaml" value="RFD.csproj" />
         <entry key="Theme/Light.axaml" value="RFD.csproj" />
         <entry key="Themes/Dark.axaml" value="RFD.csproj" />
@@ -30,6 +31,7 @@
         <entry key="UserControls/InformationSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/LoadingIndicators.axaml" value="RFD.csproj" />
         <entry key="UserControls/ManualConnectionDialog.axaml" value="RFD.csproj" />
+        <entry key="UserControls/ManualConnectionView.axaml" value="RFD.csproj" />
         <entry key="UserControls/ParametersSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/StatusSection.axaml" value="RFD.csproj" />
         <entry key="UserControls/TargetSection.axaml" value="RFD.csproj" />

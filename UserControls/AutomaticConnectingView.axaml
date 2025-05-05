@@ -41,10 +41,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                <Button Height="35" HorizontalAlignment="Right" Command="{Binding CancelCommand}">
-                    <TextBlock Text="Отменить" Foreground="{DynamicResource Foreground}" VerticalAlignment="Center"
-                               HorizontalAlignment="Center" />
-                </Button>
+                <Button Classes="negative" Content="Отменить" HorizontalAlignment="Right" Command="{Binding CancelCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

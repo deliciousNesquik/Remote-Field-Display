@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text;
 using NPFGEO.LWD.Net;
 using RFD.Interfaces;
 
@@ -102,17 +103,24 @@ public class ConnectionService : IConnectionService
         _client.ConnectedStatusChanged += (s, e) => ConnectedStatusChanged?.Invoke(s, e);
     }
 
-    private async Task HandleDisconnection()
+    private async Task<bool> HandleDisconnection()
     {
-        if (!_needAutoReconnect) return;
+        if (!_needAutoReconnect) return false;
 
         _cancelTokenSource = new CancellationTokenSource();
         var token = _cancelTokenSource.Token;
+        if (_client.Address == null)
+        {
+            _logger.Error("Не удачная попытка подключения из-за отсутствия ip-адреса");
+            _cancelTokenSource.Cancel();
+            return false;
+        }
         var address = _client.Address;
 
         _logger.Info("Попытка подключения к серверу пока клиент не подключится...");
 
         while (!token.IsCancellationRequested && !_client.Connected)
+        {
             try
             {
                 if (_client.Connected)
@@ -133,5 +141,8 @@ public class ConnectionService : IConnectionService
                 _logger.Error(ex, "Ошибка при автоматическом переподключении");
                 await Task.Delay(5000, token);
             }
+        }
+        
+        return true;
     }
 }
