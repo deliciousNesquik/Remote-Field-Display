@@ -2,12 +2,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="280"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
              xmlns:vm="using:RFD.ViewModels"
              x:Class="RFD.UserControls.AboutDialog"
              x:DataType="vm:AboutViewModel">
 
-    <Border BorderBrush="{DynamicResource BorderBrush}"
+    <Border CornerRadius="10"
+            Width="{DynamicResource FrameWidth}"
+            Height="{DynamicResource FrameHeight}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{DynamicResource Background}"
+            BorderThickness="1">
+        
+        <Grid>
+            
+            <Svg Path="{DynamicResource HelpIcon}" 
+                 Width="50" 
+                 Height="50"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Top"
+                 ZIndex="1000"
+                 Margin="0 -25 0 0"/>
+            
+            <Ellipse Fill="{DynamicResource Background}"
+                     Width="70"
+                     Height="70"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Top"
+                     Margin="0 -35 0 0"/>
+            
+            <TextBlock Text="О приложении" 
+                       Classes="main"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Margin="0 40 0 0"/>
+            
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="320">
+                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Justify">
+                    <Run FontWeight="550">Remote Field Display (RFD)</Run> — приложение для мониторинга и управления буровым комплексом. Позволяет отслеживать параметры бурения, контролировать оборудование и анализировать данные в реальном времени.
+                </TextBlock>
+
+            </StackPanel>
+            
+            <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
+                <Button Classes="negative" Content="Закрыть" Command="{Binding CloseCommand}"/>
+            </StackPanel>
+        </Grid>
+        
+    </Border>
+    
+    <!--<Border BorderBrush="{DynamicResource BorderBrush}"
             CornerRadius="10"
             BorderThickness="1"
             Background="{DynamicResource Background}" Padding="15"
@@ -35,6 +79,6 @@
                 <Button Content="Закрыть" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </Grid>
-    </Border>
+    </Border>-->
 
 </UserControl>
