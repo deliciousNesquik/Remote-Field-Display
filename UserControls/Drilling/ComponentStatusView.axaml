@@ -19,7 +19,7 @@
                 <TextBlock Text="Статусы" Foreground="{DynamicResource Foreground}" FontWeight="Bold" Classes="section" />
             </StackPanel>
 
-            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Padding="0"
+            <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Height="17" Padding="0"
                     Margin="-1.7 -0.7 0 0" Background="Transparent"
                     Command="{Binding OpenInNewWindowCommand}"
                     ToolTip.Tip="Данная кнопка позволяет создать данный элемент в отдельном окне">

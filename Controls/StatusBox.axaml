@@ -23,7 +23,7 @@
                     <Grid>
                         <Label Content="{TemplateBinding Header}" FontWeight="700" FontSize="20"
                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                               Foreground="{DynamicResource Foreground}" />
+                               Foreground="White" />
                     </Grid>
                 </Border>
             </ControlTemplate>

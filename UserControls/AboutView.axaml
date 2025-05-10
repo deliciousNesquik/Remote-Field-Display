@@ -27,6 +27,8 @@
             <Ellipse Fill="{DynamicResource Background}"
                      Width="70"
                      Height="70"
+                     StrokeThickness="1"
+                     Stroke="{DynamicResource BorderBrush}"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Top"
                      Margin="0 -35 0 0"/>
@@ -48,37 +50,5 @@
                 <Button Classes="negative" Content="Закрыть" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </Grid>
-        
     </Border>
-    
-    <!--<Border BorderBrush="{DynamicResource BorderBrush}"
-            CornerRadius="10"
-            BorderThickness="1"
-            Background="{DynamicResource Background}" Padding="15"
-            Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
-
-        <Grid>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Svg Name="HelpImage" Path="../Assets/help-Light.svg" Width="{DynamicResource FrameIconSize}"
-                     Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
-                <TextBlock Text="О приложении" FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
-                           TextAlignment="Center" />
-            </StackPanel>
-
-            <TextBlock Text="{DynamicResource Version}" FontSize="10" TextAlignment="Center"
-                       HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,0,0" />
-
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Start">
-                    <Run FontWeight="550">Remote Field Display (RFD)</Run> — приложение для мониторинга и управления буровым комплексом. Позволяет отслеживать параметры бурения, контролировать оборудование и анализировать данные в реальном времени.
-                </TextBlock>
-
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                <Button Content="Закрыть" HorizontalAlignment="Right" Command="{Binding CloseCommand}"/>
-            </StackPanel>
-        </Grid>
-    </Border>-->
-
 </UserControl>
