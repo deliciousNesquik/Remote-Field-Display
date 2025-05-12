@@ -175,7 +175,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         IsModalWindowOpen = false;
     }
 
-    private void OpenManualConnecting()
+    public void OpenManualConnecting()
     {
         IsModalWindowOpen = true;
         var manualConnectionDialogViewModel = new ManualConnectionDialogViewModel(_connectionService, _logger);
@@ -183,7 +183,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         manualConnectionDialogViewModel.DialogClose += HideConnectionDialog;
     }
 
-    private void OpenAutomaticConnecting()
+    public void OpenAutomaticConnecting()
     {
         IsModalWindowOpen = true;
         var automaticConnectingDialogViewModel = new AutomaticConnectionDialogViewModel(_connectionService, _logger);
@@ -191,7 +191,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         automaticConnectingDialogViewModel.DialogClose += HideConnectionDialog;
     }
 
-    private void Disconnect()
+    public void Disconnect()
     {
         _connectionService.Disconnect();
     }

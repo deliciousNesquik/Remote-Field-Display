@@ -2,7 +2,7 @@ namespace RFD.Core;
 
 public static class PlatformUtils
 {
-    public static bool IsWindows => OperatingSystem.IsWindows();
-    public static bool IsMacOS => OperatingSystem.IsMacOS();
-    public static bool IsLinux => OperatingSystem.IsLinux();
+    public static readonly bool IsWindows = OperatingSystem.IsWindows();
+    public static readonly bool IsMacOS = OperatingSystem.IsMacOS();
+    public static readonly bool IsLinux = OperatingSystem.IsLinux();
 }

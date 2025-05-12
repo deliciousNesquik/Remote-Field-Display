@@ -1,4 +1,5 @@
 using System.Reactive;
+using Avalonia.Threading;
 using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Interfaces;
@@ -41,20 +42,26 @@ public class AutomaticConnectionDialogViewModel : ViewModelBase, IDialog
     public ReactiveCommand<Unit, Unit> CancelCommand { get; set; }
     public Action? DialogClose { get; set; }
 
-    private void AutoConnection()
+    private async void AutoConnection()
     {
         _cancellationTokenSource = new CancellationTokenSource();
         _logger.Info("Запуск задачи автоматического подключения.");
-        
+
         var connect = Task.Run(() => _connectionService.AutoConnectAsync());
+    
         if (!connect.Result)
         {
             _logger.Error("Результат автоматического подключения не удачный.");
             return;
         }
+     
         
-        DialogClose?.Invoke(); //Вызывается для объекта который создал данное окно.
-        Cancel();
+        await Task.Delay(2000);
+        Dispatcher.UIThread.Post(() =>
+        {
+            DialogClose?.Invoke();
+            Cancel();
+        });
     }
 
     private void Cancel()
