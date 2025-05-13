@@ -106,6 +106,26 @@ public class TargetSectionViewModel : INotifyPropertyChanged
         TimeStamp = data.TimeStamp == TimeSpan.MaxValue ? TimeSpan.FromSeconds(0) : data.TimeStamp;
     }
 
+    public void SetDefaultTarget()
+    {
+        RadialLinesList.Clear();
+        
+        DrillingRingsList.Clear();
+        var distance = 180.0 / (Capacity - 1);
+        for (var i = 1; i <= 6 - 1; i++)
+            DrillingRingsList.Add(new Ring(i * distance, i * distance, i, i * distance / 2,
+                new Thickness(RingThickness)));
+        
+        AngleLabelsList.Clear();
+        DrillingPointsList.Clear();
+
+        Angle = 0;
+        TimeStamp = TimeSpan.Zero;
+        ToolfaceOffset = 0;
+        MagneticDeclination = 0;
+
+    }
+    
     private void UpdateTarget()
     {
         lock (_updateLock) // Блокируем обновление

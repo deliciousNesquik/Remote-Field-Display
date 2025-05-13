@@ -45,7 +45,8 @@
             <NativeMenuItem Header="Настройки">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Темная тема" Command="{Binding SettingsCommand}" ToggleType="CheckBox" />
+                        <NativeMenuItem Header="Темная тема" Command="{Binding ChangeThemeCommand}" ToggleType="CheckBox" />
+                        <NativeMenuItem Header="Сохранять данные" Command="{Binding SaveDataAndSettingsCommand}" ToggleType="CheckBox" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -167,7 +168,8 @@
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Темная тема" ToggleType="CheckBox" Classes="sub" Command="{Binding SettingsCommand}" />
+                                <MenuItem Header="Темная тема" ToggleType="CheckBox" Classes="sub" Command="{Binding ChangeThemeCommand}" />
+                                <MenuItem Header="Сохранять данные" ToggleType="CheckBox" Classes="sub" Command="{Binding SaveDataAndSettingsCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>

@@ -12,11 +12,19 @@ using RFD.UserControls;
 
 namespace RFD.ViewModels;
 
-public class MainWindowViewModel : INotifyPropertyChanged
+public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
 {
     private readonly IConnectionService _connectionService;
     private readonly ILoggerService _logger;
 
+    private bool _saveDataAndSettings;
+
+    public bool SaveDataAndSettings
+    {
+        get => _saveDataAndSettings;
+        set => this.RaiseAndSetIfChanged(ref _saveDataAndSettings, value);
+    }
+    
     public MainWindowViewModel()
     {
         _logger = new NLoggerService();
@@ -34,15 +42,10 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
 
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
-
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
-
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
-
-        SettingsCommand = ReactiveCommand.Create(
-            () => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark)
-        );
-
+        ChangeThemeCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
+        SaveDataAndSettingsCommand = ReactiveCommand.Create((() => SaveDataAndSettings = !SaveDataAndSettings));
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
@@ -63,7 +66,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
-        SettingsCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
+        ChangeThemeCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
+        SaveDataAndSettingsCommand = ReactiveCommand.Create((() => SaveDataAndSettings = !SaveDataAndSettings));
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
@@ -162,7 +166,8 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand OpenAutomaticConnectingCommand { get; }
     public ICommand OpenManualConnectingCommand { get; }
     public ICommand DisconnectCommand { get; }
-    public ICommand SettingsCommand { get; }
+    public ICommand ChangeThemeCommand { get; }
+    public ICommand SaveDataAndSettingsCommand { get; }
     public ICommand AboutCommand { get; }
 
     #endregion
@@ -193,6 +198,17 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public void Disconnect()
     {
+        if (!SaveDataAndSettings)
+        {
+            _logger.Info("Сохранение настроек и данных отключено, очищаю интерфейс...");
+            InformationSectionViewModel.ClearInfoBox();
+            StatusSectionViewModel.ClearStatusBox();
+            TargetSectionViewModel.SetDefaultTarget();
+        }
+        else
+        {
+            _logger.Info("Сохранение настроек и данных включено, отключаюсь от сервера...");
+        }
         _connectionService.Disconnect();
     }
 
