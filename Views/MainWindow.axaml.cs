@@ -22,6 +22,9 @@ public partial class MainWindow : Window
         {
             ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome;
             ExtendClientAreaTitleBarHeightHint = -1;
+            
+            TitleApp.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            ButtonsApp.IsVisible = false;
         }
         else
         {

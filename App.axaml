@@ -48,7 +48,7 @@
 
         <!--Общие ресурсы-->
         <x:String x:Key="Version">Версия 1.0.0</x:String>
-        <x:String x:Key="AppTitle">Remote Field Display</x:String>
+        <x:String x:Key="AppTitle">Удаленный монитор бурения</x:String>
 
         <!--Стили для модульных окон-->
         <x:Double x:Key="FrameWidth">420</x:Double>

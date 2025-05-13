@@ -18,10 +18,7 @@
         Background="{DynamicResource Background}"
         Icon="../Assets/app-icon.ico"
         Title="Remote Field Display"
-         
         
-
-        WindowStartupLocation="CenterScreen"
         MinHeight="19"
         MinWidth="530">
 
@@ -69,7 +66,7 @@
             <Grid Name="TopBar" Grid.Row="0" ColumnDefinitions="*, Auto" Height="28"
                   Background="{DynamicResource TopBarGradientBrush}">
                 <!--Заголовок приложения и картинка-->
-                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Name="TitleApp" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <Svg Path="{DynamicResource AppIcon}"
                          Stretch="Uniform"
                          Width="16" Height="16"
@@ -79,14 +76,14 @@
                 </StackPanel>
 
                 <!--Кнопки для управления приложением-->
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Classes="windowManipulation" Click="WindowMinimizeButton_OnClick">
+                <StackPanel Name="ButtonsApp" Grid.Column="1" Orientation="Horizontal">
+                    <Button Click="WindowMinimizeButton_OnClick">
                         <Svg Path="{DynamicResource MinimizeIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
-                    <Button Classes="windowManipulation" Click="WindowMaximizeButton_OnClick">
+                    <Button Click="WindowMaximizeButton_OnClick">
                         <Svg Path="{DynamicResource MaximizeIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
-                    <Button Classes="windowСlose" Click="WindowCloseButton_OnClick">
+                    <Button Click="WindowCloseButton_OnClick">
                         <Svg Path="{DynamicResource CloseIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
                 </StackPanel>

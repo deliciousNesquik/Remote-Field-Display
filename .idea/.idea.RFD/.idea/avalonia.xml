@@ -11,6 +11,7 @@
         <entry key="Controls/InfoStatusBox.axaml" value="RFD.csproj" />
         <entry key="Controls/PolarChart.axaml" value="RFD.csproj" />
         <entry key="Controls/StatusBox.axaml" value="RFD.csproj" />
+        <entry key="Controls/SystemTopBar/SystemBar.axaml" value="RFD.csproj" />
         <entry key="Controls/Themes/Arc.axaml" value="RFD.csproj" />
         <entry key="Controls/Themes/Arcs.axaml" value="RFD.csproj" />
         <entry key="Controls/Themes/ArcsRing.axaml" value="RFD.csproj" />
