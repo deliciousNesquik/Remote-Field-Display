@@ -21,6 +21,7 @@
         <Grid>
             
             <Svg Path="{DynamicResource InternetConnectionIcon}" 
+                 Css="{DynamicResource ThemeIconColor}"
                  Width="50" 
                  Height="50"
                  HorizontalAlignment="Center"

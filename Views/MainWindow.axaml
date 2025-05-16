@@ -45,8 +45,8 @@
             <NativeMenuItem Header="Настройки">
                 <NativeMenuItem.Menu>
                     <NativeMenu>
-                        <NativeMenuItem Header="Темная тема" Command="{Binding ChangeThemeCommand}" ToggleType="CheckBox" />
-                        <NativeMenuItem Header="Сохранять данные" Command="{Binding SaveDataAndSettingsCommand}" ToggleType="CheckBox" />
+                        <NativeMenuItem Header="Сменить тему приложения" Command="{Binding ChangeThemeCommand}" />
+                        <NativeMenuItem Header="Сохранять данные при отключении" Command="{Binding SaveDataAndSettingsCommand}" ToggleType="CheckBox" />
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
@@ -147,11 +147,11 @@
                     <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 0 0 1"
                             IsVisible="{Binding UseDefaultMenu}" />
                     <DockPanel Grid.Column="0" Grid.Row="0" Height="28" IsVisible="{Binding UseDefaultMenu}" >
-                        <Menu DockPanel.Dock="Left" Height="27">
+                        <Menu DockPanel.Dock="Left" Height="28" Margin="3 0 0 0">
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <Svg Path="{DynamicResource InternetConnectionIcon}" Css="{DynamicResource ThemeIconColor}" Stretch="Uniform" Width="15" Height="15" />
                                         <TextBlock Text="Подключение" Margin="5 0 0 0"/>
                                     </StackPanel>
                                 </MenuItem.Header>
@@ -163,18 +163,18 @@
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource SettingsIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <Svg Path="{DynamicResource SettingsIcon}" Css="{DynamicResource ThemeIconColor}" Stretch="Uniform" Width="15" Height="15" />
                                         <TextBlock Text="Настройки" Margin="5 0 0 0 "/>
                                     </StackPanel>
                                 </MenuItem.Header>
 
-                                <MenuItem Header="Темная тема" ToggleType="CheckBox" Classes="sub" Command="{Binding ChangeThemeCommand}" />
-                                <MenuItem Header="Сохранять данные" ToggleType="CheckBox" Classes="sub" Command="{Binding SaveDataAndSettingsCommand}" />
+                                <MenuItem Header="Сменить тему приложения" Classes="sub" Command="{Binding ChangeThemeCommand}" />
+                                <MenuItem Header="Сохранять данные при отключении" ToggleType="CheckBox" Classes="sub" Command="{Binding SaveDataAndSettingsCommand}" />
                             </MenuItem>
                             <MenuItem Classes="main">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal">
-                                        <Svg Path="{DynamicResource HelpIcon}" Stretch="Uniform" Width="15" Height="15" />
+                                        <Svg Path="{DynamicResource HelpIcon}" Css="{DynamicResource ThemeIconColor}" Stretch="Uniform" Width="15" Height="15" />
                                         <TextBlock Text="Помощь" Margin="5 0 0 0 "/>
                                     </StackPanel>
                                 </MenuItem.Header>

@@ -26,6 +26,9 @@
         <GradientStop Color="#ededed" Offset="0" />
         <GradientStop Color="#BEBEBE" Offset="1" />
     </LinearGradientBrush>
+    
+    <x:String x:Key="ThemeIconColor">.ThemeIconColor { fill:#FFEFFF; }</x:String>
+    <x:String x:Key="ThemeIconStroke">.ThemeIconStroke { stroke:#FFEFFF; }</x:String>
 
     <!-- SVG иконки -->
     <x:String x:Key="AppIcon">avares://RFD/Assets/app-icon.svg</x:String>
@@ -33,12 +36,12 @@
     <x:String x:Key="MaximizeIcon">avares://RFD/Assets/button-maximize.svg</x:String>
     <x:String x:Key="CloseIcon">avares://RFD/Assets/button-close.svg</x:String>
 
-    <x:String x:Key="InternetConnectionIcon">avares://RFD/Assets/internet-connection-Dark.svg</x:String>
-    <x:String x:Key="SettingsIcon">avares://RFD/Assets/settings-Dark.svg</x:String>
-    <x:String x:Key="HelpIcon">avares://RFD/Assets/help-Dark.svg</x:String>
-    <x:String x:Key="ConnectionStatusIcon">avares://RFD/Assets/connection-status-Dark.svg</x:String>
+    <x:String x:Key="InternetConnectionIcon">avares://RFD/Assets/internet-connection.svg</x:String>
+    <x:String x:Key="SettingsIcon">avares://RFD/Assets/settings.svg</x:String>
+    <x:String x:Key="HelpIcon">avares://RFD/Assets/help.svg</x:String>
+    <x:String x:Key="ConnectionStatusIcon">avares://RFD/Assets/connection-status.svg</x:String>
 
-    <x:String x:Key="FrameExpandIcon">avares://RFD/Assets/frame-expand-Dark.svg</x:String>
-    <x:String x:Key="ExternalIcon">avares://RFD/Assets/external-Dark.svg</x:String>
+    <x:String x:Key="FrameExpandIcon">avares://RFD/Assets/frame-expand.svg</x:String>
+    <x:String x:Key="ExternalIcon">avares://RFD/Assets/external.svg</x:String>
 
 </ResourceDictionary>

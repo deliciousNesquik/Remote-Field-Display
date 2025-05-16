@@ -17,6 +17,7 @@
         <Grid>
             
             <Svg Path="{DynamicResource HelpIcon}" 
+                 Css="{DynamicResource ThemeIconColor}"
                  Width="50" 
                  Height="50"
                  HorizontalAlignment="Center"
