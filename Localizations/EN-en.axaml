@@ -7,6 +7,7 @@
     <x:String x:Key="AutomaticConnection">Automatic connection</x:String>
     <x:String x:Key="ManualConnection">Manual connection</x:String>
     <x:String x:Key="Disconnect">Disconnect</x:String>
+    <x:String x:Key="NotConnection">Not connection</x:String>
     <x:String x:Key="Settings">Settings</x:String>
     <x:String x:Key="Help">Help</x:String>
     <x:String x:Key="About">About</x:String>

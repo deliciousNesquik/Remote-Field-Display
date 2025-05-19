@@ -7,6 +7,7 @@
     <x:String x:Key="AutomaticConnection">Автоматическое подключение</x:String>
     <x:String x:Key="ManualConnection">Ручное подключение</x:String>
     <x:String x:Key="Disconnect">Отключение</x:String>
+    <x:String x:Key="NotConnection">Нет подключения</x:String>
     <x:String x:Key="Settings">Настройки</x:String>
     <x:String x:Key="Help">Помощь</x:String>
     <x:String x:Key="About">О приложении</x:String>

@@ -7,6 +7,7 @@
     <x:String x:Key="AutomaticConnection">Автомат тоташтырыу</x:String>
     <x:String x:Key="ManualConnection">Ҡул менән тоташтырыу</x:String>
     <x:String x:Key="Disconnect">Һүндереү</x:String>
+    <x:String x:Key="NotConnection">Бәйләнеш юҡ</x:String>
     <x:String x:Key="Settings">Көйләүҙәр</x:String>
     <x:String x:Key="Help">Ярҙам</x:String>
     <x:String x:Key="About">Ҡушымта тураһында</x:String>

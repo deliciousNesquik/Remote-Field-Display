@@ -1,3 +1,5 @@
+using System.Net.Mime;
+using Avalonia;
 using Avalonia.Threading;
 using ReactiveUI;
 using RFD.Interfaces;
@@ -6,15 +8,9 @@ namespace RFD.ViewModels;
 
 public class ConnectStatusViewModel : ViewModelBase
 {
-    private const string NotConnection = "Нет подключения";
-    private string _address;
-    private bool _status;
-
-    public ConnectStatusViewModel()
-    {
-        _status = false;
-        _address = NotConnection;
-    }
+    private const string NotConnection = "✖";
+    private string _address = NotConnection;
+    private bool _status = false;
 
     public bool Status
     {
