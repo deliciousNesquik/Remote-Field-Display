@@ -42,8 +42,14 @@
                     </NativeMenu>
                 </NativeMenuItem.Menu>
             </NativeMenuItem>
-            <NativeMenuItem Header="{DynamicResource Settings}" Command="{Binding SettingsCommand}"/>
-
+            <NativeMenuItem Header="{DynamicResource Application}">
+                <NativeMenuItem.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="{DynamicResource Settings}"
+                                        Command="{Binding SettingsCommand}" />
+                        </NativeMenu>
+                </NativeMenuItem.Menu>
+            </NativeMenuItem>
             <NativeMenuItem Header="{DynamicResource Help}">
                 <NativeMenuItem.Menu>
                     <NativeMenu>

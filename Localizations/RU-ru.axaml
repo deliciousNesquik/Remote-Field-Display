@@ -9,6 +9,7 @@
     <x:String x:Key="Disconnect">Отключение</x:String>
     <x:String x:Key="NotConnection">Нет подключения</x:String>
     <x:String x:Key="Settings">Настройки</x:String>
+    <x:String x:Key="Application">Приложение</x:String>
     <x:String x:Key="Help">Помощь</x:String>
     <x:String x:Key="About">О приложении</x:String>
     <x:String x:Key="Appearance">Внешний вид</x:String>

@@ -9,6 +9,7 @@
     <x:String x:Key="Disconnect">Һүндереү</x:String>
     <x:String x:Key="NotConnection">Бәйләнеш юҡ</x:String>
     <x:String x:Key="Settings">Көйләүҙәр</x:String>
+    <x:String x:Key="Application">Ҡушымта</x:String>
     <x:String x:Key="Help">Ярҙам</x:String>
     <x:String x:Key="About">Ҡушымта тураһында</x:String>
     <x:String x:Key="Appearance">Тышҡы ҡиәфәте</x:String>
