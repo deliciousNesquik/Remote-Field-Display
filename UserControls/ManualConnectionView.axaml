@@ -38,13 +38,13 @@
                      VerticalAlignment="Top"
                      Margin="0 -35 0 0"/>
             
-            <TextBlock Text="Ручное подключение" 
+            <TextBlock Text="{DynamicResource ManualConnection}" 
                        Classes="main"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
                        Margin="0 40 0 0"/>
             
-            <TextBox Watermark="Введите IP-адрес"
+            <TextBox Watermark="{DynamicResource EnterIpAddress}"
                       
                      Text="{Binding Аddress, UpdateSourceTrigger=PropertyChanged}" 
                      HorizontalAlignment="Center"
@@ -53,7 +53,8 @@
                      Width="330"
                      Margin="0 80 0 0"/>
             
-            <TextBlock TextWrapping="Wrap" 
+            <TextBlock Text="{DynamicResource AboutTheManualConnection}" 
+                       TextWrapping="Wrap" 
                        FontSize="{DynamicResource FrameFontSizeSmall}" 
                        Width="330"
                        Margin="0 85 0 20"
@@ -61,56 +62,12 @@
                        Foreground="{DynamicResource Foreground}"
                        HorizontalAlignment="Center" 
                        VerticalAlignment="Center">
-                
-                
-                Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
-                <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
-                Например: <Run Foreground="Green">192.168.1.100</Run>.
-                Убедитесь, что ваш сервер включён и доступен в сети.
             </TextBlock>
             
             <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="Отменить" Command="{Binding CancelCommand}" />
-                <Button Classes="positive" Content="Подключиться" Command="{Binding ConfirmCommand}" />
-            </StackPanel>
-        </Grid>
-        
-    </Border>
-    
-    
-    <!--
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-            Background="{DynamicResource Background}" Padding="15"
-            CornerRadius="10"
-            Width="{DynamicResource FrameWidth}" Height="{DynamicResource FrameHeight}">
-
-        <Grid>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,0,0,10">
-                <Svg Path="{DynamicResource InternetConnectionIcon}"
-                     Width="{DynamicResource FrameIconSize}" Height="{DynamicResource FrameIconSize}" Margin="0 0 5 0" />
-                <TextBlock Text="Ручное подключение" Foreground="{DynamicResource Foreground}"
-                           FontSize="{DynamicResource FrameFontSizeBig}" FontWeight="Bold"
-                           TextAlignment="Center" />
-            </StackPanel>
-            
-            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                <TextBox Watermark="Введите IP-адрес"
-                         Text="{Binding Аddress, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" Margin="0 20 0 20"
-                           TextAlignment="Center" Foreground="{DynamicResource Foreground}">
-                    Введите IP-адрес сервера, к которому вы хотите подключиться, в формате:
-                    <Run FontWeight="Bold">xxx.xxx.xxx.xxx</Run>, где "xxx" — числа от 0 до 255.
-                    Например: <Run Foreground="Green">192.168.1.100</Run>.
-                    Убедитесь, что ваш сервер включён и доступен в сети.
-                </TextBlock>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Content="Подключиться" Command="{Binding ConfirmCommand}" />
-                <Button Content="Отмена" Command="{Binding CancelCommand}" />
+                <Button Classes="negative" Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
+                <Button Classes="positive" Content="{DynamicResource Connect}" Command="{Binding ConfirmCommand}" />
             </StackPanel>
         </Grid>
     </Border>
-    -->
-    
 </UserControl>

@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="Version">Версияһы 1.0.0</x:String>
+    <x:String x:Key="AppTitle">Алыҫтан быраулау мониторы</x:String>
+    
+    <x:String x:Key="Connection">Бәйләнеш</x:String>
+    <x:String x:Key="AutomaticConnection">Автомат тоташтырыу</x:String>
+    <x:String x:Key="ManualConnection">Ҡул менән тоташтырыу</x:String>
+    <x:String x:Key="Disconnect">Һүндереү</x:String>
+    <x:String x:Key="Settings">Көйләүҙәр</x:String>
+    <x:String x:Key="Help">Ярҙам</x:String>
+    <x:String x:Key="About">Ҡушымта тураһында</x:String>
+    <x:String x:Key="Appearance">Тышҡы ҡиәфәте</x:String>
+    <x:String x:Key="SaveData">Мәғлүмәттәрҙе һаҡлау</x:String>
+    <x:String x:Key="BrandColor">Фирма төҫө</x:String>
+    <x:String x:Key="Language">Теле</x:String>
+    
+    <x:String x:Key="DarkTheme">Ҡараңғы</x:String>
+    <x:String x:Key="LightTheme">Яҡты</x:String>
+    
+    <x:String x:Key="Statuses">Статустары</x:String>
+    <x:String x:Key="Information">Мәғлүмәт</x:String>
+    <x:String x:Key="Target">Маҡсат</x:String>
+    <x:String x:Key="Angle">Мөйөш</x:String>
+    <x:String x:Key="Time">Ваҡыты</x:String>
+    <x:String x:Key="ExternalButtonTip">Был төймә был элементты айырым тәҙрәлә булдырырға мөмкинлек бирә</x:String>
+    
+    
+    <x:String x:Key="AboutTheApp">Алыҫтан быраулау мониторы (АБМ) — быраулау комплексын мониторинглау өсөн ҡушымта. Быраулау параметрҙарын күҙәтергә, ҡорамалдарҙы контролдә тоторға һәм мәғлүмәттәрҙе реаль ваҡытта анализларға мөмкинлек бирә.</x:String>
+    <x:String x:Key="AboutTheAutomaticConnection">Автоматлы тоташтырыу системаға локаль селтәрҙә булған серверҙы үҙаллы асыҡларға мөмкинлек бирә. Был процесс, селтәрегеҙҙең торошона һәм серверҙың асыҡлығына бәйле, бер аҙ ваҡыт ала.</x:String>
+    <x:String x:Key="AboutTheManualConnection">СЕРВЕРҘЫҢ IP-адресын индерегеҙ, уға тоташырға теләйһегеҙ, форматта: xxx.xxx.xxx.xxx, бында "xxx" 0 — дән 255-кә тиклемге һандар. Мәҫәлән: 192.168.1.100. Сервер селтәрҙә эшләй һәм эшләй.</x:String>
+    <x:String x:Key="AboutSaveData">Был функция быраулау комплексынан алынған мәғлүмәттәрҙе осраҡлы йәки аңлы рәүештә өҙөлгән осраҡта һаҡларға мөмкинлек бирә.</x:String>
+    <x:String x:Key="AboutBrandColor">Үҙ төҫөңдө һайла йәки ҡулланма</x:String>
+    <x:String x:Key="AboutLanguage">Ҡушымта телен һайла</x:String>
+    <x:String x:Key="AboutAppearance">Уңайлы эш өсөн ҡушымта темаһын һайлағыҙ. Иғтибар! Әгәр серверҙан команда килһә ҡушымтаның темаһы үҙгәрә ала!</x:String>
+    
+    <x:String x:Key="EnterIpAddress">IP-адресын индерегеҙ</x:String>
+    <x:String x:Key="Connect">Ҡушыласаҡ</x:String>
+    
+    <x:String x:Key="Close">Ябыу</x:String>
+    <x:String x:Key="Cancel">Юҡҡа сығарыу</x:String>
+</ResourceDictionary>

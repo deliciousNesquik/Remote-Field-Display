@@ -25,7 +25,15 @@ public class StatusSectionViewModel
     private void OpenInNewWindow()
     {
         var newControl = new StatusSection { DataContext = this };
-        _windowService.OpenWindow(newControl, "Статусы");
+        
+        if (App.Current?.Resources.TryGetResource("Statuses", App.Current?.ActualThemeVariant, out var result1) == true)
+        {
+            _windowService.OpenWindow(newControl, result1.ToString());
+        }
+        else
+        {
+            _windowService.OpenWindow(newControl, "Not found resources");
+        }
     }
 
     public void AddStatusBox(StatusBox statusBox)

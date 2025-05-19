@@ -41,14 +41,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://RFD/Themes/Light.axaml" />
                 <ResourceInclude Source="avares://RFD/Themes/Dark.axaml" />
+                <ResourceInclude Source="avares://RFD/Localizations/RU-ru.axaml" />
+                <ResourceInclude Source="avares://RFD/Localizations/EN-en.axaml" />
 
                 <ResourceInclude Source="avares://RFD/Controls/LoadingIndicators.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
         <!--Общие ресурсы-->
-        <x:String x:Key="Version">Версия 1.0.0</x:String>
-        <x:String x:Key="AppTitle">Удаленный монитор бурения</x:String>
 
         <!--Стили для модульных окон-->
         <x:Double x:Key="FrameWidth">420</x:Double>

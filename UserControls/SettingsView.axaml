@@ -1,0 +1,231 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:RFD.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             x:Class="RFD.UserControls.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <Border CornerRadius="10"
+            Width="500"
+            Height="550"
+            BorderBrush="{DynamicResource BorderBrush}"
+            Background="{DynamicResource Background}"
+            BorderThickness="1">
+
+        <Grid>
+
+            <Svg Path="{DynamicResource SettingsIcon}"
+                 Css="{DynamicResource ThemeIconColor}"
+                 Width="30"
+                 Height="30"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 ZIndex="1000"
+                 Margin="20 20 0 0" />
+
+            <TextBlock Text="{DynamicResource Settings}"
+                       FontSize="23"
+                       HorizontalAlignment="Left" VerticalAlignment="Top"
+                       Margin="55 21 0 0" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="410" VerticalAlignment="Center">
+                <Grid>
+
+                    <StackPanel Orientation="Vertical"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Spacing="30"
+                                Margin="25 0 0 0">
+
+                        <StackPanel Orientation="Vertical" Spacing="10">
+                            <TextBlock Text="{DynamicResource SaveData}"
+                                       FontWeight="500"
+                                       FontSize="17"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top" />
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{DynamicResource AboutSaveData}"
+                                           FontSize="14"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Width="300"
+                                           Opacity="0.7"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Justify" />
+
+                                <ToggleSwitch OffContent="" OnContent="" IsChecked="{Binding SaveData}" Margin="100 0 0 0" />
+                            </StackPanel>
+
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" Spacing="10">
+                                <TextBlock Text="{DynamicResource BrandColor}"
+                                           FontSize="17"
+                                           FontWeight="500"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top" />
+
+                                <TextBlock Text="{DynamicResource AboutBrandColor}"
+                                           FontSize="14"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Width="300"
+                                           Opacity="0.7"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Justify" />
+                            </StackPanel>
+
+
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Spacing="10"
+                                            Margin="0 0 0 0">
+
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Padding="0"
+                                            CornerRadius="10"
+                                            Width="20"
+                                            Height="20"
+                                            Command="{Binding Color1Command}">
+                                        <Button.Content>
+                                            <Ellipse Fill="#3e66ad" Width="20" Height="20"
+                                                     Stroke="{DynamicResource BorderBrush}" StrokeThickness="0.5" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Padding="0"
+                                            CornerRadius="10"
+                                            Width="20"
+                                            Height="20"
+                                            Command="{Binding Color2Command}">
+                                        <Button.Content>
+                                            <Ellipse Fill="#50ADA8" Width="20" Height="20"
+                                                     Stroke="{DynamicResource BorderBrush}" StrokeThickness="0.5" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Padding="0"
+                                            CornerRadius="10"
+                                            Width="20"
+                                            Height="20"
+                                            Command="{Binding Color3Command}">
+                                        <Button.Content>
+                                            <Ellipse Fill="#31AD2D" Width="20" Height="20"
+                                                     Stroke="{DynamicResource BorderBrush}" StrokeThickness="0.5" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Padding="0"
+                                            CornerRadius="10"
+                                            Width="20"
+                                            Height="20"
+                                            Command="{Binding Color4Command}">
+                                        <Button.Content>
+                                            <Ellipse Fill="#ADAA41" Width="20" Height="20"
+                                                     Stroke="{DynamicResource BorderBrush}" StrokeThickness="0.5" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Padding="0"
+                                            CornerRadius="10"
+                                            Width="20"
+                                            Height="20"
+                                            Command="{Binding Color5Command}">
+                                        <Button.Content>
+                                            <Ellipse Fill="#AD4A3F" Width="20" Height="20"
+                                                     Stroke="{DynamicResource BorderBrush}" StrokeThickness="0.5" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0 4 0 0">
+                                    <TextBlock Text="#"
+                                               FontSize="17"
+                                               Opacity="0.7"
+                                               Margin="0 5 0 0"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top" />
+
+                                    <TextBox Width="150"
+                                             Height="12"
+                                             Watermark="HEX color"
+                                             Text="{Binding BrandColor, UpdateSourceTrigger=PropertyChanged}" 
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Top" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            
+                            <StackPanel Orientation="Vertical" Spacing="10">
+                                <TextBlock Text="{DynamicResource Appearance}"
+                                           FontWeight="500"
+                                           FontSize="17"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top" />
+
+                                <TextBlock Text="{DynamicResource AboutAppearance}"
+                                           FontSize="14"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Width="300"
+                                           Opacity="0.7"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Justify" />
+                            </StackPanel>
+                            <ToggleSwitch OffContent="{DynamicResource LightTheme}" OnContent="{DynamicResource DarkTheme}" FlowDirection="RightToLeft" IsChecked="{Binding DarkTheme}" Margin="40 0 0 0" />
+                        </StackPanel>
+                        
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" Spacing="10">
+                                <TextBlock Text="{DynamicResource Language}"
+                                           FontWeight="500"
+                                           FontSize="17"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"/>
+                                <TextBlock Text="{DynamicResource AboutLanguage}"
+                                           FontSize="14"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Top"
+                                           Width="300"
+                                           Opacity="0.7"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Justify" />
+                            </StackPanel>
+                            <ComboBox HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Margin="10 0 0 0"
+                                      Height="12"
+                                      Width="150"
+                                      SelectedIndex="{Binding SelectLanguage}">
+                                <ComboBoxItem Content="Русский" Background="{DynamicResource Background}" />
+                                <ComboBoxItem Content="English" Background="{DynamicResource Background}" />
+                                <ComboBoxItem Content="Башҡорт теле" Background="{DynamicResource Background}" />
+                            </ComboBox>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom" Spacing="10">
+                <Button Classes="negative" Content="{DynamicResource Close}" Command="{Binding CloseCommand}" />
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+</UserControl>

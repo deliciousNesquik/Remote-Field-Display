@@ -39,7 +39,7 @@
                      VerticalAlignment="Top"
                      Margin="0 -35 0 0"/>
             
-            <TextBlock Text="Автоматическое подключение" 
+            <TextBlock Text="{DynamicResource AutomaticConnection}" 
                        Classes="main"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
@@ -54,16 +54,8 @@
                                  HorizontalAlignment="Center"
                                  Margin="0 60 0 0"/>
             
-            <TextBlock Text="Успешно"
-                       IsVisible="False"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       Margin="0 -53 0 0"
-                       Foreground="Green"
-                       FontSize="18"
-                       FontWeight="700"/>
-            
-            <TextBlock Margin="0 40 0 0" 
+            <TextBlock Text="{DynamicResource AboutTheAutomaticConnection}"
+                       Margin="0 40 0 0" 
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        Width="330"
@@ -71,12 +63,10 @@
                        FontSize="{DynamicResource FrameFontSizeSmall}"
                        TextAlignment="DetectFromContent" 
                        Foreground="{DynamicResource Foreground}">
-                Автоматическое подключение позволяет системе самостоятельно обнаружить доступный сервер в локальной сети.
-                Этот процесс может занять некоторое время, в зависимости от состояния вашей сети и доступности сервера.
             </TextBlock>
             
             <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="Отменить" Command="{Binding CancelCommand}" />
+                <Button Classes="negative" Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
             </StackPanel>
         </Grid>
     </Border>

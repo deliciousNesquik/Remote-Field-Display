@@ -108,6 +108,13 @@ public class TargetSectionViewModel : INotifyPropertyChanged
 
     public void SetDefaultTarget()
     {
+        Angle = 0;
+        ToolfaceType = "G";
+        GridFrequency = 90;
+        TimeStamp = TimeSpan.Zero;
+        ToolfaceOffset = 0;
+        MagneticDeclination = 0;
+        DrillingPointsList.Clear();
         RadialLinesList.Clear();
         
         DrillingRingsList.Clear();
@@ -116,14 +123,9 @@ public class TargetSectionViewModel : INotifyPropertyChanged
             DrillingRingsList.Add(new Ring(i * distance, i * distance, i, i * distance / 2,
                 new Thickness(RingThickness)));
         
-        AngleLabelsList.Clear();
-        DrillingPointsList.Clear();
-
-        Angle = 0;
-        TimeStamp = TimeSpan.Zero;
-        ToolfaceOffset = 0;
-        MagneticDeclination = 0;
-
+        SetSector(-45, 45);
+        UpdateAngleLabels();
+        
     }
     
     private void UpdateTarget()
@@ -242,7 +244,15 @@ public class TargetSectionViewModel : INotifyPropertyChanged
     private void OpenInNewWindow()
     {
         var newControl = new TargetSection { DataContext = this };
-        _windowService.OpenWindow(newControl, "Мишень");
+        if (App.Current?.Resources.TryGetResource("Target", App.Current?.ActualThemeVariant, out var result1) == true)
+        {
+            _windowService.OpenWindow(newControl, result1.ToString());
+        }
+        else
+        {
+            _windowService.OpenWindow(newControl, "Not found resources");
+        }
+        
     }
 
     private static Point GetMidPoint(Point innerPoint, double distance, double angleDegrees)

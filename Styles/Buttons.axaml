@@ -5,6 +5,7 @@
             
             <Button Classes="negative" Content="Cancel"/>
             <Button Classes="positive" Content="Continue"/>
+            <Button Content="Continue"/>
             
         </StackPanel>
     </Design.PreviewWith>
@@ -15,6 +16,7 @@
             <Setter Property="Padding" Value="16 5 16 5"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="32"/>
+            <Setter Property="Background" Value="Transparent"/>
         </Style>
         
         

@@ -5,22 +5,15 @@
     <Color x:Key="Foreground">#232323</Color>
     <Color x:Key="BorderBrush">#232323</Color>
 
-    <Color x:Key="ForegroundButton">#ededed</Color>
-    <Color x:Key="BackgroundButton">#3e66ad</Color>
-
-    <Color x:Key="ForegroundColor02">#1B2046</Color>
-
     <Color x:Key="RedColor">#ff3333</Color>
     <Color x:Key="GreenColor">#00b300</Color>
 
     <Color x:Key="FocusingColor">#3e66ad</Color>
     <Color x:Key="CoverFocusingColor">#2d4a7d</Color>
 
-    <Color x:Key="ButtonBackground">Transparent</Color>
-
     <LinearGradientBrush x:Key="TopBarGradientBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientStop Color="#3E66AD" Offset="0" />
-        <GradientStop Color="#34589C" Offset="1" />
+        <GradientStop Color="{DynamicResource FocusingColor}" Offset="0" />
+        <GradientStop Color="{DynamicResource FocusingColor}" Offset="1" />
     </LinearGradientBrush>
 
     <!-- Градиент для текста -->

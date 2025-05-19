@@ -34,21 +34,19 @@
                      VerticalAlignment="Top"
                      Margin="0 -35 0 0"/>
             
-            <TextBlock Text="О приложении" 
+            <TextBlock Text="{DynamicResource About}" 
                        Classes="main"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
                        Margin="0 40 0 0"/>
             
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="320">
-                <TextBlock TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Justify">
-                    <Run FontWeight="550">Remote Field Display (RFD)</Run> — приложение для мониторинга и управления буровым комплексом. Позволяет отслеживать параметры бурения, контролировать оборудование и анализировать данные в реальном времени.
-                </TextBlock>
+                <TextBlock Text="{DynamicResource AboutTheAutomaticConnection}" TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Justify"/>
 
             </StackPanel>
             
             <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="Закрыть" Command="{Binding CloseCommand}"/>
+                <Button Classes="negative" Content="{DynamicResource Close}" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

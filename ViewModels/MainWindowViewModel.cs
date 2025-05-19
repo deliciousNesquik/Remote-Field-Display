@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Core;
@@ -44,8 +45,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
-        ChangeThemeCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
-        SaveDataAndSettingsCommand = ReactiveCommand.Create((() => SaveDataAndSettings = !SaveDataAndSettings));
+        SettingsCommand = ReactiveCommand.Create(OpenSettings);
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
@@ -66,8 +66,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
-        ChangeThemeCommand = ReactiveCommand.Create(() => ThemeManager.ApplyTheme(ThemeManager.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark));
-        SaveDataAndSettingsCommand = ReactiveCommand.Create((() => SaveDataAndSettings = !SaveDataAndSettings));
+        SettingsCommand = ReactiveCommand.Create(OpenSettings);
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
@@ -77,22 +76,6 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
 
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OpenAbout()
-    {
-        AboutViewModel aboutViewModel = new();
-        CurrentUserControl = new AboutDialog
-        {
-            DataContext = aboutViewModel
-        };
-        IsModalWindowOpen = true;
-
-        aboutViewModel.CloseDialog += () =>
-        {
-            IsModalWindowOpen = false;
-            CurrentUserControl = new UserControl();
-        };
-    }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
@@ -166,8 +149,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     public ICommand OpenAutomaticConnectingCommand { get; }
     public ICommand OpenManualConnectingCommand { get; }
     public ICommand DisconnectCommand { get; }
-    public ICommand ChangeThemeCommand { get; }
-    public ICommand SaveDataAndSettingsCommand { get; }
+    public ICommand SettingsCommand { get; }
     public ICommand AboutCommand { get; }
 
     #endregion
@@ -180,6 +162,22 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         IsModalWindowOpen = false;
     }
 
+    private void OpenAbout()
+    {
+        IsModalWindowOpen = true;
+        var aboutViewModel = new AboutViewModel();
+        CurrentUserControl = new AboutDialog { DataContext = aboutViewModel };
+        aboutViewModel.CloseDialog += HideConnectionDialog;
+    }
+    
+    public void OpenSettings()
+    {
+        IsModalWindowOpen = true;
+        var settingsViewModel = new SettingsViewModel();
+        CurrentUserControl = new SettingsView() { DataContext = settingsViewModel };
+        settingsViewModel.CloseDialog += HideConnectionDialog;
+    }
+    
     public void OpenManualConnecting()
     {
         IsModalWindowOpen = true;
@@ -198,7 +196,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
 
     public void Disconnect()
     {
-        if (!SaveDataAndSettings)
+        if (!SettingsApplication.SaveData)
         {
             _logger.Info("Сохранение настроек и данных отключено, очищаю интерфейс...");
             InformationSectionViewModel.ClearInfoBox();

@@ -66,13 +66,21 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             ThemeManager.ApplyTheme(AppTheme.Light);
+            SettingsApplication.Load();
+            
+            SettingsViewModel.ChangeBrandColor(SettingsApplication.BrandColor);
+            LocalizationManager.ApplyLocalization(SettingsApplication.LanguageLocalization);
+            
 
             _mainWindowViewModel = Program.Services!.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
                 DataContext = _mainWindowViewModel
             };
-            desktop.Exit += (_, __) => Environment.Exit(0);
+            desktop.Exit += (_, __) =>
+            {
+                Environment.Exit(0);
+            };
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -156,7 +164,7 @@ public class App : Application
             _connectionService.Connected);
     }
 
-    private void SetSettings(Settings settings)
+    private void SetSettings(NPFGEO.LWD.Net.Settings settings)
     {
         if (_mainWindowViewModel == null) return;
 

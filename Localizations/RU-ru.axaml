@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="Version">Версия 1.0.0</x:String>
+    <x:String x:Key="AppTitle">Удаленный монитор бурения</x:String>
+    
+    <x:String x:Key="Connection">Подключение</x:String>
+    <x:String x:Key="AutomaticConnection">Автоматическое подключение</x:String>
+    <x:String x:Key="ManualConnection">Ручное подключение</x:String>
+    <x:String x:Key="Disconnect">Отключение</x:String>
+    <x:String x:Key="Settings">Настройки</x:String>
+    <x:String x:Key="Help">Помощь</x:String>
+    <x:String x:Key="About">О приложении</x:String>
+    <x:String x:Key="Appearance">Внешний вид</x:String>
+    <x:String x:Key="BrandColor">Фирменный цвет</x:String>
+    <x:String x:Key="Language">Язык</x:String>
+    <x:String x:Key="SaveData">Сохранять данные</x:String>
+    
+    <x:String x:Key="DarkTheme">Темная</x:String>
+    <x:String x:Key="LightTheme">Светлая</x:String>
+    
+    <x:String x:Key="Statuses">Статусы</x:String>
+    <x:String x:Key="Information">Информация</x:String>
+    <x:String x:Key="Target">Мишень</x:String>
+    <x:String x:Key="Angle">Угол</x:String>
+    <x:String x:Key="Time">Время</x:String>
+    <x:String x:Key="ExternalButtonTip">Данная кнопка позволяет создать данный элемент в отдельном окне</x:String>
+    
+    
+    <x:String x:Key="AboutTheApp">Удаленный монитор бурения (УМБ) — приложение для мониторинга бурового комплекса. Позволяет отслеживать параметры бурения, контролировать оборудование и анализировать данные в реальном времени.</x:String>
+    <x:String x:Key="AboutTheAutomaticConnection">Автоматическое подключение позволяет системе самостоятельно обнаружить доступный сервер в локальной сети. Этот процесс может занять некоторое время, в зависимости от состояния вашей сети и доступности сервера.</x:String>
+    <x:String x:Key="AboutTheManualConnection">Введите IP-адрес сервера, к которому вы хотите подключиться, в формате: xxx.xxx.xxx.xxx, где "xxx" — числа от 0 до 255. Например: 192.168.1.100. Убедитесь, что ваш сервер включён и доступен в сети.</x:String>
+    <x:String x:Key="AboutSaveData">Данная функция позволяет сохранять данные полученные от бурового комплекса в случае случайного или намеренного разрыва соединения.</x:String>
+    <x:String x:Key="AboutBrandColor">Выбери или используй свой цвет</x:String>
+    <x:String x:Key="AboutLanguage">Выбери язык приложения</x:String>
+    <x:String x:Key="AboutAppearance">Выбери тему приложения для комфортной работы. Внимание! Тему приложения может изменится если придет команда от сервера!</x:String>
+    
+    <x:String x:Key="EnterIpAddress">Введите IP-адрес</x:String>
+    <x:String x:Key="Connect">Подключится</x:String>
+    
+    <x:String x:Key="Close">Закрыть</x:String>
+    <x:String x:Key="Cancel">Отменить</x:String>
+</ResourceDictionary>

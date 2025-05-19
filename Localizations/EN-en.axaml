@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="Version">Version 1.0.0</x:String>
+    <x:String x:Key="AppTitle">Remote Field Display</x:String>
+    
+    <x:String x:Key="Connection">Connection</x:String>
+    <x:String x:Key="AutomaticConnection">Automatic connection</x:String>
+    <x:String x:Key="ManualConnection">Manual connection</x:String>
+    <x:String x:Key="Disconnect">Disconnect</x:String>
+    <x:String x:Key="Settings">Settings</x:String>
+    <x:String x:Key="Help">Help</x:String>
+    <x:String x:Key="About">About</x:String>
+    <x:String x:Key="Appearance">Appearance</x:String>
+    <x:String x:Key="BrandColor">Brand color</x:String>
+    <x:String x:Key="Language">Language</x:String>
+    <x:String x:Key="SaveData">Save data</x:String>
+    
+    <x:String x:Key="DarkTheme">Dark</x:String>
+    <x:String x:Key="LightTheme">Light</x:String>
+    
+    <x:String x:Key="Statuses">Statuses</x:String>
+    <x:String x:Key="Information">Information</x:String>
+    <x:String x:Key="Target">Target</x:String>
+    <x:String x:Key="Angle">Angle</x:String>
+    <x:String x:Key="Time">Time</x:String>
+    <x:String x:Key="ExternalButtonTip">This button allows you to create this item in a separate window.</x:String>
+    
+    
+    <x:String x:Key="AboutTheApp">Remote Field Display (RFD) — an application for monitoring the drilling complex. It allows you to track drilling parameters, monitor equipment, and analyze data in real time.</x:String>
+    <x:String x:Key="AboutTheAutomaticConnection">Automatic connection allows the system to independently detect an available server on the local network. This process may take some time, depending on the state of your network and the availability of the server.</x:String>
+    <x:String x:Key="AboutTheManualConnection">Enter the IP address of the server you want to connect to in the format: xxx.xxx.xxx.xxx, where "xxx" is a number from 0 to 255. For example: 192.168.1.100. Make sure that your server is turned on and available on the network.</x:String>
+    <x:String x:Key="AboutSaveData">This function allows you to save the data received from the drilling complex in case of accidental or intentional disconnection.</x:String>
+    <x:String x:Key="AboutBrandColor">Select or customize your brand color</x:String>
+    <x:String x:Key="AboutLanguage">Choose the language of the application</x:String>
+    <x:String x:Key="AboutAppearance">Choose an application theme for comfortable work. Attention! The application theme may change if you receive a command from the server!</x:String>
+    
+    <x:String x:Key="EnterIpAddress">Enter the IP address</x:String>
+    
+    <x:String x:Key="Close">Close</x:String>
+    <x:String x:Key="Cancel">Cancel</x:String>
+    <x:String x:Key="Connect">Connect</x:String>
+</ResourceDictionary>

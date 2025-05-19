@@ -39,7 +39,15 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
     private void OpenInNewWindow()
     {
         var newControl = new InformationSection { DataContext = this };
-        _windowService.OpenWindow(newControl, "Информация");
+        
+        if (App.Current?.Resources.TryGetResource("Information", App.Current?.ActualThemeVariant, out var result1) == true)
+        {
+            _windowService.OpenWindow(newControl, result1.ToString());
+        }
+        else
+        {
+            _windowService.OpenWindow(newControl, "Not found resources");
+        }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
