@@ -1,11 +1,13 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
-        <StackPanel Background="#ededed" Width="300" Height="100" Orientation="Horizontal" Spacing="5">
+        <StackPanel Background="#ededed" Width="450" Height="100" Orientation="Horizontal" Spacing="5">
             
-            <Button Classes="negative" Content="Cancel"/>
-            <Button Classes="positive" Content="Continue"/>
-            <Button Content="Continue"/>
+            <Button Classes="Negative" Content="Cancel"/>
+            <Button Classes="Neutral" Content="Set default"/>
+            <Button Classes="Branding" Content="Brand button"/>
+            <Button Classes="Positive" Content="Continue"/>
+            
             
         </StackPanel>
     </Design.PreviewWith>
@@ -21,21 +23,39 @@
         
         
         
-        <Style Selector="Button.negative">
+        <Style Selector="Button.Negative">
             <Setter Property="Background" Value="{DynamicResource RedColor}"/>
             <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
         </Style>
-        <Style Selector="Button.negative:pointerover /template/ContentPresenter">
+        <Style Selector="Button.Negative:pointerover /template/ContentPresenter">
             <Setter Property="Background" Value="#D12F2F"/>
             <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
         </Style>
         
-        <Style Selector="Button.positive">
+        <Style Selector="Button.Branding">
             <Setter Property="Background" Value="{DynamicResource FocusingColor}"/>
             <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
         </Style>
-        <Style Selector="Button.positive:pointerover /template/ContentPresenter">
+        <Style Selector="Button.Branding:pointerover /template/ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource CoverFocusingColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
+        </Style>
+        
+        <Style Selector="Button.Positive">
+            <Setter Property="Background" Value="{DynamicResource GreenColor}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+        </Style>
+        <Style Selector="Button.Positive:pointerover /template/ContentPresenter">
+            <Setter Property="Background" Value="#66BB6A"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
+        </Style>
+        
+        <Style Selector="Button.Neutral">
+            <Setter Property="Background" Value="#AAB2BD"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
+        </Style>
+        <Style Selector="Button.Neutral:pointerover /template/ContentPresenter">
+            <Setter Property="Background" Value="#919BA6"/>
             <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
         </Style>
         

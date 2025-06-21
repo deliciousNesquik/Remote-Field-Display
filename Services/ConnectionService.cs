@@ -87,8 +87,8 @@ public class ConnectionService : IConnectionService
     public void Dispose()
     {
         Disconnect();
-        _client.Dispose();
-        _cancelTokenSource.Dispose();
+        GC.SuppressFinalize(this);
+        _logger.Info("Высвобождение ресурсов сервиса для получения данных");
     }
 
     private void InitializeEvents()

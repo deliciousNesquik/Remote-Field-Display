@@ -24,6 +24,8 @@ public class App : Application
 
     public override void Initialize()
     {
+        Current!.Name = "RFD";
+        
         AvaloniaXamlLoader.Load(this);
 
         if (Design.IsDesignMode)
@@ -73,12 +75,15 @@ public class App : Application
             
 
             _mainWindowViewModel = Program.Services!.GetRequiredService<MainWindowViewModel>();
-            desktop.MainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow()
             {
                 DataContext = _mainWindowViewModel
             };
             desktop.Exit += (_, __) =>
             {
+                _connectionService?.Dispose();
+                _broadcastListener?.Dispose();
+                GC.SuppressFinalize(this);
                 Environment.Exit(0);
             };
         }
@@ -192,7 +197,10 @@ public class App : Application
         _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
 
-        ThemeManager.ApplyTheme(settings.ThemeStyle == "LightTheme" ? AppTheme.Light : AppTheme.Dark);
+        if (!SettingsApplication.ThemeProtection)
+        {
+            ThemeManager.ApplyTheme(settings.ThemeStyle == "LightTheme" ? AppTheme.Light : AppTheme.Dark);
+        }
 
         _mainWindowViewModel.TargetSectionViewModel.SetSector(
             settings.Target.SectorDirection - settings.Target.SectorWidth / 2,

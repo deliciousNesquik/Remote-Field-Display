@@ -8,6 +8,7 @@ public enum Localization
     RU,
     EN,
     BASH,
+    CH,
 }
 
 public class LocalizationManager
@@ -32,6 +33,7 @@ public class LocalizationManager
             Localization.RU => "Localizations/RU-ru.axaml",
             Localization.EN => "Localizations/EN-en.axaml",
             Localization.BASH => "Localizations/BASH-bash.axaml",
+            Localization.CH => "Localizations/CH-ch.axaml",
             _ => "Localizations/RU-ru.axaml"
         };
 

@@ -21,10 +21,14 @@
         <entry key="Controls/Themes/Ring.axaml" value="RFD.csproj" />
         <entry key="Controls/Themes/ThreeDots.axaml" value="RFD.csproj" />
         <entry key="Controls/Themes/Wave.axaml" value="RFD.csproj" />
+        <entry key="Controls/ToggleBox.axaml" value="RFD.csproj" />
+        <entry key="Controls/ToogleBox.axaml" value="RFD.csproj" />
+        <entry key="Controls/ToogleRectangle.axaml" value="RFD.csproj" />
         <entry key="Converters/Converters.axaml" value="RFD.csproj" />
         <entry key="Localization/EN-en.axaml" value="RFD.csproj" />
         <entry key="Localization/Ru-ru.axaml" value="RFD.csproj" />
         <entry key="Localizations/BASH-bash.axaml" value="RFD.csproj" />
+        <entry key="Localizations/CH-ch.axaml" value="RFD.csproj" />
         <entry key="Localizations/EN-en.axaml" value="RFD.csproj" />
         <entry key="Localizations/RU-ru.axaml" value="RFD.csproj" />
         <entry key="Styles/Buttons.axaml" value="RFD.csproj" />

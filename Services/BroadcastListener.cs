@@ -6,11 +6,12 @@ namespace RFD.Services;
 
 public class BroadcastListener : IBroadcastListener
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private static ILoggerService? _logger;
     private readonly ServerListener _listener;
 
-    public BroadcastListener(ServerListener listener)
+    public BroadcastListener(ServerListener listener, ILoggerService logger)
     {
+        _logger = logger;
         _listener = listener ?? throw new ArgumentNullException(nameof(listener));
         _listener.ReceiveBroadcast += (s, e) => ReceiveBroadcast?.Invoke(s, e);
     }
@@ -19,18 +20,20 @@ public class BroadcastListener : IBroadcastListener
 
     public void Start()
     {
-        Logger.Info("Старт ServerListener для прослушивания сервера.");
+        _logger.Info("Старт ServerListener для прослушивания сервера.");
         _listener.Start();
     }
 
     public void Stop()
     {
-        Logger.Info("Остановка прослушивания ServerListener.");
+        _logger.Info("Остановка прослушивания ServerListener.");
         _listener.Stop();
     }
 
     public void Dispose()
     {
         Stop();
+        GC.SuppressFinalize(this);
+        _logger.Info("Высвобождение ресурсов для прослушивания сервера");
     }
 }

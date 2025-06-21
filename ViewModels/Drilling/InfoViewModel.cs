@@ -12,6 +12,7 @@ namespace RFD.ViewModels;
 public sealed class InformationSectionViewModel : INotifyPropertyChanged
 {
     private readonly IWindowService _windowService;
+    private bool _noData = true;
 
     public InformationSectionViewModel(IWindowService windowService)
     {
@@ -21,6 +22,12 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
 
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
 
+    public bool NoData
+    {
+        get => _noData;
+        set => _noData = value;
+    }
+
 
     public ObservableCollection<InfoBox> InfoBlockList { get; set; } = [];
 
@@ -28,12 +35,15 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
 
     public void AddInfoBox(InfoBox infoBox)
     {
+        NoData = false;
         InfoBlockList.Add(infoBox);
     }
 
     public void ClearInfoBox()
     {
         InfoBlockList.Clear();
+        NoData = true;
+        
     }
 
     private void OpenInNewWindow()

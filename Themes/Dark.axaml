@@ -9,6 +9,8 @@
 
     <Color x:Key="RedColor">#ff3333</Color>
     <Color x:Key="GreenColor">#00b300</Color>
+    <Color x:Key="CoverGreenColor">#66BB6A</Color>
+    
     <Color x:Key="FocusingColor">#3e66ad</Color>
     <Color x:Key="CoverFocusingColor">#2d4a7d</Color>
 

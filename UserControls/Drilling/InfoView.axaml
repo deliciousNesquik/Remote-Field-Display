@@ -27,6 +27,7 @@
                 <Svg Path="{DynamicResource ExternalIcon}" Css="{DynamicResource ThemeIconStroke}" Width="17" Height="17" Stretch="Uniform" />
             </Button>
 
+            <TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" IsVisible="{Binding NoData}" Text="{DynamicResource NoData}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
             <Grid Grid.Row="1">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

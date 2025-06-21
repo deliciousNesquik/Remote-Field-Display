@@ -65,8 +65,8 @@
             </TextBlock>
             
             <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
-                <Button Classes="positive" Content="{DynamicResource Connect}" Command="{Binding ConfirmCommand}" />
+                <Button Classes="Negative" Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
+                <Button Classes="Positive" Content="{DynamicResource Connect}" Command="{Binding ConfirmCommand}" />
             </StackPanel>
         </Grid>
     </Border>

@@ -8,7 +8,7 @@
              x:DataType="vm:SettingsViewModel">
 
     <Border CornerRadius="10"
-            Width="500"
+            Width="520"
             Height="550"
             BorderBrush="{DynamicResource BorderBrush}"
             Background="{DynamicResource Background}"
@@ -22,14 +22,15 @@
                  Height="30"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Top"
-                 ZIndex="1000"
                  Margin="20 20 0 0" />
 
             <TextBlock Text="{DynamicResource Settings}"
                        FontSize="23"
                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                       Margin="55 21 0 0" />
+                       Margin="60 21 0 0" />
 
+            <Line StartPoint="10 65" EndPoint="510 65" Stroke="{DynamicResource Foreground}"/>
+            
             <ScrollViewer VerticalScrollBarVisibility="Auto" Height="410" VerticalAlignment="Center">
                 <Grid>
 
@@ -37,56 +38,54 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top"
                                 Spacing="30"
-                                Margin="25 0 0 0">
+                                Margin="25 20 25 0">
 
-                        <StackPanel Orientation="Vertical" Spacing="10">
-                            <TextBlock Text="{DynamicResource SaveData}"
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
+                            <Border IsVisible="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="Aqua" BorderThickness="1"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource SaveData}"
                                        FontWeight="500"
                                        FontSize="17"
                                        HorizontalAlignment="Left"
-                                       VerticalAlignment="Top" />
+                                       VerticalAlignment="Top"
+                                       Margin="0 0 0 5"/>
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource AboutSaveData}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Width="300"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Left" />
+                            
+                            <ToggleSwitch Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                                          OnContent="" OffContent="" IsChecked="{Binding SaveData}" 
+                                          HorizontalAlignment="Right"/>
+                        </Grid>
 
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource AboutSaveData}"
-                                           FontSize="14"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Width="300"
-                                           Opacity="0.7"
-                                           TextWrapping="Wrap"
-                                           TextAlignment="Justify" />
-
-                                <ToggleSwitch OffContent="" OnContent="" IsChecked="{Binding SaveData}" Margin="100 0 0 0" />
-                            </StackPanel>
-
-                        </StackPanel>
-
-
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Orientation="Vertical" Spacing="10">
-                                <TextBlock Text="{DynamicResource BrandColor}"
-                                           FontSize="17"
-                                           FontWeight="500"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top" />
-
-                                <TextBlock Text="{DynamicResource AboutBrandColor}"
-                                           FontSize="14"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Width="300"
-                                           Opacity="0.7"
-                                           TextWrapping="Wrap"
-                                           TextAlignment="Justify" />
-                            </StackPanel>
-
-
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal"
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
+                            <Border IsVisible="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="Aqua" BorderThickness="1"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource BrandColor}"
+                                       FontSize="17"
+                                       FontWeight="500"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"/>
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource AboutBrandColor}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Width="300"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Left" />
+                            
+                            <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Orientation="Vertical" Spacing="10" >
+                                <StackPanel  Orientation="Horizontal"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
-                                            Spacing="10"
-                                            Margin="0 0 0 0">
+                                            Spacing="10">
 
                                     <Button HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
@@ -149,82 +148,115 @@
                                         </Button.Content>
                                     </Button>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0 4 0 0">
-                                    <TextBlock Text="#"
-                                               FontSize="17"
-                                               Opacity="0.7"
-                                               Margin="0 5 0 0"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Top" />
-
-                                    <TextBox Width="150"
-                                             Height="12"
-                                             Watermark="HEX color"
-                                             Text="{Binding BrandColor, UpdateSourceTrigger=PropertyChanged}" 
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Top" />
-                                </StackPanel>
+                                
+                                <MaskedTextBox Mask="\#AAAAAA"
+                                               Width="140"
+                                               Height="12"
+                                               Text="{Binding BrandColor, UpdateSourceTrigger=PropertyChanged}" 
+                                               HorizontalAlignment="Right"
+                                               VerticalAlignment="Top"/>
                             </StackPanel>
-                        </StackPanel>
+                        </Grid>
 
-                        <StackPanel Orientation="Horizontal">
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
+                            <Border IsVisible="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="Aqua" BorderThickness="1"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Appearance}"
+                                       FontWeight="500"
+                                       FontSize="17"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"/>
                             
-                            <StackPanel Orientation="Vertical" Spacing="10">
-                                <TextBlock Text="{DynamicResource Appearance}"
-                                           FontWeight="500"
-                                           FontSize="17"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top" />
-
-                                <TextBlock Text="{DynamicResource AboutAppearance}"
-                                           FontSize="14"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Width="300"
-                                           Opacity="0.7"
-                                           TextWrapping="Wrap"
-                                           TextAlignment="Justify" />
-                            </StackPanel>
-                            <ToggleSwitch OffContent="{DynamicResource LightTheme}" OnContent="{DynamicResource DarkTheme}" FlowDirection="RightToLeft" IsChecked="{Binding DarkTheme}" Margin="40 0 0 0" />
-                        </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource AboutAppearance}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Width="300"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Left" />
+                            
+                            <ToggleSwitch Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                                          OffContent="" 
+                                          OnContent="" 
+                                          IsChecked="{Binding DarkTheme}"
+                                          HorizontalAlignment="Right"/>
+                            
+                        </Grid>
                         
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" Margin="0 -15 0 0">
+                            <Border IsVisible="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="Aqua" BorderThickness="1"/>
+                            
+                            <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" 
+                                       Text="{DynamicResource AboutThemeProtection}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Width="300"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Left" />
+                            <ToggleSwitch Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                                          OffContent="" 
+                                          OnContent="" 
+                                          IsChecked="{Binding ThemeProtection}"
+                                          HorizontalAlignment="Right"/>
+                        </Grid>
                         
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Orientation="Vertical" Spacing="10">
-                                <TextBlock Text="{DynamicResource Language}"
-                                           FontWeight="500"
-                                           FontSize="17"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"/>
-                                <TextBlock Text="{DynamicResource AboutLanguage}"
-                                           FontSize="14"
-                                           HorizontalAlignment="Left"
-                                           VerticalAlignment="Top"
-                                           Width="300"
-                                           Opacity="0.7"
-                                           TextWrapping="Wrap"
-                                           TextAlignment="Justify" />
-                            </StackPanel>
-                            <ComboBox HorizontalAlignment="Center"
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto">
+                            <Border IsVisible="False" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="Aqua" BorderThickness="1"/>
+                            
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{DynamicResource Language}"
+                                       FontWeight="500"
+                                       FontSize="17"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Margin="0 0 0 10"/>
+                            
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource AboutLanguage}"
+                                       FontSize="14"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Width="300"
+                                       Opacity="0.7"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Left" />
+                            
+                            <ComboBox Name="PART_SelectLanguage" 
+                                      Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Right"
                                       VerticalAlignment="Center"
-                                      Margin="10 0 0 0"
                                       Height="12"
-                                      Width="150"
+                                      Width="140"
                                       SelectedIndex="{Binding SelectLanguage}">
                                 <ComboBoxItem Content="Русский" Background="{DynamicResource Background}" />
                                 <ComboBoxItem Content="English" Background="{DynamicResource Background}" />
                                 <ComboBoxItem Content="Башҡорт теле" Background="{DynamicResource Background}" />
+                                <ComboBoxItem Content="中文 (简体)" Background="{DynamicResource Background}" />
                             </ComboBox>
+                            
+                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical" Spacing="10">
+                                
+                                
+                            </StackPanel>
+                            
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>
-
-            <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="{DynamicResource Close}" Command="{Binding CloseCommand}" />
-            </StackPanel>
-
+            
+            <Line StartPoint="10 485" EndPoint="510 485" Stroke="{DynamicResource Foreground}"/>
+            
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                  Margin="25 0 25 15">
+                
+                <Button Classes="Neutral" Content="{DynamicResource SetDefault}" 
+                        Command="{Binding SetDefaultCommand}"
+                        HorizontalAlignment="Left"/>
+                <Button Classes="Negative" Content="{DynamicResource Close}"
+                        Command="{Binding CloseCommand}" 
+                        HorizontalAlignment="Right"/>
+            </Grid>
         </Grid>
 
     </Border>

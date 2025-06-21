@@ -16,6 +16,9 @@
     <x:String x:Key="SaveData">Мәғлүмәттәрҙе һаҡлау</x:String>
     <x:String x:Key="BrandColor">Фирма төҫө</x:String>
     <x:String x:Key="Language">Теле</x:String>
+    <x:String x:Key="SetDefault">Алдан билдәләнгән ҡиммәткә төшөрөү</x:String>
+    <x:String x:Key="NoData">Мәғлүмәт юҡ, тоташтырыуҙы тикшерегеҙ йәки көтөгөҙ.</x:String>
+
     
     <x:String x:Key="DarkTheme">Ҡараңғы</x:String>
     <x:String x:Key="LightTheme">Яҡты</x:String>
@@ -34,8 +37,12 @@
     <x:String x:Key="AboutSaveData">Был функция быраулау комплексынан алынған мәғлүмәттәрҙе осраҡлы йәки аңлы рәүештә өҙөлгән осраҡта һаҡларға мөмкинлек бирә.</x:String>
     <x:String x:Key="AboutBrandColor">Үҙ төҫөңдө һайла йәки ҡулланма</x:String>
     <x:String x:Key="AboutLanguage">Ҡушымта телен һайла</x:String>
-    <x:String x:Key="AboutAppearance">Уңайлы эш өсөн ҡушымта темаһын һайлағыҙ. Иғтибар! Әгәр серверҙан команда килһә ҡушымтаның темаһы үҙгәрә ала!</x:String>
-    
+    <x:String x:Key="AboutAppearance">
+Рәхим итегеҙ, эш өсөн уңайлы тема һайлағыҙ.
+Ҡулланыу мөмкин: яҡты һәм ҡара.
+Иғтибар! Серверҙан команда килһә, тема үҙгәрергә мөмкин!
+    </x:String>
+    <x:String x:Key="AboutThemeProtection">Сервер тема үҙгәртә алмай. Тема һайлау хоҡуғы тик ҡулланыусыға бирелә.</x:String>
     <x:String x:Key="EnterIpAddress">IP-адресын индерегеҙ</x:String>
     <x:String x:Key="Connect">Ҡушыласаҡ</x:String>
     

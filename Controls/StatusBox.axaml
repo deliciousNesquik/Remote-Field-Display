@@ -5,7 +5,7 @@
 
     <Design.PreviewWith>
         <Grid Margin="30">
-            <controls:StatusBox Header="Компонент" Status="True" />
+            <controls:StatusBox Header="Критический" Status="False" />
         </Grid>
     </Design.PreviewWith>
 

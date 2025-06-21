@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using RFD.Core;
+using RFD.Interfaces;
 
 namespace RFD.Views;
 
@@ -106,5 +107,18 @@ public partial class MainWindow : Window
             // Инициируем перетаскивание окна
             BeginMoveDrag(e);
         }
+    }
+
+    private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (e.GetPosition(this).X <= 140)
+        {
+            
+        }
+
+        if (e.GetPosition(this).X >= 140)
+        {
+            
+        } 
     }
 }

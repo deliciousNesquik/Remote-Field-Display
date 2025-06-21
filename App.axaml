@@ -28,11 +28,9 @@
             <Setter Property="FontWeight" Value="500" />
         </Style>
 
-
-        <!-- По умолчанию загружаем светлую тему -->
+        <StyleInclude Source="avares://RFD/Styles/Buttons.axaml"/>
         <StyleInclude Source="avares://RFD/Controls/InfoBox.axaml" />
         <StyleInclude Source="avares://RFD/Controls/StatusBox.axaml" />
-        <StyleInclude Source="avares://RFD/Styles/Buttons.axaml"/>
         <StyleInclude Source="avares://RFD/Styles/TextBlock.axaml"/>
     </Application.Styles>
 

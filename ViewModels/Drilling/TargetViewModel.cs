@@ -8,6 +8,7 @@ using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Interfaces;
 using RFD.Models;
+using RFD.Services;
 using RFD.UserControls;
 using Point = Avalonia.Point;
 
@@ -484,6 +485,27 @@ public class TargetSectionViewModel : INotifyPropertyChanged
     #region Настройки сектора мишени (Путь ; Сглаженность ; Цвет)
 
     private List<Point> _sector = new([new Point(100, 100)]);
+
+    public TargetSectionViewModel()
+    {
+        Center = new Point(100, 100);
+        DrillingRingsList = new ObservableCollection<Ring>();
+        RadialLinesList = new ObservableCollection<GridLine>();
+        AngleLabelsList = new ObservableCollection<AnglePoint>();
+        DrillingPointsList = new ObservableCollection<DrillingPoints> { new(new Thickness(0, 0, 0, 0), DefaultRadius) };
+
+        Capacity = 6;
+        GridFrequency = 45;
+        IsHalfMode = false;
+        RingThickness = RingWidth = 10;
+        FontSize = 10;
+        ReductionFactor = 1.0; // Значение по умолчанию
+
+        UpdateTarget();
+
+        _windowService = new WindowService();
+        OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
+    }
 
     public List<Point> Sector
     {

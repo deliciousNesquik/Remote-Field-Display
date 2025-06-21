@@ -16,6 +16,8 @@
     <x:String x:Key="BrandColor">Фирменный цвет</x:String>
     <x:String x:Key="Language">Язык</x:String>
     <x:String x:Key="SaveData">Сохранять данные</x:String>
+    <x:String x:Key="SetDefault">Сбросить по умолчанию</x:String>
+    <x:String x:Key="NoData">Данные отсутствуют, проверьте подключение или ожидайте.</x:String>
     
     <x:String x:Key="DarkTheme">Темная</x:String>
     <x:String x:Key="LightTheme">Светлая</x:String>
@@ -34,7 +36,13 @@
     <x:String x:Key="AboutSaveData">Данная функция позволяет сохранять данные полученные от бурового комплекса в случае случайного или намеренного разрыва соединения.</x:String>
     <x:String x:Key="AboutBrandColor">Выбери или используй свой цвет</x:String>
     <x:String x:Key="AboutLanguage">Выбери язык приложения</x:String>
-    <x:String x:Key="AboutAppearance">Выбери тему приложения для комфортной работы. Внимание! Тему приложения может изменится если придет команда от сервера!</x:String>
+    <x:String x:Key="AboutAppearance">
+Выберите тему оформления для комфортной работы. 
+Доступные варианты: светлая и тёмная.
+Обратите внимание: тема может автоматически измениться по команде от сервера!
+    </x:String>
+    <x:String x:Key="AboutThemeProtection">Запрещает изменять тему приложения с сервера. Тема может быть выбрана только пользователем.</x:String>
+
     
     <x:String x:Key="EnterIpAddress">Введите IP-адрес</x:String>
     <x:String x:Key="Connect">Подключится</x:String>

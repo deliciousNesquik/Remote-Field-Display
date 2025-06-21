@@ -9,8 +9,10 @@ namespace RFD.Services
     {
         public static bool SaveData { get; set; } = true;
         public static string BrandColor { get; set; } = "#3e66ad";
+        public static string BrandHoverColor { get; set; } = "#3e66ad";
         public static int Language { get; set; }
         public static Localization LanguageLocalization { get; set; }
+        public static bool ThemeProtection { get; set; }
 
         // Путь к файлу рядом с исполняемым файлом
         private static readonly string SettingsPath = Path.Combine(
@@ -25,8 +27,10 @@ namespace RFD.Services
                 {
                     SaveData = SaveData,
                     BrandColor = BrandColor,
+                    BrandHoverColor = BrandHoverColor,
                     Language = Language,
-                    LanguageLocalization = LanguageLocalization
+                    LanguageLocalization = LanguageLocalization,
+                    ThemeProtection = ThemeProtection
                 };
 
                 var json = JsonSerializer.Serialize(settingsDto, new JsonSerializerOptions
@@ -58,8 +62,10 @@ namespace RFD.Services
                 {
                     SaveData = settingsDto.SaveData;
                     BrandColor = settingsDto.BrandColor;
+                    BrandHoverColor = BrandHoverColor;
                     Language = settingsDto.Language;
                     LanguageLocalization = settingsDto.LanguageLocalization;
+                    ThemeProtection = ThemeProtection;
                 }
             }
             catch (Exception ex)
@@ -73,8 +79,10 @@ namespace RFD.Services
         {
             public bool SaveData { get; set; }
             public string BrandColor { get; set; } = "#3e66ad";
+            public string BrandHoverColor { get; set; } = "#3e66ad";
             public int Language { get; set; }
             public Localization LanguageLocalization { get; set; }
+            public bool ThemeProtection { get; set; }
         }
     }
 }

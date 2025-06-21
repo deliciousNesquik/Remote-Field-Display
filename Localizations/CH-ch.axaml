@@ -1,0 +1,51 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <x:String x:Key="Version">版本 1.0.0</x:String>
+    <x:String x:Key="AppTitle">远程钻井监控</x:String>
+    
+    <x:String x:Key="Connection">连接</x:String>
+    <x:String x:Key="AutomaticConnection">自动连接</x:String>
+    <x:String x:Key="ManualConnection">手动连接</x:String>
+    <x:String x:Key="Disconnect">断开连接</x:String>
+    <x:String x:Key="NotConnection">未连接</x:String>
+    <x:String x:Key="Settings">设置</x:String>
+    <x:String x:Key="Application">应用程序</x:String>
+    <x:String x:Key="Help">帮助</x:String>
+    <x:String x:Key="About">关于</x:String>
+    <x:String x:Key="Appearance">外观</x:String>
+    <x:String x:Key="BrandColor">品牌颜色</x:String>
+    <x:String x:Key="Language">语言</x:String>
+    <x:String x:Key="SaveData">保存数据</x:String>
+    <x:String x:Key="SetDefault">恢复默认</x:String>
+    <x:String x:Key="NoData">数据不可用。请检查连接或稍候。</x:String>
+
+    
+    <x:String x:Key="DarkTheme">深色</x:String>
+    <x:String x:Key="LightTheme">浅色</x:String>
+    
+    <x:String x:Key="Statuses">状态</x:String>
+    <x:String x:Key="Information">信息</x:String>
+    <x:String x:Key="Target">目标</x:String>
+    <x:String x:Key="Angle">角度</x:String>
+    <x:String x:Key="Time">时间</x:String>
+    <x:String x:Key="ExternalButtonTip">此按钮可将该元素在新窗口中打开</x:String>
+    
+    <x:String x:Key="AboutTheApp">远程钻井监控 (RFD) 是用于监控钻井设备的应用程序。它可以实时跟踪钻井参数、控制设备并分析数据。</x:String>
+    <x:String x:Key="AboutTheAutomaticConnection">自动连接功能可使系统自动发现局域网中的可用服务器。此过程可能需要一些时间，具体取决于您的网络状况和服务器可用性。</x:String>
+    <x:String x:Key="AboutTheManualConnection">请输入要连接服务器的 IP 地址，格式为：xxx.xxx.xxx.xxx，其中“xxx”为 0 到 255 之间的数字。例如：192.168.1.100。请确保您的服务器已启动并在网络中可用。</x:String>
+    <x:String x:Key="AboutSaveData">该功能可在意外或故意断开连接时保存从钻井设备接收的数据。</x:String>
+    <x:String x:Key="AboutBrandColor">选择或使用您自己的颜色</x:String>
+    <x:String x:Key="AboutLanguage">选择应用程序语言</x:String>
+    <x:String x:Key="AboutAppearance">
+选择主题以获得舒适的操作体验。
+可用选项：浅色和深色。
+注意：主题可能会根据服务器命令自动更改！
+    </x:String>
+    <x:String x:Key="AboutThemeProtection">禁止服务器更改应用程序主题。主题只能由用户选择。</x:String>
+    
+    <x:String x:Key="EnterIpAddress">输入 IP 地址</x:String>
+    <x:String x:Key="Connect">连接</x:String>
+    
+    <x:String x:Key="Close">关闭</x:String>
+    <x:String x:Key="Cancel">取消</x:String>
+</ResourceDictionary>

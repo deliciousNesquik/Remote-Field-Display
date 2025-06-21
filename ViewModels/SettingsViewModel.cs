@@ -12,6 +12,7 @@ public class SettingsViewModel: ViewModelBase
     public Action? CloseDialog;
 
     private bool _saveData = true;
+    private bool _themeProtection = false;
     private string _brandColor = "";
     private bool _darkTheme = ThemeManager.CurrentTheme == AppTheme.Dark;
     
@@ -22,6 +23,16 @@ public class SettingsViewModel: ViewModelBase
         {
             SettingsApplication.SaveData = value;
             this.RaiseAndSetIfChanged(ref _saveData, value);
+        }
+    }
+    
+    public bool ThemeProtection
+    {
+        get => _themeProtection;
+        set
+        {
+            SettingsApplication.ThemeProtection = value;
+            this.RaiseAndSetIfChanged(ref _themeProtection, value);
         }
     }
 
@@ -77,6 +88,10 @@ public class SettingsViewModel: ViewModelBase
                     LocalizationManager.ApplyLocalization(Localization.BASH);
                     SettingsApplication.LanguageLocalization = Localization.BASH;
                     break;
+                case 3:
+                    LocalizationManager.ApplyLocalization(Localization.CH);
+                    SettingsApplication.LanguageLocalization = Localization.CH;
+                    break;
                 default:
                     LocalizationManager.ApplyLocalization(Localization.RU);
                     SettingsApplication.LanguageLocalization = Localization.RU;
@@ -87,11 +102,45 @@ public class SettingsViewModel: ViewModelBase
     
     public static void ChangeBrandColor(string hexColor)
     {
-        if (Application.Current?.Resources.TryGetResource("FocusingColor", Application.Current.ActualThemeVariant, out _) == true)
+        // Получаем основной цвет
+        var baseColor = Color.Parse(hexColor);
+
+        // Допустим, делаем hover светлее на 20%
+        var hoverColor = ChangeBrightness(baseColor, 1.2f);
+
+        if (Application.Current?.Resources != null)
         {
-            Application.Current.Resources["FocusingColor"] = Color.Parse(hexColor);
+            Application.Current.Resources["FocusingColor"] = baseColor;
+            Application.Current.Resources["CoverFocusingColor"] = hoverColor;
+
+            // Дополнительно сохраним в настройки
             SettingsApplication.BrandColor = hexColor;
+            SettingsApplication.BrandHoverColor = hoverColor.ToString();
         }
+    }
+
+    private static Color ChangeBrightness(Color color, float factor)
+    {
+        // factor > 1.0 — осветлить, < 1.0 — затемнить
+        return Color.FromArgb(
+            color.A,
+            (byte)Math.Clamp(color.R * factor, 0, 255),
+            (byte)Math.Clamp(color.G * factor, 0, 255),
+            (byte)Math.Clamp(color.B * factor, 0, 255)
+        );
+    }
+
+    private static void SetDefault()
+    {
+        SettingsApplication.SaveData = true;
+        SettingsApplication.BrandColor = "#3e66ad";
+        SettingsApplication.BrandHoverColor = "#2d4a7d";
+        SettingsApplication.Language = 0;
+        SettingsApplication.LanguageLocalization = Localization.RU;
+        SettingsApplication.ThemeProtection = false;
+        
+        ChangeBrandColor(SettingsApplication.BrandColor);
+        LocalizationManager.ApplyLocalization(Localization.RU);
     }
     
     public SettingsViewModel()
@@ -99,6 +148,7 @@ public class SettingsViewModel: ViewModelBase
         BrandColor = SettingsApplication.BrandColor;
         SelectLanguage = SettingsApplication.Language;
         SaveData = SettingsApplication.SaveData;
+        ThemeProtection = SettingsApplication.ThemeProtection;
         
         Color1Command = ReactiveCommand.Create((() => ChangeBrandColor("#3e66ad")));
         Color2Command = ReactiveCommand.Create((() => ChangeBrandColor("#50ADA8")));
@@ -106,9 +156,11 @@ public class SettingsViewModel: ViewModelBase
         Color4Command = ReactiveCommand.Create((() => ChangeBrandColor("#ADAA41")));
         Color5Command = ReactiveCommand.Create((() => ChangeBrandColor("#AD4A3F")));
         CloseCommand = ReactiveCommand.Create(Close);
+        SetDefaultCommand = ReactiveCommand.Create(SetDefault);
     }
 
     public ReactiveCommand<Unit, Unit> CloseCommand { get; }
+    public ReactiveCommand<Unit, Unit> SetDefaultCommand { get; }
     public ReactiveCommand<Unit, Unit> Color1Command { get; }
     public ReactiveCommand<Unit, Unit> Color2Command { get; }
     public ReactiveCommand<Unit, Unit> Color3Command { get; }

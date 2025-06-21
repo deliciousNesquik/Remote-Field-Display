@@ -16,6 +16,9 @@
     <x:String x:Key="BrandColor">Brand color</x:String>
     <x:String x:Key="Language">Language</x:String>
     <x:String x:Key="SaveData">Save data</x:String>
+    <x:String x:Key="SetDefault">Reset to default</x:String>
+    <x:String x:Key="NoData">No data available. Please check your connection or wait.</x:String>
+
     
     <x:String x:Key="DarkTheme">Dark</x:String>
     <x:String x:Key="LightTheme">Light</x:String>
@@ -34,8 +37,13 @@
     <x:String x:Key="AboutSaveData">This function allows you to save the data received from the drilling complex in case of accidental or intentional disconnection.</x:String>
     <x:String x:Key="AboutBrandColor">Select or customize your brand color</x:String>
     <x:String x:Key="AboutLanguage">Choose the language of the application</x:String>
-    <x:String x:Key="AboutAppearance">Choose an application theme for comfortable work. Attention! The application theme may change if you receive a command from the server!</x:String>
-    
+    <x:String x:Key="AboutAppearance">
+Choose the application theme for comfortable work. 
+Available options: Light and Dark.
+Note: The theme may change automatically if a command is received from the server!
+    </x:String>
+    <x:String x:Key="AboutThemeProtection">Prevents the server from changing the app theme. Only the user can select the theme.</x:String>
+
     <x:String x:Key="EnterIpAddress">Enter the IP address</x:String>
     
     <x:String x:Key="Close">Close</x:String>

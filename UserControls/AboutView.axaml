@@ -41,12 +41,12 @@
                        Margin="0 40 0 0"/>
             
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="320">
-                <TextBlock Text="{DynamicResource AboutTheAutomaticConnection}" TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Justify"/>
+                <TextBlock Text="{DynamicResource AboutTheApp}" TextWrapping="Wrap" FontSize="{DynamicResource FrameFontSizeSmall}" TextAlignment="Justify"/>
 
             </StackPanel>
             
             <StackPanel Margin="0 0 15 15" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Spacing="10">
-                <Button Classes="negative" Content="{DynamicResource Close}" Command="{Binding CloseCommand}"/>
+                <Button Classes="Negative" Content="{DynamicResource Close}" Command="{Binding CloseCommand}"/>
             </StackPanel>
         </Grid>
     </Border>
