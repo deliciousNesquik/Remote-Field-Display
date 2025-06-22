@@ -1,9 +1,14 @@
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
+using Avalonia.Threading;
 using RFD.Core;
 using RFD.Interfaces;
+using RFD.UserControls;
+using RFD.ViewModels;
 
 namespace RFD.Views;
 
@@ -21,6 +26,7 @@ public partial class MainWindow : Window
         // Вставим платформо-зависимую настройку для маков
         if (PlatformUtils.IsMacOS)
         {
+            //this.Icon = new WindowIcon("Assets/app-icon.icns");
             ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome;
             ExtendClientAreaTitleBarHeightHint = -1;
             
@@ -29,14 +35,17 @@ public partial class MainWindow : Window
         }
         else
         {
+            this.Icon = new WindowIcon("Assets/app-icon.ico");
             ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome;
         }
 
         _dragRegionHeight = TopBar.Height;
         MainBorder.PointerPressed += MainBorder_PointerPressed;
 
-        this.GetObservable(WindowStateProperty)
-            .Subscribe(state => MainBorder.Margin = GetMargin(WindowState));
+        this.GetObservable(WindowStateProperty).Subscribe(state => MainBorder.Margin = GetMargin(this.WindowState));
+        
+        LeftGrid.GetObservable(IsVisibleProperty).Subscribe(state => { Console.WriteLine($"Отображение левой панели: {state}"); });
+        RightGrid.GetObservable(IsVisibleProperty).Subscribe(state => { Console.WriteLine($"Отображение правой панели: {state}"); });
     }
     
     /// <summary>
@@ -107,18 +116,5 @@ public partial class MainWindow : Window
             // Инициируем перетаскивание окна
             BeginMoveDrag(e);
         }
-    }
-
-    private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (e.GetPosition(this).X <= 140)
-        {
-            
-        }
-
-        if (e.GetPosition(this).X >= 140)
-        {
-            
-        } 
     }
 }

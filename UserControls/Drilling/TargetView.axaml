@@ -11,18 +11,18 @@
         <vm:TargetSectionViewModel />
     </Design.DataContext>
     
-    <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+    <Border Name="BorderUserControl" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
             CornerRadius="10" Padding="10">
 
         <Grid RowDefinitions="Auto, *">
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
+            <StackPanel Name="FrameAndNameStackPanel" IsVisible="True" Grid.Row="0" Orientation="Horizontal" Spacing="10"
                         HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <Svg Path="{DynamicResource FrameExpandIcon}" Css="{DynamicResource ThemeIconColor}" Width="12" Height="12" Stretch="Uniform" />
                 <TextBlock Text="{DynamicResource Target}" Foreground="{DynamicResource Foreground}" FontWeight="Bold" Classes="section" />
             </StackPanel>
-
+            
             <Button Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="17" Height="17" Padding="0"
                     Margin="-1.7 -0.7 0 0" Background="Transparent"
                     Command="{Binding OpenInNewWindowCommand}"

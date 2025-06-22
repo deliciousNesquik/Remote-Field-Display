@@ -8,6 +8,7 @@ using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Core;
 using RFD.Interfaces;
+using RFD.Models;
 using RFD.Services;
 using RFD.UserControls;
 
@@ -41,7 +42,6 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
 
-
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
@@ -62,6 +62,8 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
+        
+        //InformationSectionViewModel.AddInfoBox(new InfoBox("Глуб.бурения", "10", "м"));
         
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);

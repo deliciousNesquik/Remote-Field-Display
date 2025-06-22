@@ -12,7 +12,7 @@
             CornerRadius="10" Padding="10">
 
         <Grid RowDefinitions="Auto, *" x:Name="MainGrid">
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10"
+            <StackPanel Name="FrameAndNameStackPanel" Grid.Row="0" Orientation="Horizontal" Spacing="10"
                         HorizontalAlignment="Left" VerticalAlignment="Top">
 
                 <Svg Path="{DynamicResource FrameExpandIcon}" Css="{DynamicResource ThemeIconColor}" Width="12" Height="12" Stretch="Uniform" />

@@ -184,20 +184,25 @@
                         </StackPanel>
                     </DockPanel>
 
-                    <Grid Grid.Row="1" Grid.Column="0"
-                          ColumnDefinitions="*, 2, *" RowDefinitions="*">
-
+                    <Grid Name="MainGrid" Grid.Row="1" Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="165"/>
+                            <ColumnDefinition Width="2"/>
+                            <ColumnDefinition Width="*" MinWidth="165"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        
                         <Grid Grid.Column="0" Grid.Row="0"
-                              Name="PART_LeftContent"
+                              Name="LeftGrid" IsVisible="True"
                               RowDefinitions="*, Auto, Auto" ColumnDefinitions="*">
                             <ContentControl Grid.Row="0" Margin="5 5 2 0" Content="{Binding FirstCell}" />
                             <ContentControl Grid.Row="2" Margin="5 5 2 5" Content="{Binding FourCell}" />
                         </Grid>
 
-                        <GridSplitter Grid.Column="1" Background="Transparent" PointerMoved="InputElement_OnPointerMoved" ResizeDirection="Columns" />
+                        <GridSplitter Name="GridSplitter" Grid.Column="1" Background="Transparent" ResizeDirection="Columns" />
 
                         <Grid Grid.Column="2" Grid.Row="0"
-                              Name="PART_RightContent"
+                              Name="RightGrid" IsVisible="True"
                               RowDefinitions="*" ColumnDefinitions="*">
                             <ContentControl Grid.Row="0" Margin="2 5 5 5" Content="{Binding ThirdCell}" />
                         </Grid>

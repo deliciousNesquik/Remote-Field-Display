@@ -3,13 +3,13 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
+using RFD;
 using RFD.Interfaces;
 using RFD.Models;
 using RFD.UserControls;
 
 namespace RFD.ViewModels;
-
-public sealed class InformationSectionViewModel : INotifyPropertyChanged
+public sealed class InformationSectionViewModel : ViewModelBase
 {
     private readonly IWindowService _windowService;
     private bool _noData = true;
@@ -18,6 +18,12 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
     {
         _windowService = windowService;
         OpenInNewWindowCommand = ReactiveCommand.Create(OpenInNewWindow);
+        
+        // Подписываемся на изменения коллекции
+        InfoBlockList.CollectionChanged += (sender, args) => 
+        {
+            NoData = InfoBlockList.Count == 0;
+        };
     }
 
     public ReactiveCommand<Unit, Unit> OpenInNewWindowCommand { get; }
@@ -25,25 +31,28 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
     public bool NoData
     {
         get => _noData;
-        set => _noData = value;
+        private set
+        {
+            if (_noData != value)
+            {
+                _noData = value;
+                this.RaisePropertyChanged();
+            }
+        }
     }
 
-
-    public ObservableCollection<InfoBox> InfoBlockList { get; set; } = [];
-
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public ObservableCollection<InfoBox> InfoBlockList { get; } = new();
 
     public void AddInfoBox(InfoBox infoBox)
     {
-        NoData = false;
         InfoBlockList.Add(infoBox);
+        // NoData обновится автоматически благодаря подписке на CollectionChanged
     }
 
     public void ClearInfoBox()
     {
         InfoBlockList.Clear();
-        NoData = true;
-        
+        // NoData обновится автоматически благодаря подписке на CollectionChanged
     }
 
     private void OpenInNewWindow()
@@ -58,10 +67,5 @@ public sealed class InformationSectionViewModel : INotifyPropertyChanged
         {
             _windowService.OpenWindow(newControl, "Not found resources");
         }
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
