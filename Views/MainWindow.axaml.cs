@@ -35,7 +35,6 @@ public partial class MainWindow : Window
         }
         else
         {
-            this.Icon = new WindowIcon("Assets/app-icon.ico");
             ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.NoChrome;
         }
 

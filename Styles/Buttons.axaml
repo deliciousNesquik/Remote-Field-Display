@@ -43,7 +43,7 @@
         
         <Style Selector="Button.Positive">
             <Setter Property="Background" Value="{DynamicResource GreenColor}"/>
-            <Setter Property="Foreground" Value="{DynamicResource Foreground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundButton}"/>
         </Style>
         <Style Selector="Button.Positive:pointerover /template/ContentPresenter">
             <Setter Property="Background" Value="#66BB6A"/>
