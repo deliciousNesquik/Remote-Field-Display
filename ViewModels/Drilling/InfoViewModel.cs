@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
+using Avalonia.Threading;
 using ReactiveUI;
 using RFD;
 using RFD.Interfaces;
@@ -33,11 +34,9 @@ public sealed class InformationSectionViewModel : ViewModelBase
         get => _noData;
         private set
         {
-            if (_noData != value)
-            {
-                _noData = value;
-                this.RaisePropertyChanged();
-            }
+            if (_noData == value) return;
+            _noData = value;
+            this.RaisePropertyChanged();
         }
     }
 
@@ -45,13 +44,23 @@ public sealed class InformationSectionViewModel : ViewModelBase
 
     public void AddInfoBox(InfoBox infoBox)
     {
-        InfoBlockList.Add(infoBox);
+        Dispatcher.UIThread.Post((() => { InfoBlockList.Add(infoBox); }));
         // NoData обновится автоматически благодаря подписке на CollectionChanged
+    }
+    
+    public void ClearInfoBox(string title)
+    {
+        for (var index = 0; index <= InfoBlockList.Count; index++)
+        {
+            if (InfoBlockList[index].Title != title) continue;
+            var index1 = index;
+            Dispatcher.UIThread.Post((() => {  InfoBlockList.RemoveAt(index1); }));
+        }
     }
 
     public void ClearInfoBox()
     {
-        InfoBlockList.Clear();
+        Dispatcher.UIThread.Post((() => {  InfoBlockList.Clear(); }));
         // NoData обновится автоматически благодаря подписке на CollectionChanged
     }
 

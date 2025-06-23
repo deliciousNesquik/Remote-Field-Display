@@ -172,18 +172,25 @@ public class App : Application
     private void SetSettings(NPFGEO.LWD.Net.Settings settings)
     {
         if (_mainWindowViewModel == null) return;
+        
+        ApplyStatusesSettings(settings);
+        ApplyInformationSettings(settings);
+        ApplyTargetParametersSettings(settings);
 
-        _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox();
-        _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox();
+        // Проверка на защиту от получения темы приложения.
+        if (!SettingsApplication.ThemeProtection)
+            ThemeManager.ApplyTheme(settings.ThemeStyle == "LightTheme" ? AppTheme.Light : AppTheme.Dark);
 
-        foreach (var flag in settings.Flags)
-            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name));
+        
 
-        foreach (var flag in settings.Statuses)
-            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(flag.Name));
+        // Использование кеша для хранения последних данных.
+        SetData(_dataObj);
+    }
 
-        foreach (var param in settings.Parameters)
-            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units));
+    private void ApplyTargetParametersSettings(Settings settings)
+    {
+        if (_mainWindowViewModel == null) return;
+        
         _mainWindowViewModel.TargetSectionViewModel.MagneticDeclination = settings.InfoParameters.MagneticDeclination;
         _mainWindowViewModel.TargetSectionViewModel.ToolfaceOffset = settings.InfoParameters.ToolfaceOffset;
         _mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder = settings.Target.FromCenterToBorder;
@@ -191,23 +198,64 @@ public class App : Application
         _mainWindowViewModel.TargetSectionViewModel.IsHalfMode = settings.Target.IsHalfMode;
         _mainWindowViewModel.TargetSectionViewModel.GridFrequency = settings.Target.GridFrequency;
         _mainWindowViewModel.TargetSectionViewModel.FontSize = settings.Target.FontSize;
-        (_mainWindowViewModel.TargetSectionViewModel.RingWidth,
-                _mainWindowViewModel.TargetSectionViewModel.RingThickness) =
-            (settings.Target.RingWidth, settings.Target.RingWidth);
+        (_mainWindowViewModel.TargetSectionViewModel.RingWidth, _mainWindowViewModel.TargetSectionViewModel.RingThickness) = (settings.Target.RingWidth, settings.Target.RingWidth);
         _mainWindowViewModel.TargetSectionViewModel.DefaultRadius = settings.Target.DefaultRadius;
         _mainWindowViewModel.TargetSectionViewModel.ReductionFactor = settings.Target.ReductionFactor;
-
-        if (!SettingsApplication.ThemeProtection)
-        {
-            ThemeManager.ApplyTheme(settings.ThemeStyle == "LightTheme" ? AppTheme.Light : AppTheme.Dark);
-        }
-
+        
+        // Установка сектора бурения. 
         _mainWindowViewModel.TargetSectionViewModel.SetSector(
             settings.Target.SectorDirection - settings.Target.SectorWidth / 2,
             settings.Target.SectorDirection + settings.Target.SectorWidth / 2
         );
+    }
 
-        SetData(_dataObj);
+    private void ApplyInformationSettings(Settings settings)
+    {
+        if (_mainWindowViewModel == null) return;
+        
+        // Объединение всех параметров в единый список и формирование множества имен для быстрого поиска
+        var allParameters = settings.Parameters.ToList();
+        var allParameterNames = new HashSet<string>(allParameters.Select(p => p.Name));
+
+        var currentParameters = _mainWindowViewModel.InformationSectionViewModel.InfoBlockList.ToList();
+
+        // Добавляем недостающие параметры
+        foreach (var param in allParameters.Where(param => currentParameters.All(p => p.Title != param.Name)))
+        {
+            _mainWindowViewModel.InformationSectionViewModel.AddInfoBox(new InfoBox(param.Name, "-", param.Units));
+        }
+
+        // Удаляем параметры, которые больше не передаются
+        foreach (var param in currentParameters.Where(p => !allParameterNames.Contains(p.Title)))
+        {
+            _mainWindowViewModel.InformationSectionViewModel.ClearInfoBox(param.Title);
+        }
+    }
+
+    private void ApplyStatusesSettings(Settings settings)
+    {
+        if (_mainWindowViewModel == null) return;
+        
+        // Объединение всех статусов в единое целое.
+        // Проверка каждого статуса на его существование в списке, если статус есть,
+        // тогда стоит обновить только значение, в противном случае добавить в конец списка данный статус.
+        var allStatuses = settings.Statuses.Concat(settings.Flags).ToList();
+        var allStatusNames = new HashSet<string>(allStatuses.Select(s => s.Name)); // Для быстрого поиска
+        var currentStatuses = _mainWindowViewModel.StatusSectionViewModel.InfoStatusList.ToList();
+
+        foreach (var status in allStatuses.Where(status => currentStatuses.All(s => s.Header != status.Name)))
+        {
+            // В случае когда статус не найден в уже существующем списке
+            // тогда необходимо добавить новый в конец.
+            _mainWindowViewModel.StatusSectionViewModel.AddStatusBox(new StatusBox(status.Name));
+        }
+        
+        // В случае когда статус убран из передачи,
+        // его необходимо аккуратно удалить из пользовательского интерфейса.
+        foreach (var status in currentStatuses.Where(status => !allStatusNames.Contains(status.Header)))
+        {
+            _mainWindowViewModel.StatusSectionViewModel.ClearStatusBox(status.Header);
+        }
     }
 
     private void SetData(DataObject data)
@@ -216,19 +264,16 @@ public class App : Application
 
         _dataObj = DataObject.Union(_dataObj, data);
 
-        var targetPoints = data.TargetPoints.ToList();
+        var targetPoints = _dataObj.TargetPoints.ToList();
         for (var i = 0; i < targetPoints.Count; i++)
         {
             _mainWindowViewModel.TargetSectionViewModel.Angle = Math.Round(targetPoints[i].Angle, 2);
-            _mainWindowViewModel.TargetSectionViewModel.ToolfaceType =
-                targetPoints[i].ToolfaceType.ToString().Substring(0, 1);
+            _mainWindowViewModel.TargetSectionViewModel.ToolfaceType = targetPoints[i].ToolfaceType.ToString()[..1];
 
             if (_mainWindowViewModel.TargetSectionViewModel.FromCenterToBorder)
                 try
                 {
-                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                        _mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1,
-                        targetPoints[i].Value);
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(_mainWindowViewModel.TargetSectionViewModel.Capacity - i - 1, targetPoints[i].Value);
                 }
                 catch (Exception e)
                 {
@@ -237,9 +282,7 @@ public class App : Application
             else
                 try
                 {
-                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(
-                        _mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i,
-                        targetPoints[i].Value);
+                    _mainWindowViewModel.TargetSectionViewModel.SetPoint(_mainWindowViewModel.TargetSectionViewModel.Capacity - targetPoints.Count + i, targetPoints[i].Value);
                 }
                 catch (Exception e)
                 {
@@ -247,20 +290,22 @@ public class App : Application
                 }
         }
 
-        foreach (var t in data.Flags)
+        foreach (var t in _dataObj.Flags)
         foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
             if (t2.Header == t.Name)
                 t2.Status = t.Value;
 
-        foreach (var t in data.Statuses)
+        foreach (var t in _dataObj.Statuses)
         foreach (var t2 in _mainWindowViewModel.StatusSectionViewModel.InfoStatusList)
             if (t2.Header == t.Name)
                 t2.Status = Convert.ToBoolean(t.Value);
 
-        foreach (var t in data.Parameters)
+        foreach (var t in _dataObj.Parameters)
         foreach (var t2 in _mainWindowViewModel.InformationSectionViewModel.InfoBlockList)
             if (t2.Title == t.Name)
                 t2.Content = double.Round(t.Value, 2).ToString(CultureInfo.CurrentCulture);
-        _mainWindowViewModel.TargetSectionViewModel.SetTime(data);
+        
+        
+        _mainWindowViewModel.TargetSectionViewModel.SetTime(_dataObj);
     }
 }

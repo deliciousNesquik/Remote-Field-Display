@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
+using Avalonia.Threading;
 using ReactiveUI;
 using RFD.Interfaces;
 using RFD.Models;
@@ -38,12 +39,23 @@ public class StatusSectionViewModel
 
     public void AddStatusBox(StatusBox statusBox)
     {
-        InfoStatusList.Add(statusBox);
+        Dispatcher.UIThread.Post((() => { InfoStatusList.Add(statusBox); }));
     }
 
+    public void ClearStatusBox(string header)
+    {
+        for (var index = 0; index <= InfoStatusList.Count; index++)
+        {
+            if (InfoStatusList[index].Header != header) continue;
+            var index1 = index;
+            Dispatcher.UIThread.Post(() => {InfoStatusList.RemoveAt(index1);});
+        }
+    }
+    
     public void ClearStatusBox()
     {
-        InfoStatusList.Clear();
+        Dispatcher.UIThread.Post((() => { InfoStatusList.Clear(); }));
+        
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

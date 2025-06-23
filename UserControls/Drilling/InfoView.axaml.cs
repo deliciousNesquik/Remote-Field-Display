@@ -8,14 +8,4 @@ public partial class InformationSection : UserControl
     {
         InitializeComponent();
     }
-    
-    public void Wrap()
-    {
-        FrameAndNameStackPanel.IsVisible = false;
-    }
-
-    public void Unwrap()
-    {
-        FrameAndNameStackPanel.IsVisible = true;
-    }
 }

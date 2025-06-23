@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Threading;
 using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Interfaces;
@@ -109,24 +110,26 @@ public class TargetSectionViewModel : INotifyPropertyChanged
 
     public void SetDefaultTarget()
     {
-        Angle = 0;
-        ToolfaceType = "G";
-        GridFrequency = 90;
-        TimeStamp = TimeSpan.Zero;
-        ToolfaceOffset = 0;
-        MagneticDeclination = 0;
-        DrillingPointsList.Clear();
-        RadialLinesList.Clear();
+        Dispatcher.UIThread.Post((() =>
+        {
+            Angle = 0;
+            ToolfaceType = "G";
+            GridFrequency = 90;
+            TimeStamp = TimeSpan.Zero;
+            ToolfaceOffset = 0;
+            MagneticDeclination = 0;
+            DrillingPointsList.Clear();
+            RadialLinesList.Clear();
         
-        DrillingRingsList.Clear();
-        var distance = 180.0 / (Capacity - 1);
-        for (var i = 1; i <= 6 - 1; i++)
-            DrillingRingsList.Add(new Ring(i * distance, i * distance, i, i * distance / 2,
-                new Thickness(RingThickness)));
+            DrillingRingsList.Clear();
+            var distance = 180.0 / (Capacity - 1);
+            for (var i = 1; i <= 6 - 1; i++)
+                DrillingRingsList.Add(new Ring(i * distance, i * distance, i, i * distance / 2,
+                    new Thickness(RingThickness)));
         
-        SetSector(-45, 45);
-        UpdateAngleLabels();
-        
+            SetSector(-45, 45);
+            UpdateAngleLabels();
+        }));
     }
     
     private void UpdateTarget()
