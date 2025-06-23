@@ -14,18 +14,10 @@ using RFD.UserControls;
 
 namespace RFD.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
+public class MainWindowViewModel : ViewModelBase
 {
     private readonly IConnectionService _connectionService;
     private readonly ILoggerService _logger;
-
-    private bool _saveDataAndSettings;
-
-    public bool SaveDataAndSettings
-    {
-        get => _saveDataAndSettings;
-        set => this.RaiseAndSetIfChanged(ref _saveDataAndSettings, value);
-    }
     
     public MainWindowViewModel()
     {
@@ -41,7 +33,8 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-
+        ConnectStatusViewModel = new ConnectStatusViewModel();
+        
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
         DisconnectCommand = ReactiveCommand.Create(Disconnect);
@@ -62,8 +55,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
         ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
         FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-        
-        //InformationSectionViewModel.AddInfoBox(new InfoBox("Глуб.бурения", "10", "м"));
+        ConnectStatusViewModel = new ConnectStatusViewModel();
         
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
@@ -74,15 +66,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
 
     public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
     public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
-    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; } = new ConnectStatusViewModel();
-
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
 
     #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
 
@@ -99,11 +83,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
     public UserControl CurrentUserControl
     {
         get => _currentUserControl;
-        set
-        {
-            _currentUserControl = value;
-            OnPropertyChanged();
-        }
+        set => this.RaiseAndSetIfChanged(ref _currentUserControl, value);
     }
 
     private bool _isModalWindowOpen;
@@ -113,9 +93,8 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         get => _isModalWindowOpen;
         set
         {
-            _isModalWindowOpen = value;
             BlurRadius = value ? 10 : 0;
-            OnPropertyChanged();
+            this.RaiseAndSetIfChanged(ref _isModalWindowOpen, value);
         }
     }
 
@@ -127,7 +106,7 @@ public class MainWindowViewModel : ViewModelBase, INotifyPropertyChanged
         set
         {
             _blurRadius = value;
-            OnPropertyChanged();
+            this.RaiseAndSetIfChanged(ref _blurRadius, value);
         }
     }
 
