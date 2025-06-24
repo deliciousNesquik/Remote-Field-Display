@@ -77,13 +77,13 @@
 
                 <!--Кнопки для управления приложением-->
                 <StackPanel Name="ButtonsApp" Grid.Column="1" Orientation="Horizontal">
-                    <Button Click="WindowMinimizeButton_OnClick">
+                    <Button Click="WindowMinimizeButton_OnClick" CornerRadius="0" Height="28">
                         <Svg Path="{DynamicResource MinimizeIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
-                    <Button Click="WindowMaximizeButton_OnClick">
+                    <Button Click="WindowMaximizeButton_OnClick" CornerRadius="0" Height="28">
                         <Svg Path="{DynamicResource MaximizeIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
-                    <Button Click="WindowCloseButton_OnClick">
+                    <Button Classes="Negative" CornerRadius="0" Height="28" Click="WindowCloseButton_OnClick">
                         <Svg Path="{DynamicResource CloseIcon}" Stretch="Uniform" Width="16" Height="16" />
                     </Button>
                 </StackPanel>

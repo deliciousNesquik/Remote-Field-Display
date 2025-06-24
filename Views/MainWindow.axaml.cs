@@ -26,7 +26,6 @@ public partial class MainWindow : Window
         // Вставим платформо-зависимую настройку для маков
         if (PlatformUtils.IsMacOS)
         {
-            //this.Icon = new WindowIcon("Assets/app-icon.icns");
             ExtendClientAreaChromeHints = Avalonia.Platform.ExtendClientAreaChromeHints.PreferSystemChrome;
             ExtendClientAreaTitleBarHeightHint = -1;
             
@@ -42,9 +41,6 @@ public partial class MainWindow : Window
         MainBorder.PointerPressed += MainBorder_PointerPressed;
 
         this.GetObservable(WindowStateProperty).Subscribe(state => MainBorder.Margin = GetMargin(this.WindowState));
-        
-        LeftGrid.GetObservable(IsVisibleProperty).Subscribe(state => { Console.WriteLine($"Отображение левой панели: {state}"); });
-        RightGrid.GetObservable(IsVisibleProperty).Subscribe(state => { Console.WriteLine($"Отображение правой панели: {state}"); });
     }
     
     /// <summary>
