@@ -42,7 +42,7 @@
                 <ResourceInclude Source="avares://RFD/Localizations/RU-ru.axaml" />
                 <ResourceInclude Source="avares://RFD/Localizations/EN-en.axaml" />
 
-                <ResourceInclude Source="avares://RFD/Controls/LoadingIndicators.axaml" />
+                <ResourceInclude Source="avares://RFD/Controls/LoadingIndicator/LoadingIndicators.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 

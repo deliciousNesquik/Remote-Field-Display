@@ -30,17 +30,11 @@ public class StatusSectionViewModel
         
         if (App.Current?.Resources.TryGetResource("Statuses", App.Current?.ActualThemeVariant, out var result1) == true)
         {
-            if (App.Current?.Resources.TryGetResource("Background", App.Current?.ActualThemeVariant, out var background) == true)
-            {
-                _windowService.OpenWindow(newControl, result1.ToString(), Brush.Parse(background.ToString()));
-            }
+            _windowService.OpenWindow(newControl, result1.ToString());
         }
         else
         {
-            if (App.Current?.Resources.TryGetResource("Background", App.Current?.ActualThemeVariant, out var background) == true)
-            {
-                _windowService.OpenWindow(newControl, "Not found resources", Brush.Parse(background.ToString()));
-            } 
+            _windowService.OpenWindow(newControl, "Not found resources");
         }
     }
 

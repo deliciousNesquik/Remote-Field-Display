@@ -1,14 +1,9 @@
-﻿using System.ComponentModel;
-using System.Reactive.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using NPFGEO.LWD.Net;
 using ReactiveUI;
 using RFD.Core;
 using RFD.Interfaces;
-using RFD.Models;
 using RFD.Services;
 using RFD.UserControls;
 
@@ -19,21 +14,35 @@ public class MainWindowViewModel : ViewModelBase
     private readonly IConnectionService _connectionService;
     private readonly ILoggerService _logger;
     
+    public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
+    public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
+    
+    public ICommand OpenAutomaticConnectingCommand { get; }
+    public ICommand OpenManualConnectingCommand { get; }
+    public ICommand DisconnectCommand { get; }
+    public ICommand SettingsCommand { get; }
+    public ICommand AboutCommand { get; }
+    
+    public List<ContentControl> SectionsContentControl { get; set; } = [];
+    public TargetSectionViewModel TargetSectionViewModel { get; } = new(new WindowService());
+    public InformationSectionViewModel InformationSectionViewModel { get; } = new(new WindowService());
+    public StatusSectionViewModel StatusSectionViewModel { get; } = new(new WindowService());
+    public ConnectStatusViewModel ConnectStatusViewModel { get; set; } = new();
+    
     public MainWindowViewModel()
     {
         _logger = new NLoggerService();
         _connectionService = new ConnectionService(new Client(), _logger);
 
-        _currentUserControl = new UserControl();
+        _currentModalWindow = new UserControl();
         _isModalWindowOpen = false;
 
         UseDefaultMenu = true;
         UseNativeMenu = false;
 
-        FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
-        ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
-        FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-        ConnectStatusViewModel = new ConnectStatusViewModel();
+        SectionsContentControl.Add(new TargetSection { DataContext = TargetSectionViewModel });
+        SectionsContentControl.Add(new InformationSection { DataContext = InformationSectionViewModel });
+        SectionsContentControl.Add(new StatusSection { DataContext = StatusSectionViewModel });
         
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
@@ -42,20 +51,17 @@ public class MainWindowViewModel : ViewModelBase
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
 
-    public MainWindowViewModel(
-        ILoggerService logger,
-        IConnectionService connectionService)
+    public MainWindowViewModel(ILoggerService logger, IConnectionService connectionService)
     {
         _logger = logger;
         _connectionService = connectionService;
 
-        _currentUserControl = new UserControl();
+        _currentModalWindow = new UserControl();
         _isModalWindowOpen = false;
 
-        FirstCell = new TargetSection { DataContext = TargetSectionViewModel };
-        ThirdCell = new InformationSection { DataContext = InformationSectionViewModel };
-        FourCell = new StatusSection { DataContext = StatusSectionViewModel };
-        ConnectStatusViewModel = new ConnectStatusViewModel();
+        SectionsContentControl.Add(new TargetSection { DataContext = TargetSectionViewModel });
+        SectionsContentControl.Add(new InformationSection { DataContext = InformationSectionViewModel });
+        SectionsContentControl.Add(new StatusSection { DataContext = StatusSectionViewModel });
         
         OpenAutomaticConnectingCommand = ReactiveCommand.Create(OpenAutomaticConnecting);
         OpenManualConnectingCommand = ReactiveCommand.Create(OpenManualConnecting);
@@ -63,30 +69,17 @@ public class MainWindowViewModel : ViewModelBase
         SettingsCommand = ReactiveCommand.Create(OpenSettings);
         AboutCommand = ReactiveCommand.Create(OpenAbout);
     }
+    
+    #region Работа с модульными окнами.
+    private UserControl _currentModalWindow; // Текущее открытое модальное окно.
+    private bool _isModalWindowOpen;         // Состояние модального окна.
+    private double _blurRadius;              // Блюр радиус, чтобы размывать задний фон при открытом окне.
 
-    public bool UseDefaultMenu { get; set; } = PlatformUtils.IsWindows || PlatformUtils.IsLinux;
-    public bool UseNativeMenu { get; set; } = PlatformUtils.IsMacOS;
-    public ConnectStatusViewModel? ConnectStatusViewModel { get; set; }
-
-    #region UserControl содержащие секции (Мишень, Параметры, Информация, Статусы)
-
-    public TargetSectionViewModel TargetSectionViewModel { get; } = new(new WindowService());
-    public InformationSectionViewModel InformationSectionViewModel { get; } = new(new WindowService());
-    public StatusSectionViewModel StatusSectionViewModel { get; } = new(new WindowService());
-
-    #endregion
-
-    #region Переменные: Параметры отвечающие за работу модальных окон поверх главного окна
-
-    private UserControl _currentUserControl;
-
-    public UserControl CurrentUserControl
+    public UserControl CurrentModalWindow
     {
-        get => _currentUserControl;
-        set => this.RaiseAndSetIfChanged(ref _currentUserControl, value);
+        get => _currentModalWindow;
+        set => this.RaiseAndSetIfChanged(ref _currentModalWindow, value);
     }
-
-    private bool _isModalWindowOpen;
 
     public bool IsModalWindowOpen
     {
@@ -98,98 +91,88 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private double _blurRadius;
-
     public double BlurRadius
     {
         get => _blurRadius;
-        set
-        {
-            _blurRadius = value;
-            this.RaiseAndSetIfChanged(ref _blurRadius, value);
-        }
+        set => this.RaiseAndSetIfChanged(ref _blurRadius, value);
     }
-
-    #endregion
-
-    #region Переменные: Параметры отвечающие за настройку окон внутри главного окна
-
-    /// <summary> Принимает любой UserControl и отобразит его в левом верхнем углу </summary>
-    public ContentControl FirstCell { get; set; }
-
-    /// <summary> Принимает любой UserControl и отобразит его в правом верхнем углу </summary>
-    public ContentControl ThirdCell { get; set; }
-
-    /// <summary> Принимает любой UserControl и отобразит его в правом нижнем углу </summary>
-    public ContentControl FourCell { get; set; }
-
-    #endregion
-
-    #region Переменные: Команды основного меню
-
-    public ICommand OpenAutomaticConnectingCommand { get; }
-    public ICommand OpenManualConnectingCommand { get; }
-    public ICommand DisconnectCommand { get; }
-    public ICommand SettingsCommand { get; }
-    public ICommand AboutCommand { get; }
-
-    #endregion
-
-    #region Методы: Методы для открытия окон соединения, запрос на разрыв соединения, проверка соединения
-
+    
+    /// <summary> Скрытие модульного окна. </summary>
     private void HideConnectionDialog()
     {
-        CurrentUserControl = new UserControl();
+        _logger.Info("Cкрытие модульного окна");
+        
+        CurrentModalWindow = new UserControl();
         IsModalWindowOpen = false;
     }
-
+    
+    /// <summary> Открытие модульного окна "О приложении". </summary>
     private void OpenAbout()
     {
+        _logger.Info("Открытие модульного окна \"О приложении\"");
+        
         IsModalWindowOpen = true;
         var aboutViewModel = new AboutViewModel();
-        CurrentUserControl = new AboutDialog { DataContext = aboutViewModel };
+        CurrentModalWindow = new AboutDialog { DataContext = aboutViewModel };
         aboutViewModel.CloseDialog += HideConnectionDialog;
     }
     
-    public void OpenSettings()
+    /// <summary> Открытие модульного окна настроек приложения. </summary>
+    private void OpenSettings()
     {
+        _logger.Info("Открытие модульного окна \"Настройки\"");
+        
         IsModalWindowOpen = true;
         var settingsViewModel = new SettingsViewModel();
-        CurrentUserControl = new SettingsView() { DataContext = settingsViewModel };
+        CurrentModalWindow = new SettingsView() { DataContext = settingsViewModel };
         settingsViewModel.CloseDialog += HideConnectionDialog;
     }
-    
-    public void OpenManualConnecting()
+
+    /// <summary> Открытие модульного окна ручного подключения. </summary>
+    private void OpenManualConnecting()
     {
+        _logger.Info("Открытие модульного окна \"Ручное подключение\"");
+        
         IsModalWindowOpen = true;
         var manualConnectionDialogViewModel = new ManualConnectionDialogViewModel(_connectionService, _logger);
-        CurrentUserControl = new ManualConnectionDialog { DataContext = manualConnectionDialogViewModel };
+        CurrentModalWindow = new ManualConnectionDialog { DataContext = manualConnectionDialogViewModel };
         manualConnectionDialogViewModel.DialogClose += HideConnectionDialog;
     }
 
-    public void OpenAutomaticConnecting()
+    /// <summary> Открытие модульного окна автоматического подключения. </summary>
+    private void OpenAutomaticConnecting()
     {
+        _logger.Info("Открытие модульного окна \"Автоматическое подключение\"");
+
         IsModalWindowOpen = true;
         var automaticConnectingDialogViewModel = new AutomaticConnectionDialogViewModel(_connectionService, _logger);
-        CurrentUserControl = new AutomaticConnectingDialog { DataContext = automaticConnectingDialogViewModel };
+        CurrentModalWindow = new AutomaticConnectingDialog { DataContext = automaticConnectingDialogViewModel };
         automaticConnectingDialogViewModel.DialogClose += HideConnectionDialog;
     }
-
-    public void Disconnect()
+    
+    /// <summary> Команда для отключения от сервера. </summary>
+    private void Disconnect()
     {
+        _logger.Info("Отключение от сервера.");
+        
+        _logger.Info("Проверка пункта сохранение данных.");
         if (!SettingsApplication.SaveData)
         {
-            _logger.Info("Сохранение настроек и данных отключено, очищаю интерфейс...");
+            _logger.Info("Сохранение данных выключено.");
+            
+            _logger.Info("Очистка секций с данными");
             InformationSectionViewModel.ClearInfoBox();
             StatusSectionViewModel.ClearStatusBox();
             TargetSectionViewModel.SetDefaultTarget();
         }
         else
         {
-            _logger.Info("Сохранение настроек и данных включено, отключаюсь от сервера...");
+            _logger.Info("Сохранение данных включено.");
         }
-        _connectionService.Disconnect();
-    }
 
+        try { _connectionService.Disconnect(); }
+        catch(Exception ex) { _logger.Error($"Ошибка при попытке отключится от сервера: {ex}"); }
+    }
     #endregion
+
 }

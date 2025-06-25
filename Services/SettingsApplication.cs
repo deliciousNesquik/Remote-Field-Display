@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace RFD.Services
 {
@@ -58,15 +55,13 @@ namespace RFD.Services
                 var json = File.ReadAllText(SettingsPath);
                 var settingsDto = JsonSerializer.Deserialize<SettingsDTO>(json);
 
-                if (settingsDto != null)
-                {
-                    SaveData = settingsDto.SaveData;
-                    BrandColor = settingsDto.BrandColor;
-                    BrandHoverColor = BrandHoverColor;
-                    Language = settingsDto.Language;
-                    LanguageLocalization = settingsDto.LanguageLocalization;
-                    ThemeProtection = ThemeProtection;
-                }
+                if (settingsDto == null) return;
+                SaveData = settingsDto.SaveData;
+                BrandColor = settingsDto.BrandColor;
+                BrandHoverColor = BrandHoverColor;
+                Language = settingsDto.Language;
+                LanguageLocalization = settingsDto.LanguageLocalization;
+                ThemeProtection = ThemeProtection;
             }
             catch (Exception ex)
             {

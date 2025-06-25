@@ -5,10 +5,7 @@ namespace RFD.Services;
 
 public enum Localization
 {
-    RU,
-    EN,
-    BASH,
-    CH,
+    RU, EN, BASH, CH,
 }
 
 public class LocalizationManager
@@ -21,9 +18,7 @@ public class LocalizationManager
         if (app is null)
             return;
 
-        var existingTheme = app.Resources.MergedDictionaries
-            .OfType<ResourceInclude>()
-            .FirstOrDefault(x => x.Source?.OriginalString.Contains("Localization") == true);
+        var existingTheme = app.Resources.MergedDictionaries.OfType<ResourceInclude>().FirstOrDefault(x => x.Source?.OriginalString.Contains("Localization") == true);
 
         if (existingTheme != null)
             app.Resources.MergedDictionaries.Remove(existingTheme);
